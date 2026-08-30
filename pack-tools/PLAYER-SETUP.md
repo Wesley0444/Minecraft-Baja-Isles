@@ -38,6 +38,7 @@ hook configured.
 ## 4. Verify Java (10 seconds, saves an hour later)
 
 Right-click the instance → **Edit** → **Settings** → **Java**.
+<span class="info-tip" tabindex="0"><span class="tip-icon">ⓘ&nbsp;screenshots</span><span class="tip-pop"><a href="/guides/mc-setup/assets/prism-edit-menu.png" target="_blank"><img src="/guides/mc-setup/assets/prism-edit-menu.png" alt="Prism: right-click the instance, choose Edit"></a><a href="/guides/mc-setup/assets/prism-java-settings.png" target="_blank"><img src="/guides/mc-setup/assets/prism-java-settings.png" alt="Prism Settings → Java tab: the executable path must say jdk-21; 8192 MiB max memory"></a></span></span>
 
 Make sure the Java path points at your **21** install. Prism usually auto-detects
 correctly, but if you have several JDKs it sometimes picks the newest instead of the right

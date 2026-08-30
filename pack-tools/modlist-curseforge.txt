@@ -88,6 +88,14 @@ loot-integrations-cataclysm:1134260
 loot-integrations-integrated-dungeons-villages:1149272
 loot-integrations-when-dungeons-arise:1142880
 loot-journal-neoforge:1120395
+# ⚠ PINNED to file-id 8562588 = 1.1.1368-1.21.1 STABLE (2026-08-02), deliberately NOT
+# the newest snapshot: 1.1.1375-snapshot crashed every client at the title screen
+# ("Cannot get config value before config is loaded" — ClientEventHandler.onPlaySoundEvent
+# reads its config when loading-screen music fires, before config load; known upstream
+# NeoForge-1.21.1 bug, server never sees it because servers have no sound engine).
+# Found 2026-08-30 in Wesley's first client join test. Doc 02 risk #23's "snapshot-only
+# on 1.21.1" is stale — a stable channel exists; stay on it. `packwiz update --all`
+# would re-break this (second pin alongside structory-towers).
 minecolonies:245506
 mod-primal:1351626
 moogs-voyager-structures:656977

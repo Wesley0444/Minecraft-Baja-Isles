@@ -34,6 +34,11 @@ boot, `Done (16.202s)`, 0 chunk errors):
 - **structory-towers** is pinned to v1.0.15 (version-id `lefqbuOP`). Newer builds target
   the next MC line and crash 1.21.1 ("Missing ModLoader in file"). Re-pin after any bulk
   update.
+- **minecolonies** is pinned to the 1.1.1368 STABLE release (CF file-id `8562588`), not
+  the newest snapshot: 1.1.1375-snapshot crashes every CLIENT at the title screen
+  ("Cannot get config value before config is loaded", onPlaySoundEvent) — found in the
+  2026-08-30 join test. Server boots never catch this class of bug (no sound engine);
+  a client launch is part of any Minecolonies bump from now on.
 
 ## `side` status
 
