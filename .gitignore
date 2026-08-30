@@ -30,3 +30,8 @@ pack-tools/bin/
 /*.jar
 /*.log
 /packwiz.json
+
+# Secrets — NEVER commit. A bot token landed in the repo once (2026-08-30, revoked).
+discord-bot-token.txt
+*token*
+*.secret
