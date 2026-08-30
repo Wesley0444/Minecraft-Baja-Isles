@@ -24,6 +24,14 @@ biomes-o-plenty:220318
 block-pack:1574574
 cataclysm-x-yungs:1348970
 confluence:1209464
+# Added 2026-08-30 (pack-build boot test): REQUIRED dep of lootintegrations (crashes at
+# boot without it). packwiz does NOT resolve deps-of-deps — lootintegrations itself only
+# entered the pack as a dep of its addons, so cupboard was never prompted for.
+cupboard:326652
+# Added 2026-08-30 (pack-build boot test): REQUIRED dep of antarchy (crashes at boot
+# without it) — hidden by Antarchy's Modrinth metadata, surfaced only after the Integrated
+# family cut removed it. A library only; NOT part of the cut Integrated content family.
+integrated-api:817709
 # creature-features:1640797 — CUT 2026-08-30 (Wesley confirmed): no 1.21.1 build exists
 # ANYWHERE. Its only file ever is 1.20.1 Forge v1.0.0; not on Modrinth at all.
 cult-of-azazel:1571005
@@ -39,16 +47,22 @@ gateway-of-doom:1499145
 gateways-to-eternity:417802
 goblin-traders:363703
 guard-villagers:360203
-idas:605375
-integrated-cataclysm:1164949
-integrated-stronghold:815548
-integrated-villages:661376
+# idas:605375 — CUT 2026-08-30 (Wesley's call, freeze reopened+reclosed same day): the whole
+# Integrated family hard-requires Create+Quark+Zeta+Supplementaries at the NeoForge level
+# (boot-verified, not just CF metadata). Doc 02 predicted this; audit had them as "decide —
+# insufficient data" and the batch-audit never happened. Cut with:
+# integrated-cataclysm, integrated-stronghold, integrated-villages,
+# loot-integrations-integrated-dungeons-villages. NOTE: integrated-api (the lib) STAYS —
+# antarchy hard-requires it too (Antarchy's second hidden dep; Modrinth metadata lies).
+# integrated-cataclysm:1164949 — CUT 2026-08-30 (see idas note above)
+# integrated-stronghold:815548 — CUT 2026-08-30 (see idas note above)
+# integrated-villages:661376 — CUT 2026-08-30 (see idas note above)
 irons-spells-n-spellbooks:855414
 jade:324717
 jei:238222
 lendercataclysm:551586
 loot-integrations-cataclysm:1134260
-loot-integrations-integrated-dungeons-villages:1149272
+# loot-integrations-integrated-dungeons-villages:1149272 — CUT 2026-08-30 (see idas note above)
 loot-integrations-when-dungeons-arise:1142880
 loot-journal-neoforge:1120395
 minecolonies:245506

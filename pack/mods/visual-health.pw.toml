@@ -1,0 +1,13 @@
+name = "Visual Health"
+filename = "visualhealth-neoforge-1.21.1-2.0.2.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "1f8dd385f68aee2bee252ef5c216ce1e5f7d38ea"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 8224516
+project-id = 1473785

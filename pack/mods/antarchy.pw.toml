@@ -1,0 +1,13 @@
+name = "Antarchy"
+filename = "antarchy-1.1.1+1.21.1-neoforge.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/bnrJEOg5/versions/3JGGQowP/antarchy-1.1.1%2B1.21.1-neoforge.jar"
+hash-format = "sha512"
+hash = "47e8461634c327a5af4adc2e082de3141f110ee079be1c47e4df1726ac7bb355489208229c615276af8e44e0ed29ebf99e0e6ae12c0ad1be6441399fc7e0e290"
+
+[update]
+[update.modrinth]
+mod-id = "bnrJEOg5"
+version = "3JGGQowP"

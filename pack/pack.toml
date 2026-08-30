@@ -1,0 +1,13 @@
+name = "Baja Isles"
+author = "Wesley"
+version = "0.1.0"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "4dbbbe4a1ea2ee278ae3097a95bd9eda43378985a1df0504a7f87d5b8ae9cedd"
+
+[versions]
+minecraft = "1.21.1"
+neoforge = "21.1.249"

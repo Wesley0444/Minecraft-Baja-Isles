@@ -6,26 +6,28 @@ hash, side). That is what makes it safe to make public: it redistributes nothing
 Setup, rationale and the update workflow: `../planning/04-PACK-DISTRIBUTION.md`
 Player onboarding doc to hand out: `../pack-tools/PLAYER-SETUP.md`
 
-## Bootstrap (run once, needs packwiz on PATH)
+## ✅ BUILT 2026-08-30 — 98 stubs, boot-verified
 
-    packwiz init          # MC 1.21.1, NeoForge
-    packwiz cf add <slug> # CurseForge mods   — see ../pack-tools/modlist-curseforge.txt
-    packwiz mr add <slug> # Modrinth mods     — see ../pack-tools/modlist-modrinth.txt
-    packwiz refresh
-    git init && git add -A && git commit -m "initial pack"
+Bootstrapped with packwiz (CI build in `../pack-tools/bin/`, gitignored). MC 1.21.1,
+NeoForge 21.1.249. Dual-listed mods sourced from **Modrinth**; the rest pinned CF ids.
+Validated end-to-end: `packwiz serve` → `packwiz-installer -g -s server` → NeoForge
+boots to `Done` on a fresh world. The five landmines the build hit (hidden deps,
+CF-blocked dep, broken "neoforge" jar, the Integrated family cut) are documented in
+`../planning/04-PACK-DISTRIBUTION.md §7` — **read that before changing anything here.**
 
-## Before bulk-adding — run the blocked-mod scan
+## ⚠ Version pins — do NOT `packwiz update --all` blindly
 
-    node ../pack-tools/check-cf-distribution.mjs ../pack-tools/modlist-curseforge.txt
+- **structory-towers** is pinned to v1.0.15 (version-id `lefqbuOP`). Newer builds target
+  the next MC line and crash 1.21.1 ("Missing ModLoader in file"). Re-pin after any bulk
+  update.
 
-Any mod it reports as BLOCKED cannot be auto-downloaded by Prism/packwiz. Resolve those
-first — see `04-PACK-DISTRIBUTION.md §3`. Finding out after you have shipped the instance
-to five people means redoing onboarding.
+## `side` status
 
-## Set `side` on every mod
+`client`: Xaero's ×3, Jade, JEI — the server never sees them.
+**Deliberate deviation:** `simply-tooltips` stays `both` even though it looks client-only —
+Simply Bows + Simply Swords declare it a *required* dep, and a `client` mark would strip
+it from the server install and risk a boot refusal. Candidates never flipped (unverified,
+left `both` on purpose): `visual-health`, `loot-journal-neoforge`, `block-pack`.
 
-    packwiz cf add jei
-    # then edit mods/jei.pw.toml -> side = "both" | "client" | "server"
-
-Client-only (Xaero's ×3, Jade, Simply Tooltips, JEI, resource packs) must be `client`, or
-the server drags them into its tick loop for nothing.
+To change a side: edit `mods/<mod>.pw.toml` → `side = "both" | "client" | "server"`,
+then `packwiz refresh`.

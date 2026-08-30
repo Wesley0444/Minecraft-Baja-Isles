@@ -1,0 +1,13 @@
+name = "Confluence: Otherworld"
+filename = "ConfluenceOtherworld-1.2.4-260226.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/9kp7blvl/versions/SvvNcTJh/ConfluenceOtherworld-1.2.4-260226.jar"
+hash-format = "sha512"
+hash = "ddf98a71a894a0fd5c60767496e1d863499142f631078c12cae80419b094cc169caced5d426fd29d7c2d8d7d22afbef55f0758f7b5b8834fcf0315eff6af8ca4"
+
+[update]
+[update.modrinth]
+mod-id = "9kp7blvl"
+version = "SvvNcTJh"

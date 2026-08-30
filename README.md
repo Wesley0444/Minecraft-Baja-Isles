@@ -1,9 +1,11 @@
 # Minecraft 1.21.1 NeoForge — server project
 
 **Entry point. Start here.** Planning is COMPLETE as of 2026-08-30, all three
-modlist-gating tests **PASSED** (same day), and the **MODLIST IS FROZEN as of 2026-08-30**.
-Nothing worldgen-related may change from here, ever. Next step: packwiz pack build
-(order of operations, step 3).
+modlist-gating tests **PASSED** (same day), and the **MODLIST IS FROZEN as of 2026-08-30**
+(reopened + reclosed once, same day: the Integrated family cut at pack-build — doc 03 §1).
+Nothing worldgen-related may change from here, ever. The **packwiz pack is BUILT and
+boot-verified** (step 3, 2026-08-30) — see `planning/04-PACK-DISTRIBUTION.md §7` for the
+five landmines the build surfaced. Next: push + GitHub Pages, then server build (step 4).
 
 - **Who:** Wesley (host) + Leyton, DJ, David, Dan +1. Six players.
 - **What:** long shared campaign, months-long world, ~130 mods.
@@ -37,8 +39,13 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 2. ✅ **MODLIST FROZEN — 2026-08-30 (Wesley's call).** Everything downstream depends on
    this. Nothing worldgen-related may change afterwards, ever. The frozen manifest =
    `pack-tools/modlist-curseforge.txt` (65) + `pack-tools/modlist-modrinth.txt` (26).
-3. **Install packwiz**, build the pack in `pack/`, push to GitHub, enable Pages.
-   → `planning/04-PACK-DISTRIBUTION.md`
+3. ✅ **Pack BUILT — 2026-08-30.** packwiz (CI build, `pack-tools/bin/`, gitignored) →
+   98 stubs in `pack/` (dual-listed mods sourced from Modrinth), validated end-to-end:
+   `packwiz serve` → `packwiz-installer -s server` → NeoForge boots to `Done`. Five
+   landmines found by boot testing, incl. the **Integrated family cut** (freeze
+   reopened + reclosed, Wesley's call) and a **Structory Towers version pin** that
+   `packwiz update --all` would break. All in `planning/04-PACK-DISTRIBUTION.md §7`.
+   **Still open: push to GitHub + enable Pages** (needs Wesley's go).
 4. **Stand up the server** — NeoForge 1.21.1, configs, the four scripts, firewall, boot task.
    → `planning/02-SERVER-BUILD-PLAN.md` (house conventions in `../CLAUDE.md`)
 5. **Apply the datapacks + config nerfs.** Deeper and Darker's Resonarium fix is the single
@@ -65,7 +72,8 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 | `planning/01-BALANCE-PLAYBOOK.md` | Config keys and pastable JSON per mod. 52 fenced blocks. |
 | `planning/00-MODLIST-AUDIT.md` | The full audit. 110 mods, parity table, 101-row verdict table. **Its §6/§10 redundancy calls are partly superseded by doc 03.** |
 | `pack-tools/PLAYER-SETUP.md` | Player onboarding. Served live at <https://cards.archidicks.com/guides/mc-setup> (auth-gated) — edit the file, page updates. |
-| `pack-tools/modlist-*.txt` | 65 CurseForge (pinned `slug:id`) + 26 Modrinth slugs, cuts removed. **All verified downloadable 2026-08-30.** `curios` added (required dep of confluence + irons-spells — Modrinth metadata lies about confluence having zero deps). Lists exclude other libraries; packwiz prompts for those at install time. |
+| `pack-tools/modlist-*.txt` | 62 CurseForge (pinned `slug:id`) + 27 Modrinth slugs after the 2026-08-30 pack build: Integrated family (5 entries) cut; boot-breaking hidden deps added explicitly (`curios`, `cupboard`, `integrated-api`, `sizeable-foliage` — Modrinth dep metadata lies, 3 mods confirmed). Other libraries still auto-added by packwiz at install. |
+| `pack/` | ⭐ **The built packwiz pack** (source of truth for client + server): `pack.toml` (MC 1.21.1, NeoForge 21.1.249) + 98 mod stubs. Boot-verified 2026-08-30. Serve locally with `pack-tools/bin/packwiz.exe serve`. |
 | `datapacks/` | 6 active datapacks, all `pack_format 48`, all valid JSON. Newest: `confluence-gate-life-crystal` (test-2 verdict, empirically verified). |
 | `datapacks/_retired/` | Datapacks retired by later decisions, each with a WHY note. Not deleted. |
 

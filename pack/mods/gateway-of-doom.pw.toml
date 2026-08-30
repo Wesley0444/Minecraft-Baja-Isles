@@ -1,0 +1,13 @@
+name = "Gateway of Doom"
+filename = "gatewayofdoom-neoforge-1.21.1-2.2.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Z7xAH01M/versions/ZMIJ4gQy/gatewayofdoom-neoforge-1.21.1-2.2.0.jar"
+hash-format = "sha512"
+hash = "0eaf91aa351116a4eb4cc260483b469a8737c0b24894bb6211a974eda7a4b88410e42c647e3531313c618dd3de5e070cfaa8d9d4c7edb5f5e21da0947f1b8eb8"
+
+[update]
+[update.modrinth]
+mod-id = "Z7xAH01M"
+version = "ZMIJ4gQy"

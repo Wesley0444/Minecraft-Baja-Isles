@@ -1,0 +1,13 @@
+name = "The Awakening"
+filename = "awakened-1.10.3+1.21.1.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "5c2f22889581c93552650589778068ad20b8fbfe"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 8718684
+project-id = 1565092

@@ -9,12 +9,22 @@
 # Moved here from the CF list 2026-08-30 — author disabled third-party distribution
 # on CurseForge, but both ship proper neoforge-1.21.1 builds on Modrinth:
 ars-n-spells
+# ⚠ structory-towers is PINNED to v1.0.15 in the pack (packwiz version-id lefqbuOP,
+# jar "Structory_Towers_1.21.x_v1.0.15.jar") — newer builds (1.0.16 "26.1", 1.0.17 "26.2")
+# target the next MC line and ship a neoforge.mods.toml with no modLoader header, which
+# 1.21.1's loader rejects ("Missing ModLoader in file"). A blind `packwiz update --all`
+# will re-break it. Found + fixed 2026-08-30 (pack-build boot test).
 structory-towers
 
 # Added 2026-08-30 (test-2 finding): REQUIRED dep of confluence (>=9.5.1+1.21.1, crashes
 # at boot without it) and of irons-spells-n-spellbooks. Was missing from both lists —
 # Modrinth's confluence version metadata falsely declares zero dependencies.
 curios
+
+# Added 2026-08-30 (pack-build boot test): REQUIRED dep of antarchy (crashes at boot
+# without it) — Antarchy's Modrinth version metadata declares zero dependencies, the
+# third confirmed Modrinth-metadata lie (confluence, curios, now this).
+sizeable-foliage
 
 aether
 antarchy

@@ -1,0 +1,13 @@
+name = "Simply Entity Equipment"
+filename = "simplyentityequipment-neoforge-0.1.0-1.21.1.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "a74b2728f1454abc4fa1a377b090a5a2f11b04d4"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 8715532
+project-id = 1643238

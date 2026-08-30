@@ -1,0 +1,13 @@
+name = "Skeleton Uses Custom Bow"
+filename = "skeletonusescustombow-1.1.0-neoforge-1.21.1.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "bfc7d30c48159a00e702efc9a53e49929c91cebb"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 8632318
+project-id = 1451144

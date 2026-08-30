@@ -147,3 +147,38 @@ Players get it next launch. Server gets it next restart.
 4. **Datapacks are server-side** — they live in the world folder, not the pack. They do
    **not** ride along with packwiz. Version them separately (they already are, under
    `Minecraft/datapacks/`).
+5. **⚠ `packwiz update --all` will re-break Structory Towers.** It is pinned to v1.0.15
+   (the last 1.21.x build); 1.0.16+ target the next MC line and ship a `neoforge.mods.toml`
+   with no `modLoader` header, which 1.21.1's loader rejects. Update mods individually, or
+   re-pin after a bulk update (version-id `lefqbuOP`).
+
+---
+
+## 7. WHAT THE 2026-08-30 PACK BUILD ACTUALLY HIT — read before touching the pack
+
+The pack was built this day (98 stubs: 66 CF + 32 Modrinth incl. auto-deps; dual-listed
+mods sourced from **Modrinth** — open API, immune to future CF distribution-flag flips).
+Validated end-to-end: `packwiz serve` → `packwiz-installer -g -s server` → NeoForge
+21.1.249 boots to `Done` on a throwaway server. Five landmines found, all by **boot
+testing**, none by metadata inspection:
+
+1. **packwiz does NOT resolve deps-of-deps.** Loot Integrations entered the pack as a dep
+   of its addons; *its* dep (Cupboard) was never prompted for → boot crash. If a mod only
+   arrives as a dependency, ITS dependencies are your problem.
+2. **Modrinth version metadata lies about dependencies.** Confirmed on three mods:
+   Confluence (hid curios), Antarchy (hid sizeable_foliage AND integrated_api). The only
+   dependency oracle that counts is NeoForge's ModSorter at boot.
+3. **A CF-blocked mod can hide in a dependency.** `player-animation-library` (dep of The
+   Awakening) is excluded from the CF API — the §3 scan only covered the modlist, not
+   deps. It never fails at `packwiz add` (metadata works); it fails at *install*. It was
+   re-sourced from Modrinth (same author, same jar). Run the installer once before
+   onboarding anyone.
+4. **A "neoforge"-tagged Modrinth file can be a broken build** (Structory Towers 1.0.17,
+   see rule 5 above). Loader tags on Modrinth versions are author-supplied claims.
+5. **The Integrated family hard-required Create+Quark+Zeta+Supplementaries** (NeoForge
+   level, boot-proven both ways) → cut per doc 03 §1. `integrated-api` alone stays
+   (Antarchy needs it).
+
+**The moral, twice-earned:** the pack's true dependency graph is only discoverable by
+booting a server against the built pack. That smoke test (serve + install + boot) is now
+the mandatory last step of any pack change bigger than a config tweak.

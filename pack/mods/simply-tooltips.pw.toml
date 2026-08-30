@@ -1,0 +1,13 @@
+name = "Simply Tooltips"
+filename = "SimplyTooltips-neoforge-0.1.5.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "6227453d5b628b1009d6ec516a0da5b588849744"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 8715141
+project-id = 1475755
