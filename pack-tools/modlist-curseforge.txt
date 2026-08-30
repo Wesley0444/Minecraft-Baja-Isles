@@ -1,0 +1,77 @@
+# CurseForge slugs, pinned as slug:projectId
+# Auto-extracted from the audit's own fetched source URLs, 2026-08-30.
+# Cuts from planning/03-FINAL-DECISIONS.md already removed.
+# IDs read off each mod's own CurseForge page ("identifier" in the served HTML),
+# 2026-08-30 — authoritative. Do NOT trust CFWidget slug resolution: it 404s valid
+# slugs (aether, aquamirae) and fuzzy-matches others to wrong projects
+# (minecolonies → a modpack, naturalist → "Naturalist+").
+
+aether:255308
+antarchy:1504802
+apotheosis:313970
+apothic-attributes:898963
+apothic-enchanting:1063926
+apothic-spawners:986583
+aquamirae:536254
+ars-elemental:561470
+# ars-n-spells:1447914 — moved to modlist-modrinth.txt 2026-08-30 (CF third-party distribution disabled)
+ars-nouveau:401955
+better-archeology:835687
+better-combat-by-daedelus:639842
+biomes-o-plenty:220318
+block-pack:1574574
+cataclysm-x-yungs:1348970
+confluence:1209464
+# creature-features:1640797 — PENDING CUT 2026-08-30 (Wesley to confirm): no 1.21.1 build
+# exists ANYWHERE. Its only file ever is 1.20.1 Forge v1.0.0; not on Modrinth at all.
+cult-of-azazel:1571005
+deeper-and-darker-spellbooks:1432746
+deeperdarker:659011
+embers-floating-islands:1216244
+envelope:1281170
+epic-knights-armor-and-weapons:509041
+eternal-starlight:1080592
+farmers-delight:398521
+fragmentum-neoforge:1123977
+gateway-of-doom:1499145
+gateways-to-eternity:417802
+goblin-traders:363703
+guard-villagers:360203
+idas:605375
+integrated-cataclysm:1164949
+integrated-stronghold:815548
+integrated-villages:661376
+irons-spells-n-spellbooks:855414
+jade:324717
+jei:238222
+lendercataclysm:551586
+loot-integrations-cataclysm:1134260
+loot-integrations-integrated-dungeons-villages:1149272
+loot-integrations-when-dungeons-arise:1142880
+loot-journal-neoforge:1120395
+minecolonies:245506
+mod-primal:1351626
+moogs-voyager-structures:656977
+mowzies-cataclysm:1128348
+mowzies-mobs:250498
+naturalist:627986
+oceans-delight:841262
+simply-bows:1475770
+simply-entity-equipment:1643238
+simply-swords:659887
+simply-tooltips:1475755
+skeleton-uses-custom-bow:1451144
+sophisticated-backpacks:422301
+# structory-towers:783522 — moved to modlist-modrinth.txt 2026-08-30 (CF third-party distribution disabled)
+terralith:513688
+the-awakening:1565092
+the-twilight-forest:227639
+the-undergarden:379849
+towns-and-towers:626761
+vanilla-loot-addon-for-loot-integrations:1128055
+visual-health:1473785
+waystones:245755
+when-dungeons-arise:442508
+xaeros-minimap:263420
+xaeros-minimap-world-map-waystones-compability:887484
+yungs-better-nether-fortresses-neoforge:1015118

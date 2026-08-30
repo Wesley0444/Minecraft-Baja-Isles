@@ -1,0 +1,21 @@
+{
+    "type": "apotheosis:executing",
+    "categories": [
+        "apotheosis:melee_weapon",
+        "apotheosis:trident"
+    ],
+    "definition": {
+        "affix_type": "ability",
+        "exclusive_set": [],
+        "weights": {
+            "haven":    { "weight": 0 },
+            "frontier": { "weight": 0 },
+            "ascent":   { "weight": 0 },
+            "summit":   { "weight": 8, "quality": 0.1 },
+            "pinnacle": { "weight": 8, "quality": 0.1 }
+        }
+    },
+    "values": {
+        "apotheosis:mythic": { "min": 0.04, "max": 0.08, "step": 0.01 }
+    }
+}

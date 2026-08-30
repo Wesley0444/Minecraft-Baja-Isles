@@ -1,0 +1,1506 @@
+# BALANCE REMEDIATION PLAYBOOK
+### Beyond Depth Reconstruction — 1.21.1 / NeoForge 21.1.249
+**Written 2026-08-28. Companion to the audit doc. This is the "what to actually change" file.**
+
+---
+
+## ⚠ READ THIS BEFORE YOU TRUST A SINGLE NUMBER BELOW
+
+The tuning-data payload handed to this doc was **empty**:
+
+```json
+{"tuning":[],"remedies":[],"spine":[],"offenders":[]}
+```
+
+No per-mod config keys, no researched remediation plans, no offender list, no modlist. So
+everything in Section 2 that isn't traceable to the recon briefs is **derived, inferred, or
+templated** — not measured. Every config path is marked with a confidence level. Nothing here
+should be pasted into a live server without the verification step attached to it.
+
+What IS hard-verified and load-bearing:
+- L_Ender's Cataclysm gear/boss stats (from the official wiki, via the North Star brief).
+- Vanilla netherite/Sharpness arithmetic (trivially checkable in-game).
+- Ars 'n Spells config keys and defaults (from its own README).
+- 1.21.1 datapack format facts (pack_format 48, singular directory names, data-driven enchantments).
+
+What is **NOT** verified and is flagged inline as `⚠ VERIFY BEFORE APPLYING`:
+- Every mod config file path and TOML key name.
+- Every hours estimate in the parity table.
+- The existence and stats of "Antarchy" content (the owner named it; I have zero primary data on it).
+
+**The single highest-value action in this entire document is not a config edit — it is
+Section 6.1: measure the real numbers before changing anything.** A playbook built on
+guessed numbers produces a pack balanced against a fiction.
+
+---
+
+# 1. THE PARITY PHILOSOPHY
+
+## 1.0 What this pack is
+
+**This pack is a HUB, not a SPINE.** Six players walk up to a menu of simultaneous tracks and
+pick one. Nobody finishes everything. Nobody is required to do track A before track B.
+
+That premise makes exactly one thing sacred, and it is not power level. It is **rate**.
+
+> The failure mode: *"2 people do one mod and 2 people do another and put in equal effort but
+> get completely different rewards."*
+
+A 40-damage sword after 80 hours is fine. A 40-damage sword after 10 hours is broken. **Absolute
+ceiling is nearly irrelevant. Payoff-per-hour is everything.**
+
+And the corollary that gets forgotten: **under-rewarding is a defect of equal severity.** If Dan
+sinks 60 hours into Create and comes out weaker than DJ did in 20 hours of Deeper and Darker,
+Dan was robbed and the pack failed — even though nothing was "overpowered." Fixes go in both
+directions.
+
+---
+
+## 1.1 The metric
+
+### Definitions
+
+**P — Power multiplier over netherite.**
+Baseline `P = 1.00` is defined as **a Sharpness V netherite sword in full enchanted netherite
+armor**, i.e. the endgame a player reaches with zero content mods. Arithmetic:
+
+```
+Netherite sword base       :  8.0 damage × 1.6 attack speed = 12.8 sustained DPS
++ Sharpness V (+3.25 flat) : 11.25 damage × 1.6 attack speed = 18.0 sustained DPS   ← P = 1.00
+```
+
+P for a track's reward is that reward's **effective combat-equivalent throughput** divided by
+18.0 DPS, including its ability/utility rider, not just its stat line.
+
+Worked example, the anchor:
+
+```
+Cataclysm Void Forge       : 13.0 damage × 1.0 attack speed = 13.0 DPS
++ Sharpness V              : 16.25 damage × 1.0             = 16.25 DPS  → 0.90 raw
++ AoE hammer slam (13 dmg, 4-block radius, shield-break, 4s CD)
++ Void Runes (35 runes, 7 magic dmg, hits twice)
++ unbreakable, netherite-tier pickaxe
+                                                        → effective P ≈ 1.35
+```
+
+**Note what that means:** Cataclysm's endgame boss-drop weapon is a **sidegrade** on raw DPS and
+only reaches 1.35x once you count the utility. That is a mod author choosing restraint on
+purpose, and it is why Cataclysm is the yardstick and not a defendant.
+
+**H — Hours invested.** Wall-clock hours for one player of average skill to go from "decided to
+do this track" to "holding the track's characteristic reward."
+
+**T — Tedium coefficient.** Effort ≠ hours. 60 hours of tense boss fights is not the same
+investment as 60 hours of grinding andesite.
+
+| T | Character | Examples |
+|---|---|---|
+| **0.8** | Tense, skill-expressive, memorable | Boss gauntlets, arena fights |
+| **0.9** | Exploration with real stakes | Dungeon delving, dimension traversal |
+| **1.0** | Mixed / neutral | Most content |
+| **1.2** | Repetitive with variance | RNG affix farming, loot rerolling |
+| **1.3** | Flat grind | Resource automation as a prerequisite, ore-count gates |
+
+`H_eff = H × T`. Higher tedium raises effective cost, which **lowers** R, which correctly flags
+a grindy track as under-rewarding and demands a buff or a shortening.
+
+**R — Parity Rate.**
+
+```
+R = (P − 1.0) / H_eff
+```
+
+Units: netherite-multiples of *gain* per effort-hour. This is the number that goes in the table
+and the number that gets checked when someone proposes mod #151.
+
+---
+
+## 1.2 Deriving the target band — the arithmetic
+
+Anchor on Cataclysm, because it is the one track in this pack whose numbers are wiki-verified
+and whose author demonstrably tuned for restraint.
+
+```
+Cataclysm full boss gauntlet → Void Forge
+  P      = 1.35
+  ΔP     = 0.35
+  H      = 40 hours   (8 bosses, dungeon-gated, group play)
+  T      = 0.8        (boss fights: high tension, low tedium)
+  H_eff  = 40 × 0.8 = 32
+  R*     = 0.35 / 32 = 0.01094
+```
+
+**Anchor rate R\* = 0.011.**
+
+> ### 🔴 STOP — the anchor's `P = 1.35` is a GUESS, and the whole band inherits it
+>
+> *(Added by completeness review. This box is the most important correction in the document.)*
+>
+> `P = 1.35` decomposes into **`0.90` (wiki-sourced arithmetic — solid)** plus **`+0.45` for
+> "AoE + shield-break + unbreakable + pickaxe" — a number with no derivation anywhere in this
+> project.** It was chosen, not computed.
+>
+> This document flags `H = 40` as an estimate. **It does not flag `P = 1.35`, and it should.**
+> That asymmetry is what makes `R* = 0.011` look measured when it is one judgment call wearing
+> three significant figures.
+>
+> **Sensitivity — how much the verdicts move if the utility allowance is wrong:**
+>
+> | Utility allowance | P | R\* | Green band | What flips |
+> |---|---|---|---|---|
+> | +0.20 (conservative) | 1.10 | **0.0031** | 0.0013 – 0.0050 | 🔴 **Half the ✅ rows in §1.3 become "over band."** Undergarden, YUNG's, Artifacts all break upward. |
+> | **+0.45 (this doc)** | **1.35** | **0.0109** | **0.005 – 0.018** | *as written* |
+> | +0.70 (generous) | 1.60 | **0.0188** | 0.0075 – 0.0300 | 🔵 Apotheosis (0.0417) drops from 3.8× to 2.2× over; **Create's under-floor verdict gets worse.** |
+>
+> **A third of the ✅/🔴 verdicts in §1.3 are decided by a number nobody computed.**
+>
+> **How to use this document anyway** (the band is still useful, just not precise):
+> 1. **Act only on tracks that miss the band by >2×.** Those survive every column above:
+>    Iron's Spells, Apotheosis, Simply Swords, Create. That is your real fix list.
+> 2. **Ignore the yellow and band-edge rows entirely** until the anchor is measured. Tuning
+>    Undergarden vs Deeper and Darker (§2.7, a 1.5× gap) against a ±3× uncertain band is noise.
+> 3. **Re-derive after measurement.** §5 fix #2 measures `H`. Also measure `P` — kill the same
+>    200 HP dummy with a Sharp V netherite sword and with a Void Forge *using its ability on
+>    cooldown*, and use the real time ratio. That converts the guess to data in one session.
+>
+> **Second, smaller correction:** the ±60% band width is also arbitrary — justified only as
+> "roughly the point at which a power difference stops reading as 'different build'." That is a
+> reasonable intuition and it is not evidence. Treat the band as a **soft advisory**, not a gate.
+>
+> **Third:** this document's `P = 1.35` for the Void Forge **contradicts `00-MODLIST-AUDIT.md`,
+> which uses `P = 0.90` and concludes Cataclysm needs a BUFF while this document concludes it is
+> the healthy ANCHOR that needs no change.** Both cannot be acted on. See Doc 00 §0.5 for the
+> full reconciliation. **Short version: report both numbers — `0.90` raw, `~1.35` with utility —
+> and never quote one without the other.**
+
+Band width: ±60% of anchor. 60% is chosen because it is roughly the point at which a power
+difference stops reading as "different build" and starts reading as "you got cheated" —
+a 1.6x rate gap over a 30-hour track is a full netherite-tier of separation.
+
+```
+Lower bound = 0.011 × 0.40 = 0.0044  →  round to 0.005
+Upper bound = 0.011 × 1.60 = 0.0176  →  round to 0.018
+```
+
+### ✅ GREEN BAND: `0.005 ≤ R ≤ 0.018`
+### 🟡 YELLOW: `0.002–0.005` or `0.018–0.030` — fix on the next maintenance pass
+### 🔴 RED: `R < 0.002` or `R > 0.030` — fix before launch
+
+---
+
+## 1.3 The parity table
+
+⚠ **Every H value below is an ESTIMATE. P values for non-Cataclysm tracks are ESTIMATES.**
+Fill this in for real using Section 6.1 before acting on any row.
+
+| # | Track | P | ΔP | H | T | H_eff | **R** | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 1 | **L_Ender's Cataclysm** (boss gauntlet) | 1.35 | 0.35 | 40 | 0.8 | 32.0 | **0.0109** | ✅ **ANCHOR** |
+| 2 | Deeper and Darker (Otherside) | 1.25 | 0.25 | 22 | 0.9 | 19.8 | **0.0126** | ✅ |
+| 3 | Ars Nouveau solo (no Iron's) | 1.35 | 0.35 | 30 | 1.0 | 30.0 | **0.0117** | ✅ |
+| 4 | End Remastered → Dragon | 1.20 | 0.20 | 15 | 0.9 | 13.5 | **0.0148** | ✅ upper |
+| 5 | Voidscape | 1.30 | 0.30 | 30 | 1.1 | 33.0 | **0.0091** | ✅ |
+| 6 | The Undergarden | 1.15 | 0.15 | 18 | 1.0 | 18.0 | **0.0083** | ✅ |
+| 7 | YUNG's structure-loot exploration | 1.10 | 0.10 | 20 | 0.9 | 18.0 | **0.0056** | ✅ lower edge |
+| 8 | Artifacts / Relics (Curios trinkets) | 1.10 | 0.10 | 15 | 1.1 | 16.5 | **0.0061** | ✅ but **axis mismatch** |
+| 9 | **Iron's Spellbooks** (one school, full gear) | 2.40 | 1.40 | 25 | 1.0 | 25.0 | **0.0560** | 🔴 **5.1x anchor** |
+| 10 | **Apotheosis** top-tier affix gear | 2.00 | 1.00 | 20 | 1.2 | 24.0 | **0.0417** | 🔴 **3.8x anchor** |
+| 11 | **Simply Swords** uniques (no Overhaul) | 1.50 | 0.50 | 8 | 1.0 | 8.0 | **0.0625** | 🔴 **5.7x anchor** |
+| 12 | **"Antarchy" 30-dmg sword** ⚠unverified | 1.67 | 0.67 | 12 | 1.0 | 12.0 | **0.0558** | 🔴 **5.1x anchor** |
+| 13 | **Create as armor/tech prerequisite** | 1.05 | 0.05 | 45 | 1.3 | 58.5 | **0.0009** | 🔵 **12x UNDER** |
+
+Row 12 arithmetic, since it's the owner's own example: `30 dmg @ 1.0 speed = 30 DPS`;
+`30 / 18.0 = 1.67`. That is **2.3x the entire Cataclysm endgame** and it out-DPSes a
+Sharpness V netherite sword by 65% while skipping every boss.
+
+Row 13 is the mirror-image defect and is just as real. Twelve times under-rewarding is not
+"a bit grindy," it is a track that mathematically cannot be worth doing.
+
+> **⚠️ Three corrections to this table (completeness review):**
+>
+> 1. **Row 10, Apotheosis `P = 2.00`, is wrong and no derivation is given.**
+>    `00-MODLIST-AUDIT.md` §4.1 reads the **shipped affix JSON** and gets **4.10** (`violent`
+>    +5.0→+8.0 alone doubles a netherite sword; add `graceful` +40–85% and crit affixes).
+>    **Use 4.10.** Recomputed: `R = 3.10/(20×1.2) = 0.129`, which is **~12× anchor, not 3.8×.**
+>    Apotheosis is a substantially bigger offender than this table says, and it should be
+>    **fix #3, ahead of Simply Swords.**
+> 2. **Row 9, Iron's `H = 25`, conflicts with Doc 00's `H = 45`** — a 1.8× unreconciled gap on a
+>    track both documents rank top-3. Neither was measured. The verdict (🔴) survives either way,
+>    but the *severity* does not: `R` is either 0.056 or 0.031. **Measure before you pick
+>    `spell_power_cap`,** because that config value was reverse-engineered from this row.
+> 3. **This table is missing the pack's two largest tracks.** Per Doc 00 §8.1, **Cobblemon**
+>    (60–100 h) and **Jurassic Reborn** (40–60 h) are in the candidate pool, and **neither has a
+>    row here.** Both pay on a collection axis with **near-zero combat currency** — they are
+>    Create-class R9 exemptions, not tracks with bad rates. **Add them as declared exemptions
+>    before launch, or a player discovers at hour 60 that their track was never going to make
+>    them stronger.** That is the same defect as Create-as-a-tax, just discovered later and
+>    with more hours sunk.
+
+---
+
+## 1.4 The six rules — the checklist for mod #151
+
+Print this. Six months from now, when someone says "can we add X," you run these six checks
+and the answer falls out.
+
+**R1 — RATE BAND.** Every track must land `0.005 ≤ R ≤ 0.018`, where `R = (P−1.0)/(H×T)` and
+`P = 1.00` is Sharp-V netherite at 18.0 DPS. If you can't estimate P and H, you can't add
+the mod yet.
+
+**R2 — CEILING.** No obtainable weapon may exceed **13 base damage at 1.0 attack speed**
+(≈16.25 DPS with Sharpness V) unless it sits behind ≥30 hours of boss content. This is the
+Cataclysm ceiling and it is deliberately below an enchanted netherite sword's raw DPS.
+Anything above it is claiming to be stronger than a mod that takes 40 hours to finish.
+
+**R3 — FLOOR.** No track may deliver `R < 0.005`. A track under the floor gets **shortened**
+(cut required steps) or **buffed** (raise the payout). It does not get left alone because
+"nothing is overpowered."
+
+**R4 — AXIS MATCH.** Every track is advertised in Section 4 as a fair swap for ≥1 sibling.
+It must pay **≥60% of its ΔP in the same currency mix** as that sibling. Currencies:
+`damage · survivability · mobility · resource economy · building/aesthetic · utility`.
+Two tracks equal in magnitude but paying in different currencies still read as unfair.
+
+**R5 — GIFTING DIVISOR.** Six players share one world and will trade gear. If a track's
+reward is **transferable, permanent, and replicable**, its real rate is
+`R × min(6, beneficiaries)`. It must land in the band **after** that multiplication.
+If it can't, the reward must be made **bound**, **consumable**, or **cheaply replicable by
+anyone** (in which case the track's value is the recipe, not the item).
+
+**R6 — TEDIUM ISOLATION.** Any track with `T ≥ 1.25` may **not** be a prerequisite for
+another track, and must sit in the **upper half of the band** (`R ≥ 0.011`). Grind you chose
+is a hobby. Grind you were forced into is a tax. This rule is the one that kills the
+Create-as-armor-gate mistake before it happens.
+
+**R7 (procedural) — NO ROW, NO ENTRY.** A mod does not go in the pack until it has a filled
+row in the Section 1.3 table with a named person who measured H. "It looks fine" is how you
+get a 30-damage sword.
+
+**R8 — VARIANCE CAP.** *(added by completeness review — R1–R7 measure only the mean, and the
+mean is not what your friends compare.)* A track's payout **spread** must stay within **1.5×**
+between an unlucky and a lucky run of identical length. Two players who both did 20 hours of
+Apotheosis can differ by **2–3×** on affix rolls alone — that is your stated failure mode
+occurring *inside a single mod*, where no amount of cross-track parity tuning can reach it.
+Fix by **narrowing ranges, not just lowering ceilings** (`violent` +2.0→+3.5 is a better fix
+than +2.0→+8.0 with a lower cap), and by converting chance-based procs to deterministic ones —
+the Simply Swords: Overhaul template in §2.2. **A high-variance track is strictly worse than a
+deterministic track at the same mean**, because someone always draws the short straw and it
+reads as unfairness even though the design was symmetric.
+
+**R9 — AXIS EXEMPTION MUST BE DECLARED, NOT DISCOVERED.** Any track that cannot pay in combat
+currency at all (Create, and per Doc 00 §8.1 likely **Cobblemon** and **Jurassic Reborn**) is
+**exempt from R1/R2/R3/R5** — but the exemption is only safe if it is **written in the track
+menu before anyone picks it.** An undeclared exemption is not a balance decision, it is a player
+finding out at hour 60 that their track was never going to make them stronger. **Exempt loudly
+or not at all.**
+
+> **Rule count note:** the heading says six; there are nine. R8 and R9 were added by review.
+
+---
+
+## 1.5 The second-order effects (the owner didn't raise these; they matter)
+
+### 1.5.1 Reward-axis mismatch
+
+Equal-but-different still reads as unfair. Concrete mismatched pairs in this pack:
+
+| Pair | Magnitude | Axis problem |
+|---|---|---|
+| **Artifacts/Relics** vs **Cataclysm** | Similar R | Trinkets pay in *mobility + utility*; Cataclysm pays in *raw damage + AoE*. The trinket player watches the Forge player one-shot things and feels weak, despite equal R. |
+| **Create** vs **any combat track** | Wildly unequal | Create pays in *resource economy + building*. It has almost no combat currency at all. It should never be measured on the same axis, and it should never gate combat gear (see R6). |
+| **Ars Nouveau** vs **Iron's Spellbooks** | Iron's ~2x | Both pay in *damage + utility* — same axis, so the gap is directly felt. This is the **worst** kind of mismatch: same currency, different amount. Highest priority to fix. |
+| **YUNG's exploration** vs **Voidscape** | YUNG's lower | Both pay in *loot*, but YUNG's is a wide shallow stream and Voidscape is a single deep payout. Perceptually the Voidscape player "got a thing" and the YUNG's player "got some stuff." Fix by giving YUNG's exploration a *named capstone* item, not by raising its total loot. |
+
+**Design rule that falls out:** every track needs **one nameable capstone reward**. Humans
+compare trophies, not spreadsheets. A track with diffuse rewards will always feel worse than
+an equal track with one trophy.
+
+### 1.5.2 Shared world / loot gifting — this is the sleeper problem
+
+All six share one world. If one player finishes Cataclysm, does the group get six Void Forges?
+
+| Reward type | Giftable? | Effective cost | Verdict |
+|---|---|---|---|
+| Cataclysm boss weapons (Infernal/Void Forge) | **Yes**, and bosses are **re-fightable** | H/1 per copy | ✅ Fine — each copy costs another boss kill |
+| Simply Swords uniques | **Yes**, from loot chests | H/6 | 🔴 One lucky chest arms the group |
+| Apotheosis affix gear | **Yes**, freely | H/6 | 🔴 One farmer arms the group |
+| Iron's Spellbooks armor sets | **Yes**, craftable | H/6, then **replicable indefinitely** | 🔴 Worst case — the *recipe* is the reward |
+| Ars Nouveau spell knowledge | **No** — per-player glyph unlocks | H/1 | ✅ Structurally correct |
+| Artifacts trinkets | **Yes**, but loot-random and slot-limited | H/2–3 | 🟡 Acceptable |
+| Create automation output | **Yes**, and it's a *factory* | H/6 and **falling over time** | 🔴 by rate, ✅ by intent — this is what Create *is*. Exempt it from R5 and never gate combat behind it. |
+
+**Two actions fall out of this table:**
+1. **Install Lootr** (per-player structure chests). It removes the first-to-the-chest race
+   *and* it means "the group found a chest" doesn't mean "the group found six chests."
+2. **Anything craftable-and-repeatable must be evaluated at 6x.** Iron's Spellbooks armor is
+   the specific case: its rate is already 5.1x anchor, and it's a *recipe*, so the true
+   aggregate rate is catastrophic. This is why it's #1 on the fix list.
+
+### 1.5.3 Effort ≠ hours
+
+Already encoded as T. The practical consequence worth stating plainly: **the Create-tax
+complaint from Beyond Depth reviews is not a whine, it is this exact defect.** *"The only
+thing you accomplish by implementing the Create mod here is making the game more tedious."*
+Grinding andesite to unlock armor is T=1.3 work paying ΔP=0.05. That is R=0.0009 — the worst
+number in the entire table, worse than any overpowered sword is over. **Do not repeat it.**
+
+### 1.5.4 Intra-mod RNG variance — the unfairness R cannot see
+
+*(Added by completeness review. `T` covers grind **quality**; nothing in this document covered
+grind **luck**, and the two are different defects.)*
+
+R measures a track's **mean**. Your friends compare **outcomes**. Two players can run the same
+mod for the same hours with the same skill and walk away with materially different power — and
+that is your stated nightmare occurring inside a single mod, immune to every cross-track fix in
+Section 2.
+
+| Mod | Variance source | Spread over identical hours | Severity |
+|---|---|---|---|
+| **Apotheosis** | Affix magnitude is a *range* (`violent` +5.0→+8.0), rarity is RNG, socket count is RNG, gem quality is RNG. Four independent rolls compounding. | **2–3×** | 🔴 **HIGH** |
+| **Simply Swords** (unpatched) | Uniques are loot-chest random *and* their procs are chance-based. The Overhaul addon exists **because of this** and does not port to 1.21.1. | ~2× | 🟡 Medium |
+| **Iron's Spellbooks** | Whether you ever *see* an Eldritch Blast scroll is luck. Rarity gates which spells exist, not how often they drop. | ~1.8× | 🟡 Medium |
+| **Cataclysm** | Kill the boss → get the weapon. **Zero variance.** | 1.0× | 🟢 None |
+
+**Notice the pattern, because it is the whole point:** *the track that overpays is also the
+highest-variance one, and the track that underpays is perfectly deterministic.* So Cataclysm's
+40 hours reliably buy 0.90–1.35×, while Apotheosis's 20 hours buy anywhere from 2× to 5×.
+
+**And it compounds with §1.5.2 gifting:** the lucky roll gets shared, so **group power is set by
+the luckiest roll among six players, not the average one.** Six players farming affixes is six
+draws from the tail. With six samples you will hit the 95th percentile roll, not the median —
+so the *effective* Apotheosis P is meaningfully higher than any table in this project states.
+
+**Fix:** encoded as **R8**. Narrow ranges rather than lowering ceilings, and convert chance-based
+effects to deterministic ones (the §2.2 Overhaul template). **A distribution with a long tail
+cannot be balanced by its mean** — already stated in §2.3 about Apotheosis specifically, and it
+generalizes to every RNG track in the pack.
+
+### 1.5.5 Unequal hours, latecomers, and the cost of a retroactive nerf
+
+**⚠️ The three things most likely to actually end this campaign are not in this document.**
+Every number here assumes six people play the same amount. They won't.
+
+Rate parity *guarantees* that the 20 h/week player ends 5× stronger than the 4 h/week player —
+and the pack is working exactly as designed when that happens. Perfect track parity converts a
+mod-choice grievance into a **schedule** grievance, which is worse because nobody can fix it by
+choosing differently.
+
+**Full treatment — including the latecomer problem and why mid-campaign nerfs cost more goodwill
+than the imbalance did — is in `00-MODLIST-AUDIT.md` §0.6.** The three actions that matter:
+
+1. **Capstone bosses are scheduled group events**, not soloable. Free, social, and it removes most
+   of the hour-count advantage without any config change.
+2. **Diminishing returns per track** — past the capstone, further hours pay in materials and
+   cosmetics, not power. Turns "who played most" into "who finished most tracks," which is a
+   choice rather than a schedule.
+3. **Nerf windows, and close the tap rather than reaching into inventories.** Prefer loot-table
+   and drop-rate edits (affect future acquisition) over attribute nerfs (confiscate what someone
+   already earned). **This is a second, independent argument for the "fix H, not P" doctrine**
+   that §2.0 and §3.5 already recommend on technical grounds — it is also the socially cheaper
+   lever, which is a nice coincidence worth exploiting deliberately.
+
+---
+
+# 2. PER-MOD FIXES
+
+## 2.0 The technical constraint nobody tells you
+
+**In 1.21.1 you CANNOT change a modded item's base attack damage with a vanilla datapack.**
+Item attribute modifiers live in the `minecraft:attribute_modifiers` **item component**, which
+is baked into the item's code-side definition. Datapacks can override recipes, loot tables,
+tags, enchantments, and advancements — **not** item components.
+
+So the lever hierarchy, best to worst:
+
+1. **Mod config** — if the mod exposes the number, use it. Zero fragility.
+2. **KubeJS `ItemEvents.modification`** — script-side component rewriting. Works, but is a
+   scripting dependency and breaks on mod updates.
+3. **Loot / recipe removal via datapack** — you can't nerf the item, but you can make it
+   rare or unobtainable. Blunt but bulletproof.
+4. **AttributeFix global clamp** — hard ceiling on `minecraft:attack_damage` for everything.
+   Last resort; it will clip things you didn't intend.
+5. **Delete the mod.** Genuinely on the table. A mod whose numbers you cannot reach is a mod
+   you cannot balance.
+
+### 1.21 syntax gotchas that will silently break your files
+
+| Thing | Pre-1.21 | **1.21 / 1.21.1** |
+|---|---|---|
+| Attribute ids | `generic.attack_damage` | **`attack_damage`** (namespaced: `minecraft:attack_damage`) |
+| Attribute ids | `generic.max_health` | **`max_health`** |
+| Attribute ids | `generic.movement_speed` | **`movement_speed`** |
+| Modifier operations | `addition` / `multiply_base` / `multiply_total` | **`add_value` / `add_multiplied_base` / `add_multiplied_total`** |
+| Data folder | `data/<ns>/recipes/` | **`data/<ns>/recipe/`** (singular) |
+| Data folder | `data/<ns>/loot_tables/` | **`data/<ns>/loot_table/`** |
+| Data folder | `data/<ns>/advancements/` | **`data/<ns>/advancement/`** |
+| Data folder | `data/<ns>/tags/items/` | **`data/<ns>/tags/item/`** |
+| Data folder | `data/<ns>/predicates/` | **`data/<ns>/predicate/`** |
+| Data folder | `data/<ns>/functions/` | **`data/<ns>/function/`** |
+| Recipe result | `"result": {"item": "x"}` | **`"result": {"id": "x", "count": 1}`** |
+| Enchantments | hardcoded | **fully data-driven** at `data/<ns>/enchantment/*.json` |
+
+⚠ **VERIFY BEFORE APPLYING — two format questions I am not certain about on 1.21.1
+specifically:**
+- **Ingredient flattening.** In some 1.21.x version, `{"item": "minecraft:stick"}` became just
+  `"minecraft:stick"` in recipe ingredients. I believe the flattened form is **1.21.2+** and
+  that **1.21.1 still uses the object form**, but confirm by opening a vanilla recipe out of
+  the 1.21.1 server jar (`data/minecraft/recipe/stick.json`) before writing twenty files.
+- **Attribute modifier identity.** In 1.21/1.21.1 the `minecraft:attribute_modifiers` component
+  uses `uuid` (int array) + `name` (string). In 1.21.2+ those were collapsed into a single
+  namespaced `id` string. If you write KubeJS attribute modifiers, get this right or they
+  silently no-op. Confirm the same way: dump a vanilla diamond sword's components with
+  `/data get entity @s SelectedItem`.
+
+**Do not skip that check. It costs two minutes and saves a debugging evening.**
+
+---
+
+## 2.1 🔴 Iron's Spellbooks (+ Ars Nouveau + Ars 'n Spells) — HIGHEST PRIORITY
+
+**Defect:** `R ≈ 0.056`, **5.1x anchor**, and it's on the *same reward axis* as Ars Nouveau,
+which sits at 0.0117. Two players both "do magic," one ends up twice as strong. This is the
+owner's stated nightmare in its purest form.
+
+**Root cause — verified from source** (`AbstractSpell.java`, branch `1.21`):
+
+```java
+return (float) ((baseSpellPower + spellPowerPerLevel * (spellLevel - 1))
+    * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
+```
+
+The general modifier and the school modifier **multiply**. `AttributeRegistry.java` confirms
+both are `MagicPercentAttribute(..., 1.0D, -100, 100)` — base 1.0, so +5% gear = 1.05.
+
+Committed single-school gear stack (armor % from iron.wiki, `MAX_UPGRADES` default **3**
+confirmed in `ServerConfigs.java`):
+
+```
+4× school armor      : +40% school, +20% general
+School spellbook     : +10% school
+Upgrade orbs @ +5% × 3 per item
+                       ────────────────────────
+General  ≈ 1.20+
+School   ≈ 1.50+
+Product  ≈ 1.20 × 1.50 = 1.80x   ← and that's before orbs
+With orbs, comfortably >2.4x
+```
+
+**Multiplicative stacking is the whole story.** Additive would cap this at ~1.7x; multiplicative
+has no ceiling.
+
+### Fix A — install Ars 'n Spells and tighten its cap (RECOMMENDED)
+
+Ars 'n Spells is **itself a balance mod** and it already made this exact correction. From its
+CHANGELOG v1.7.0:
+
+> *"Spell scaling changed from multiplicative to additive — Iron's base spell power and
+> elemental spell power bonuses are now added instead of multiplied, preventing exponential
+> stacking"*
+
+plus a hard `spell_power_cap`, default **3.0**.
+
+**Verified availability:** `3.2.2`, CurseForge, 2026-08-28. Requires MC 1.21.1 / NeoForge
+21.1.84+ / Java 21 / Ars Nouveau 5.11.1+ / Iron's Spellbooks 1.21.1-3.16.0+.
+
+**Config file:** `config/ars_n_spells-common.toml`
+⚠ **VERIFY** — filename inferred from NeoForge convention. Boot the server once and look at
+what appears in `config/`.
+
+```toml
+# Default 3.0 is far too permissive. 3.0x spell power against an 18.0 DPS
+# netherite baseline is P=3.0 → R=0.08 → 7x anchor.
+# 1.40 puts a 25-hour magic track at R = 0.40/25 = 0.016, top of the green band.
+spell_power_cap = 1.40
+
+# Keep additive stacking. This is the single most important line in the file.
+# (Key name unverified — the CHANGELOG describes the behavior, not the key.
+#  Look for anything named *_additive / *_stacking / *_scaling_mode.)
+
+# Unify mana so the two magic tracks are one economy, not two.
+enable_mana_unification = true
+mana_unification_mode = "iss_primary"
+
+# Cross-casting should cost something, or hybrid becomes strictly optimal.
+# Default 1.25 → 1.40.
+cross_cast_cost_multiplier = 1.40
+
+# Default 5.0 is a large passive regen multiplier and it stacks with everything.
+source_jar_synergy_multiplier = 2.50
+
+# Resonance: flat damage bonus while mana >95%. On a 6-player server with
+# downtime between fights, players will *always* be above 95% at engagement.
+# Either disable, or lower the threshold gate so it's actually a resource decision.
+# ⚠ VERIFY key names — README lists the mechanic, not the exact keys.
+```
+
+⚠ **Repo/binary drift:** the public `port/neoforge-1.21.1` branch README and CHANGELOG top out
+at **3.0.2** while CurseForge ships **3.2.2**. You cannot currently audit what's in the jar you'd
+deploy. GPLv3 means source is owed, so it may catch up. Minor risk, not a blocker — but it does
+mean **you must dump the generated config and read it rather than trusting the README key list.**
+
+### Fix B — if Ars 'n Spells is rejected, nerf Iron's directly
+
+**Config file:** `config/irons_spellbooks-server.toml`
+⚠ **VERIFY** — path and key names both unconfirmed.
+
+```toml
+# ServerConfigs.MAX_UPGRADES, default 3. Each orb is +5% and they multiply
+# into the school modifier. Cutting to 1 removes ~2/3 of the compounding.
+maxUpgrades = 1
+
+# Global config power modifier — the `configPowerModifier` term in the source
+# formula above. This is the one clean global scalar.
+# 0.65 brings a 2.40x stack down to ~1.56x → ΔP 0.56 / 25h = R 0.022.
+# 0.55 → ~1.32x → R 0.013, dead centre of band. Start at 0.55.
+spellPowerMultiplier = 0.55
+```
+
+**Verification:** in creative, equip the full school set, then
+`/attribute @s irons_spellbooks:fire_magic_resist get` (and the spell power attributes — check
+`/attribute @s ` tab-completion for the real ids). Cast a known spell at a test dummy and read
+the damage. **Compare against a Sharpness V netherite sword's 18.0 DPS, not against your
+memory of what felt fine.**
+
+---
+
+## 2.2 🔴 Simply Swords — the Overhaul does not port
+
+**Verified problem:** Simply Swords base mod is alive on 1.21.1 NeoForge
+(`simplyswords-neoforge-1.70.2-1.21.1.jar`, 2026-08-27). **Simply Swords: Overhaul — the
+dedicated rebalance addon — is 1.20.1 Forge only and will never port.**
+
+That is significant, because the Overhaul exists *because the base mod needed it*. Beyond Depth
+shipped it. You cannot.
+
+**What the Overhaul actually did** (this is the *template* for every fix in this pack):
+
+| Weapon | Original | Overhaul |
+|---|---|---|
+| The Watcher / Watching Warglaive | chance-based lifesteal | **deterministic**: 10% victim max HP on kill, 0.5 HP/hit |
+| Storm's Edge | RNG cooldown reduction | **guaranteed** 1s/hit; dash simplified to 12 blocks |
+| Soulrender | inconsistent debuffs | consistent; +2→+4 dmg per stack; **healing capped at 50% max HP** |
+| Soul Pyre | complex teleport/freeze | Wither II on hit + 32-block pull |
+| Molten Edge | — | scales per 20% missing HP; active costs 4 HP for 10s Regen |
+| Whisperwind | passive reset on any hit | **resets only on kills**; dash crit to 22 blocks |
+| Star's Edge | scaling passive | **fixed at 3 magic damage** |
+
+**Read the pattern: RNG → deterministic, and hard caps on anything that scales.** That is
+exactly the correction this pack needs, generalized.
+
+### Options, in order of preference
+
+**Option 1 — Simply Swords: Cataclysm (INVESTIGATE FIRST).**
+`Simply Cataclysm 1.0.1` exists for NeoForge 1.21.1. It's a *different* bridge than the
+Overhaul (Cataclysm integration rather than rebalance), but it's the only live companion mod.
+⚠ **VERIFY** whether it touches unique-weapon balance at all. It may be pure content. Twenty
+minutes of reading its page decides this.
+
+**Option 2 — config the uniques down.**
+**Config file:** `config/simplyswords-common.toml` or `config/simplyswords.json`
+⚠ **VERIFY** — I do not know which, and I do not know whether unique-effect magnitudes are
+exposed at all. Boot once, read `config/`. If the magnitudes aren't exposed, skip to 3 or 4.
+
+**Option 3 — cut the uniques out of loot (RECOMMENDED FALLBACK, bulletproof).**
+The problem with Simply Swords isn't the ceiling, it's `H = 8`. R = 0.0625 because these are
+**loot-chest random**, not earned. Fix the H, not the P: move uniques from generic structure
+loot onto **boss drops only**. Datapack, no scripting, no mod-update fragility. See §3.4 for
+the loot-table pattern.
+
+**Option 4 — remove the mod.** The base mod's value is weapon *variety*, which is largely
+cosmetic-adjacent. If it costs you a week of tuning, it isn't worth it. Say so out loud.
+
+---
+
+## 2.3 🔴 Apotheosis / Apothic Attributes — the unbounded affix ceiling
+
+**Defect:** `R ≈ 0.042`, 3.8x anchor. Worse, affix gear has **no ceiling** — it's an RNG
+distribution, so with six players farming, someone eventually rolls the tail.
+
+**A distribution with a long tail cannot be balanced by its mean.** You must clamp the tail.
+
+**Verified availability:** Apothic Attributes `2.10.1`, 1.21.1 NeoForge, 2026-07-24.
+
+**⚠ KNOWN HARD CONFLICT — test this before you build anything on it:**
+`Conflicting default methods: dev/architectury/registry/registries/DeferredSupplier.getKey`
+vs `net/neoforged/neoforge/common/extensions/IHolderExtension.getKey`. Reported against
+Apotheosis 1.21.1-8.1.2 / Architectury 13.0.8 / NeoForge 21.1.94,
+[architectury issue #592](https://github.com/architectury/architectury-api/issues/592),
+**still open**. Architectury 13.0.11 (2026-07) is newer than the reported version so it may
+already be fixed. **Verify, don't assume.** If it crashes and Apotheosis is load-bearing for
+your progression, you have a mod-selection decision, not a balance decision.
+
+### The fix: cut affix tiers, not affix existence
+
+**Config directory:** `config/apotheosis/` — Apotheosis uses a directory of JSON/TOML files
+(affixes, gems, spawner, adventure). ⚠ **VERIFY** exact filenames on 1.21.1.
+
+Targets, in priority order:
+1. **Remove or heavily downweight the top rarity tier** (Ancient/Mythic — whatever the top
+   band is called on this version). The tail is the problem; deleting the tail is the fix.
+2. **Halve `attack_damage` affix magnitudes.** Anything expressed as
+   `add_multiplied_total` on `minecraft:attack_damage` is the compounding term — that's where
+   the 2.0x comes from.
+3. **Reduce affix-item drop rate.** This raises H, which is the cheaper half of the R equation
+   and is much less likely to break the mod's feel than magnitude nerfs.
+4. **Keep the utility affixes at full strength.** They pay on a different axis (R4) and they're
+   what makes Apotheosis fun. Nerf damage, keep flavor.
+
+### Global backstop: AttributeFix
+
+**Config file:** `config/attributefix.json`
+⚠ **VERIFY** — key format on 1.21.1. AttributeFix's job in Beyond Depth was *raising* caps so
+stacking mods didn't overflow. You're using it backwards: **as a hard ceiling.**
+
+```jsonc
+// Conceptual shape — real file is per-attribute objects with min/max/enabled.
+// Remember: 1.21 dropped the `generic.` prefix.
+{
+  "minecraft:attack_damage": { "min": 0.0, "max": 20.0, "enabled": true },
+  "minecraft:max_health":    { "min": 1.0, "max": 40.0, "enabled": true },
+  "minecraft:armor":         { "min": 0.0, "max": 30.0, "enabled": true }
+}
+```
+
+`max: 20.0` on attack damage is the R2 ceiling (13) plus enchantment headroom (Sharp V's
++3.25) plus a small margin. **This is a blunt instrument** — it will clamp things you didn't
+intend, including possibly boss mobs. Use it as a safety net *after* the targeted fixes, and
+test it hard.
+
+---
+
+## 2.4 🔵 Create — the under-rewarding defect (BUFF / DE-GATE, do not nerf)
+
+`R = 0.0009`, **12x under floor**. This is the worst number in the table and it is a
+*generosity* failure, not a power failure.
+
+**This is not a config fix. It is a design fix, and it is one line:**
+
+> **Create must never be a prerequisite for combat gear.**
+
+Beyond Depth's single clearest design error, straight from its reviews: *"The only thing you
+accomplish by implementing the Create mod here is making the game more tedious."* Grinding
+andesite to unlock armor converts a beloved sandbox into a chore. **Rule R6 exists specifically
+to prevent this.**
+
+### Actions
+
+1. **Audit every armor and weapon recipe for Create-only ingredients.** In JEI, search each
+   tier and look for `create:` namespace items in the tree. If you find any on a combat-critical
+   item, add an alternative non-Create recipe via datapack (§3.3).
+2. **Reframe Create in the track menu as an economy track, not a power track** (§4). Its ΔP is
+   ~0.05 and always will be — that's fine, because it's paying in a currency the R metric
+   doesn't measure. **Exempt Create from R1/R5 explicitly** and say so in the menu so the
+   Create player knows they signed up for infrastructure, not damage.
+3. **If Create is going to be a "track," it needs a combat-axis capstone** so its player isn't
+   permanently 12x behind everyone. Options: a Create-craftable weapon at ~11–13 damage, or
+   Create-gated *access* to another track's rewards (e.g. a machine that duplicates a
+   boss-drop consumable). ⚠ This is a design decision, not a config — flag for Wesley.
+
+---
+
+## 2.5 ✅ L_Ender's Cataclysm — the anchor. Change almost nothing.
+
+**Verified availability:** `1.21.1-3.33.jar`, NeoForge, 2026-08-22. 111M downloads. Actively
+maintained. This is the healthiest mod in the pack.
+
+**Verified stats — this table is your yardstick, keep it visible:**
+
+| Item | Damage | Speed | Notes |
+|---|---|---|---|
+| Infernal Forge | **13** | **1.0** | Unbreakable, enchantability 15, netherite-tier pickaxe. R-click: 13-dmg AoE slam, knockback, breaks shields in 4-block radius, 4s CD (configurable). Drops from Netherite Monstrosity. |
+| Void Forge | **13** | **1.0** | Infernal Forge + Void Core at Mechanical Fusion Anvil. R-click: 35 Void Runes in 8-block fan, 1.7s, 7 magic dmg, hits twice. |
+
+| Boss | HP | Armor | Toughness | Damage |
+|---|---|---|---|---|
+| Netherite Monstrosity | **600** | 12 | 5 | **25** (100% knockback resist) |
+| Ancient Remnant | **450** | 12 | 4 | ⚠ wiki says `???` |
+| Ender Guardian | **333** | 20 → 15 (phase 2) | — | **16** |
+
+For scale: vanilla Wither 300 HP, Ender Dragon 200 HP. **Cataclysm's difficulty lives in boss
+HP and mechanics, not in player gear.** That is the correct posture and you should copy it.
+
+### The one change to consider: 6-player boss scaling
+
+600 HP and 25 damage was tuned for a smaller group. Six players with Sharp V netherite will
+delete the Netherite Monstrosity. If the anchor track becomes trivial, **every R in the table
+recalculates downward** — you'd be balancing against a broken yardstick.
+
+**Config file:** `config/cataclysm-common.toml` ⚠ **VERIFY** path and whether boss HP is
+exposed at all (cooldowns are, per the wiki's "configurable" note on the Forge slam).
+
+If boss HP is not exposed, the alternatives are:
+- A difficulty-scaling mod (Beyond Depth used Majrusz's Progressive Difficulty for this —
+  **it is dead on 1.21.1**, last update 2026-04-26, max 1.20.1, and there is **no identified
+  1.21.1 equivalent**. This is the biggest structural loss in the reconstruction and you should
+  tell the group about it explicitly.)
+- Accept it, and instead **lower every other track's P** so the anchor stays the anchor.
+- Re-derive the anchor at the observed 6-player H (if the gauntlet takes 25h with six people
+  instead of 40, then `R* = 0.35/(25×0.8) = 0.0175` and the whole band shifts up).
+
+**That last option is the honest one and it is a Section 6.1 measurement task.** Do not skip it —
+the entire band is derived from `H = 40`, and if the real number is 25, every "🔴 5x anchor"
+verdict in this doc becomes "3x anchor."
+
+---
+
+## 2.6 🟡 Artifacts / Relics — axis mismatch, not a magnitude problem
+
+`R = 0.0061` — inside the band, low half. **Do not nerf.** The problem is R4: it pays in
+mobility/utility while its advertised siblings pay in damage.
+
+**Verified:** Artifacts `artifacts-neoforge-13.2.3.jar` for 1.21.1 ✅.
+Relics 1.21.1 status **unverified** — the CurseForge slug 404'd during recon. Check before
+including it.
+
+**Fixes:**
+1. **Menu framing (§4).** Advertise the trinket track as a swap for *exploration/utility*
+   tracks, never for boss tracks. Half of a perceived-unfairness problem is solved by
+   accurate advertising.
+2. **Curios, not Accessories.** Curios is the correct spine on 1.21.1 — it's frozen at
+   `9.5.1+1.21.1` (2025-05-14) because the API is *done*, not abandoned (the project itself is
+   active through 26.2). Iron's Spellbooks requires a Curios spellbook slot, which settles it.
+   Only add Accessories if a mod you actually want is Accessories-native, and if you do, bridge
+   with **Accessories Compatibility Layer** (`0.1.11`, 1.21.1, NeoForge) — never run both APIs
+   bare, that gives players two separate accessory screens.
+   **Do NOT install Curios API Continuation** — unofficial fork, last updated 2024-11-09,
+   strictly worse than upstream.
+3. **Gifting (R5):** slot-limited, so effective divisor is ~2–3, not 6. Acceptable. No action.
+
+---
+
+## 2.7 ✅ Dimension tracks — Undergarden / Deeper and Darker / Voidscape
+
+All three land in the green band. All three verified on 1.21.1 NeoForge:
+
+| Mod | Version evidence | R |
+|---|---|---|
+| The Undergarden | Modrinth 1.21–1.21.1, Forge+NeoForge, `26.1.2`, updated days ago | 0.0083 |
+| Deeper and Darker | Modrinth 1.21–1.21.1, multi-loader, ~2 months old | 0.0126 |
+| Voidscape | `Voidscape-1.21.1-1.9.588.jar`, NeoForge, 2026-05-31 | 0.0091 |
+
+**No fixes required.** These are the shape the pack wants: distinct place, distinct loot,
+proportionate payoff.
+
+**Watch item:** Undergarden at 0.0083 vs Deeper and Darker at 0.0126 is a 1.5x gap on the *same
+axis*. That is inside the band but at the edge of noticeable. If players complain, the fix is to
+**shorten Undergarden**, not to buff it — raising P raises the ceiling for everyone downstream.
+
+**Do NOT use Restricted Portals to hard-sequence these.** Beyond Depth used it, and it's the
+right tool for a linear pack — but the owner explicitly rejected forced linear progression, and
+hard-gating three parallel dimension tracks against each other destroys the hub premise.
+Recommend it **only** if playtesting shows a track is genuinely broken without it.
+
+---
+
+## 2.8 ⚠ "Antarchy" — the named offender I have no data on
+
+The owner named this as the mod whose numbers broke the curve (the 30-damage sword). **The
+research payload for this doc was empty and I have no primary source on Antarchy at all** — not
+a version, not a config path, not a confirmation it exists on 1.21.1.
+
+**Marked entirely `⚠ VERIFY BEFORE APPLYING`. Do not act on the row 12 numbers.**
+
+**The measurement procedure (do this before any fix):**
+
+```
+1. Creative world, single mod + deps.
+2. /give @s <antarchy:item>
+3. Hold it. Run:  /attribute @s minecraft:attack_damage get
+   → this reads YOUR total damage including the held item's modifier.
+4. Dump the item's real components:  /data get entity @s SelectedItem
+   → read minecraft:attribute_modifiers directly. This is ground truth.
+5. Attack speed: check the same component for minecraft:attack_speed,
+   or count swings-to-full-charge on a test dummy.
+6. Compute: DPS = damage × speed.  P = DPS / 18.0.
+7. In JEI, look up the item → note every recipe/loot source.
+   Estimate H honestly. Do not estimate it optimistically.
+8. R = (P − 1.0) / (H × T). Compare against 0.005–0.018.
+```
+
+**Then, and only then, pick a lever from §2.0.** If the mod has no config for the number and
+KubeJS feels like too much fragility, the answer is **loot removal or mod removal**, and that
+is a completely legitimate answer.
+
+---
+
+## 2.9 Infrastructure to install on day one, not after the imbalance shows up
+
+Beyond Depth's whole balance toolchain, filtered to what's confirmed on 1.21.1:
+
+| Mod | Job | Status |
+|---|---|---|
+| **KubeJS** (+ Rhino) | Item component / recipe scripting — the only way to touch modded item stats | Confirmed in the 1.21.1 ecosystem |
+| **LootJS** | Programmatic loot rewriting — the H-lever | Confirmed |
+| **Paxi** | Ship your balance datapack **globally**, auto-loads into any world from `config/paxi/datapacks/`, with `datapack_load_order.json` | 1.20–1.21.1+, 47.4M downloads ✅ |
+| **Lootr** | Per-player structure chests — **kills the R5 gifting divisor for loot** | Confirmed ✅ |
+| **In Control!** | JSON rules engine for spawns — shape *which* mobs *where*, never a global multiplier | Confirmed |
+| **AttributeFix** | Global attribute clamp (§2.3) | Confirmed |
+| **Enchantment Blacklister** | Surgical enchantment removal | Confirmed |
+| **Structurify / Sparse Structures Reforged** | Structure rarity = the H-lever for exploration tracks | Confirmed |
+| **spark** | Profiler. **Non-negotiable** on a 32GB box that's also a gaming rig | `1.10.124-neoforge-1.21.1` ✅ |
+| **Chunky** | Pre-generate spawn region before launch night | `1.4.23` ✅ |
+
+**Install these before the modlist is finalized.** Retrofitting KubeJS into a running campaign
+is how you end up not fixing things.
+
+**Not needed on NeoForge:** Forge Config API Port (built in). Harmless if a jar drags it in.
+
+---
+
+## 2.10 Raise the vanilla baseline (cheap, high-value, often skipped)
+
+Beyond Depth buffs Wither / Ender Dragon / Warden so modded content lands in the right band.
+This fixes the relative-power problem **from the other end** and it's much less invasive than
+nerfing ten mods.
+
+Six players will delete a 300 HP Wither. If vanilla bosses are trivial, every modded boss feels
+mandatory and every modded reward feels required.
+
+⚠ **Constraint:** vanilla entity base attributes are **code-side in 1.21.1** — a datapack cannot
+change Wither HP. Your options are content mods (Beyond Depth used Savage Ender Dragon, True
+Ending, Wither: Reincarnated, Boss Refreshed — ⚠ 1.21.1 status **unverified for all four**,
+check before planning around them) or KubeJS entity attribute events.
+
+**What a datapack CAN do here, and should:**
+- **Rewrite vanilla boss loot tables** (`data/minecraft/loot_table/entities/wither.json`) so the
+  vanilla bosses pay competitively with modded ones. This is a real, free lever most people miss.
+- **Nerf Sharpness** via data-driven enchantments (§3.5). If Sharp V is +3.25, the netherite
+  baseline is 18.0 DPS and every modded weapon is measured against that. Lowering Sharpness
+  lowers the whole curve without touching a single mod.
+
+---
+
+# 3. THE DATAPACK SKELETON
+
+## 3.1 Where it lives
+
+Two options. **Use both.**
+
+```
+# Per-world (authoritative, version-controlled with the world):
+C:\Game Servers\Minecraft\server\world\datapacks\bd-balance\
+
+# Global via Paxi (survives world regen, applies to test worlds too):
+C:\Game Servers\Minecraft\server\config\paxi\datapacks\bd-balance\
+```
+
+Paxi is the reason you can iterate: drop the same folder in `config/paxi/datapacks/` and it
+auto-loads into **every** world including your creative test world, so what you test is what
+ships. Control ordering with `config/paxi/datapack_load_order.json`.
+
+## 3.2 Folder structure
+
+```
+bd-balance\
+├── pack.mcmeta
+└── data\
+    ├── minecraft\
+    │   ├── enchantment\
+    │   │   ├── sharpness.json              # nerf the baseline (§3.5)
+    │   │   └── protection.json
+    │   ├── loot_table\
+    │   │   └── entities\
+    │   │       ├── wither.json             # buff vanilla boss payout (§2.10)
+    │   │       └── ender_dragon.json
+    │   └── tags\
+    │       └── item\
+    │           └── enchantable\
+    │               └── sharp_weapon.json   # control what CAN take Sharpness
+    │
+    ├── bdbalance\                          # your own namespace
+    │   ├── recipe\                         # replacement / alternative recipes
+    │   ├── loot_table\
+    │   │   └── injection\                  # tables you reference from mod tables
+    │   ├── predicate\
+    │   ├── item_modifier\
+    │   ├── function\
+    │   │   └── debug\
+    │   │       └── parity_kit.mcfunction   # §6 testing kit
+    │   └── advancement\
+    │
+    ├── simplyswords\
+    │   └── loot_table\chests\...           # relocate uniques to boss drops (§2.2)
+    │
+    ├── apotheosis\
+    │   └── recipe\...                      # kill specific recipes (§3.3)
+    │
+    └── <every other mod you override>\
+        ├── recipe\
+        └── loot_table\
+```
+
+**The rule:** to override a mod's file, mirror its **exact namespace and path**. To override
+`simplyswords:chests/dungeon_uniques`, your file goes at
+`data/simplyswords/loot_table/chests/dungeon_uniques.json`. World datapacks load after
+mod-provided data, so yours wins.
+
+## 3.3 `pack.mcmeta`
+
+```json
+{
+  "pack": {
+    "pack_format": 48,
+    "supported_formats": { "min_inclusive": 48, "max_inclusive": 48 },
+    "description": "Beyond Depth Reconstruction — pack-wide balance overrides"
+  }
+}
+```
+
+**`pack_format 48` is correct for 1.21 and 1.21.1.** (1.21.2–1.21.3 is 57. If you ever bump the
+game version, this number changes and a stale value produces a scary-but-harmless "made for a
+different version" warning — or, worse, silent format mismatches.)
+
+## 3.4 Killing a recipe on NeoForge
+
+Vanilla datapacks can't *delete* a recipe, only overwrite it. NeoForge gives you a clean
+condition instead. Put this at the **exact path of the recipe you're killing**:
+
+```json
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:false" }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["X"],
+  "key": {
+    "X": { "item": "minecraft:stone" }
+  },
+  "result": { "id": "minecraft:stone", "count": 1 }
+}
+```
+
+The condition evaluates false, so the recipe never loads. The body is inert filler — it just has
+to parse. ⚠ **VERIFY the ingredient form** (`{"item": "..."}` vs bare `"..."`) against a vanilla
+1.21.1 recipe before mass-producing these; see §2.0.
+
+## 3.5 Relocating loot (the H-lever, and your most reliable tool)
+
+You cannot nerf a modded sword's damage from a datapack. You **can** make it cost 30 hours
+instead of 8. For Simply Swords uniques (§2.2), overwrite the generic structure table so the
+unique isn't in it:
+
+```json
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 3,
+      "entries": [
+        { "type": "minecraft:item", "name": "minecraft:iron_ingot", "weight": 20,
+          "functions": [
+            { "function": "minecraft:set_count",
+              "count": { "min": 2.0, "max": 6.0 } }
+          ]
+        },
+        { "type": "minecraft:item", "name": "minecraft:diamond", "weight": 4 },
+        { "type": "minecraft:empty", "weight": 10 }
+      ]
+    }
+  ]
+}
+```
+
+…and add it to a boss entity table instead. Same JSON shape, `"type": "minecraft:entity"`,
+usually with a `minecraft:killed_by_player` condition so it can't be farmed by fall damage.
+
+⚠ **VERIFY** the exact table id in-game. Guessing loot-table paths from mod names is how you
+spend an hour wondering why nothing changed. Use `/loot` to test:
+`/loot give @s loot simplyswords:chests/whatever` — if it errors, the path is wrong.
+
+## 3.6 Data-driven enchantments (new in 1.21 — use this)
+
+Enchantments are fully datapack-controlled in 1.21. Nerfing Sharpness lowers the entire power
+curve without touching one mod file. Template at
+`data/minecraft/enchantment/sharpness.json`:
+
+```json
+{
+  "description": { "translate": "enchantment.minecraft.sharpness" },
+  "supported_items": "#minecraft:enchantable/sword",
+  "primary_items": "#minecraft:enchantable/sharp_weapon",
+  "weight": 10,
+  "max_level": 4,
+  "min_cost": { "base": 1, "per_level_above_first": 11 },
+  "max_cost": { "base": 21, "per_level_above_first": 11 },
+  "anvil_cost": 1,
+  "slots": ["mainhand"],
+  "effects": {
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 1.0,
+            "per_level_above_first": 0.5
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+Vanilla Sharpness is `max_level: 5` with `base 1.0 / per_level 0.5` → +3.0 at V (the +3.25
+figure used elsewhere in this doc is the commonly-cited value; **verify which is right for
+1.21.1 by reading the vanilla file out of the server jar**). Dropping to `max_level: 4` cuts the
+top enchant and pulls the netherite baseline from 18.0 to ~17.2 DPS.
+
+⚠ **VERIFY** the exact effect component names against the vanilla 1.21.1 file. Extract the
+server jar, look in `data/minecraft/enchantment/`, and copy its structure rather than mine —
+this is a new format and I am working from memory of it.
+
+**Extraction command** (this is the highest-leverage 30 seconds in the whole doc):
+
+```powershell
+# Adjust the jar name/path to your actual server jar
+$jar = "C:\Game Servers\Minecraft\server\minecraft_server.1.21.1.jar"
+$out = "$env:TEMP\mc-vanilla-data"
+Expand-Archive -Path $jar -DestinationPath $out -Force
+# Now read the real files:
+#   $out\data\minecraft\enchantment\sharpness.json
+#   $out\data\minecraft\recipe\stick.json          <- settles the ingredient-format question
+#   $out\data\minecraft\loot_table\entities\wither.json
+```
+
+**Every "⚠ VERIFY" on 1.21.1 JSON syntax in this document is answered by that one command.**
+
+---
+
+# 4. THE TRACK MENU
+### *(paste this straight into Discord — this is the whole point)*
+
+---
+
+**📋 SERVER TRACK MENU — pick with open eyes**
+
+We're running a **hub**, not a ladder. There's no "right order." Everybody picks what looks fun
+and we all end up roughly equal in power. Tracks are grouped by **how much time they want**, not
+by when you're supposed to do them.
+
+Two things to know up front:
+
+**1. "Roughly equal" means equal *per hour*, not equal *in total*.** A 40-hour track pays more
+than a 15-hour track. That's not unfair, that's just more hours. What we've tuned for is that
+hour 20 of your track is worth about as much as hour 20 of mine.
+
+**2. Tracks pay in different currencies.** Some give damage, some give mobility, some give a
+factory. Check the "fair swap for" line before you start, so you're not 30 hours in wondering
+why your friend hits harder. If you want to hit hard, pick a hitting-hard track.
+
+**3. Some tracks don't pay in power at all, and that's on purpose.** They're in the **SPECIAL**
+section at the bottom. If you pick one, you are choosing a different game, not a slower version
+of this one. **Read that section before you commit 60 hours to it.** Nobody should find this out
+in month three.
+
+**4. The big bosses are group events, not races.** We're scheduling them. Not because you can't
+solo them, but because some of us get 4 hours a week and some get 20, and there's no config file
+that fixes that — only a calendar. **If the capstone fights happen when we're all on, nobody
+falls behind for having a job.**
+
+**5. How balance changes work, so nobody gets robbed.** If something needs tuning, it happens in
+**the first two weeks, or at an announced monthly patch** — never as a surprise mid-week. And
+where possible we change **how often a thing drops**, not how strong the one in your chest
+already is. **If we ever have to nerf something you already earned, you get something equivalent
+back.** You will not lose hours you already spent.
+
+If anything below feels wrong once you're in it, **say so in #server-chat immediately.** Tuning
+mid-campaign is fine. Being quietly annoyed for a month is not.
+
+---
+
+### ☕ LIGHT — 10–20 hours
+
+**🗺️ Structure Explorer** *(YUNG's suite + Towns and Towers)*
+Every vanilla dungeon, mineshaft, stronghold and temple rebuilt into an actual dungeon.
+Wander, loot, come home rich.
+→ **~20h.** Walk away with: a full kit of good gear, a mountain of materials, a map full of pins.
+→ *Fair swap for:* Trinket Hunter, End Run.
+
+**💍 Trinket Hunter** *(Artifacts + Relics)*
+Collect passive-effect trinkets. Wings, boots, rings, weird little items that change how you move.
+→ **~15h.** Walk away with: **mobility and utility, not raw damage.** You will be the person who
+gets there first and never takes fall damage. You will *not* be the person who one-shots things.
+→ *Fair swap for:* Structure Explorer. ⚠ **Not** a swap for a boss track — different currency.
+
+**🐉 End Run** *(End Remastered + the Dragon)*
+Hunt down 16 custom Eyes across the world, place 12, open the portal, kill the Dragon.
+A scavenger hunt with a boss at the end.
+→ **~15h.** Walk away with: elytra, dragon loot, the End opened for everyone.
+→ *Fair swap for:* Structure Explorer, Undergarden.
+
+---
+
+### 🍺 MEDIUM — 20–30 hours
+
+**🍄 The Undergarden** *(Undergarden)*
+A full second underworld. New biomes, new mobs, its own materials and gear tier.
+→ **~18h.** Walk away with: a distinct armor/weapon set, unique building blocks, a place that's yours.
+→ *Fair swap for:* Deeper and Darker, End Run.
+
+**🕳️ Deeper and Darker** *(Deeper and Darker)*
+Ancient Cities stop being a curiosity and become a destination. Sneak, survive, cross into the
+Otherside.
+→ **~22h.** Walk away with: strong gear, Warden-tier bragging rights, genuinely tense memories.
+→ *Fair swap for:* Undergarden, Ars Nouveau.
+
+**✨ Ars Nouveau** *(Ars Nouveau)*
+Build your own spells from glyphs. Deeply customizable, huge utility ceiling, real learning curve.
+→ **~30h.** Walk away with: custom spells nobody else has, strong utility, solid combat.
+→ **Note:** spell knowledge is **per-player** and can't be gifted. This is the most
+"actually yours" track on the menu.
+→ *Fair swap for:* Deeper and Darker, Voidscape.
+
+**🌌 Voidscape** *(Voidscape)*
+Corrupted floating islands. Hostile, weird, high-payout.
+→ **~30h.** Walk away with: endgame-tier gear and the strangest screenshots on the server.
+→ *Fair swap for:* Ars Nouveau, Cataclysm (if you're only doing part of Cataclysm).
+
+---
+
+### 🔥 HEAVY — 35+ hours
+
+**⚔️ Cataclysm Boss Gauntlet** *(L_Ender's Cataclysm)*
+Eight bosses in eight dungeons. The Netherite Monstrosity has **600 HP, hits for 25, and cannot
+be knocked back.** This is the hardest content on the server.
+→ **~40h.** Walk away with: the **Void Forge** — 13 damage, unbreakable, doubles as a netherite
+pickaxe, and a right-click that fires 35 void runes.
+→ **Reality check:** the Void Forge is a **sidegrade** on paper — a Sharpness V netherite sword
+does slightly more raw DPS. What you're buying is the AoE, the shield-break, the unbreakability,
+and the fact that you killed the thing. **If you want a big number on a tooltip, this is not
+that track.** If you want the hardest fights in the pack, it's the only one.
+→ **Bosses are re-fightable**, so a second person can get their own Forge without doing less work.
+→ *Fair swap for:* Voidscape + one Light track, or Ars Nouveau + one Light track.
+
+**🔮 Iron's Spellbooks** *(Iron's Spellbooks + Ars 'n Spells)*
+Structured magic. Pick a school, commit to it, gear up around it.
+→ **~25h.** Walk away with: heavy ranged damage and a spell wheel.
+→ ⚠ **Currently being tuned before launch.** Raw, this track pays roughly **twice** what
+everything else does per hour, which is exactly the thing we're trying not to have. It ships with
+a power cap. If it still feels absurd after 10 hours, tell me and I'll pull the cap down again.
+→ *Fair swap for:* Ars Nouveau (same currency — these two should feel equal, flag it if they don't).
+
+---
+
+### 🏭 SPECIAL — measured differently
+
+**⚙️ Create Engineering** *(Create + addons)*
+Contraptions, automation, trains, absurd machines.
+→ **Open-ended.** Walk away with: **infrastructure, not power.** You will not out-damage anyone.
+You will make everyone else's life dramatically easier and build things that make people say
+"how."
+→ **This track is explicitly NOT balanced against the others and that's deliberate.** It pays in
+economy and creativity. **Nothing anyone else needs is locked behind it** — if you find a weapon
+or armor recipe that requires Create parts, that's a bug, tell me.
+→ *Fair swap for:* nothing. It's its own thing. Pick it because contraptions are the fun, not
+because you want gear.
+
+**🔴 Cobblemon** *(if it ships — status TBD)*
+Catch, train and battle creatures. It is a **complete separate game** running inside our server,
+with its own 100-hour progression and its own combat system.
+→ **60–100h+, open-ended.** Walk away with: a team, a collection, and **essentially no survival
+power.** Your Pokémon do not help you fight the Netherite Monstrosity.
+→ **This track is NOT balanced against the others and cannot be.** It pays in a currency nothing
+else in the pack uses. **If you pick it, pick it because catching things is the fun.** If you
+also want to be useful in a boss fight, run a short combat track alongside it — that's expected
+and encouraged, not cheating.
+→ *Fair swap for:* nothing. Same deal as Create.
+
+**🔴 Jurassic Reborn** *(if it ships — status TBD)*
+Incubate, breed and house dinosaurs. Base-building and spectacle.
+→ **40–60h.** Walk away with: **a park, not a weapon.** Same warning as Cobblemon.
+→ ⚠️ Also the heaviest thing in the pack for server performance — if it ships there will be a cap
+on how many dinos can exist, and that cap is not negotiable. Ask before you plan a mega-paddock.
+→ *Fair swap for:* nothing.
+
+> **Why these two get a scary red circle:** not because they're bad — they're great. Because they
+> are the two tracks where someone could sink 60+ hours and *then* discover the reward doesn't
+> convert. Saying it here, loudly, in advance, is the entire fix.
+
+---
+
+**⚠️ One honest heads-up about the pack itself:** this is a *reconstruction* of Beyond Depth on
+a newer Minecraft version, not a copy. Some mods that defined the original — Alex's Caves,
+Alex's Mobs, the progressive-difficulty system — **do not exist on 1.21.1** and there's no
+replacement. It'll feel different. Mostly it means fewer weird cave biomes and less automatic
+difficulty ramp. Setting expectations now so nobody's surprised in week two.
+
+---
+
+# 5. WHAT TO FIX FIRST
+
+Ordered by **impact ÷ effort**. Direction is labeled on every line. **This is not a nerf list —
+three of the top ten are buffs or de-gates, and they matter just as much.**
+
+| # | Direction | Fix | Effort | Impact | Why here |
+|---|---|---|---|---|---|
+| **1** | 🔬 **MEASURE** | **Extract the vanilla 1.21.1 server jar data folder** (§3.6 command) | 5 min | ⭐⭐⭐⭐⭐ | Answers every `⚠ VERIFY` JSON-syntax flag in this doc at once. Do this before writing a single line of datapack. |
+| **2** | 🔬 **MEASURE** | **Time the Cataclysm gauntlet with 6 players.** The entire band is derived from `H=40`. If it's really 25, every verdict below shifts. | 1 session | ⭐⭐⭐⭐⭐ | You are balancing against a number you guessed. Fix that first or everything downstream is fiction. |
+| **3** | ⬇️ **NERF** | **Iron's Spellbooks — install Ars 'n Spells, set `spell_power_cap = 1.40`** (§2.1) | 30 min | ⭐⭐⭐⭐⭐ | 5.1x anchor, *same axis* as Ars Nouveau, and the reward is a **craftable recipe** so R5 multiplies it by 6. Worst single defect in the pack, and the fix is one config line in a mod that already solved it. |
+| **4** | ⬆️ **DE-GATE** | **Audit every armor/weapon recipe for `create:` ingredients; add non-Create alternatives** (§2.4) | 1–2 hr | ⭐⭐⭐⭐⭐ | R=0.0009 is 12x under floor — the largest deviation in the table **in either direction**. Also the #1 complaint about Beyond Depth. Cheap to prevent, miserable to retrofit. |
+| **5** | ⬇️ **NERF** | **Simply Swords — move uniques from structure loot to boss drops** (§2.2, §3.5) | 1 hr | ⭐⭐⭐⭐ | R=0.0625, the highest rate in the pack, and it's high because `H=8`, not because P is huge. Fixing H is a datapack edit; fixing P would need scripting. Take the cheap win. |
+| **6** | 🧱 **INFRA** | **Install Lootr** (§1.5.2) | 10 min | ⭐⭐⭐⭐ | Per-player chests. Kills the first-to-the-chest race *and* the R5 gifting divisor on all loot tracks simultaneously. Ten minutes, fixes a category. |
+| **7** | 🧱 **INFRA** | **Install KubeJS + LootJS + Paxi + spark + Chunky** (§2.9) | 30 min | ⭐⭐⭐⭐ | These are the tools every fix below needs. Retrofitting them mid-campaign is how balance work stops happening. |
+| **8** | ⬇️ **NERF** | **Apotheosis — cut the top affix rarity tier, halve damage affix magnitudes** (§2.3) | 2 hr | ⭐⭐⭐⭐ | 3.8x anchor with an **unbounded tail**. Six farmers will find the tail. ⚠ Test the Architectury conflict first — if it crashes, this becomes a mod-selection call instead. |
+| **9** | ⬆️ **BUFF** | **Give the Structure Explorer track a named capstone item** (§1.5.1) | 1 hr | ⭐⭐⭐ | R=0.0056, floor-adjacent, and its rewards are *diffuse*. Humans compare trophies. One nameable item fixes the perception without raising the ceiling. |
+| **10** | ⬆️ **BUFF** | **Rewrite vanilla Wither / Dragon loot tables to pay competitively** (§2.10) | 1 hr | ⭐⭐⭐ | Free datapack lever nobody uses. Raises the floor so modded rewards don't feel mandatory. |
+| **11** | ⬇️ **NERF** | **Sharpness → `max_level: 4`** (§3.6) | 15 min | ⭐⭐⭐ | Lowers the *entire* curve with one file. Every "is this too strong" question gets easier. Do it early — changing the baseline later invalidates all measurements. |
+| **12** | 🔬 **MEASURE** | **Antarchy — run the §2.8 measurement procedure** | 30 min | ⭐⭐⭐ | The owner named it as the offender and I have **zero** data. Could be the worst thing in the pack or already fine. Unknown = unactionable. |
+| **13** | ⬆️ **BUFF** | **Shorten Undergarden, or accept the 1.5x gap vs Deeper and Darker** (§2.7) | 1 hr | ⭐⭐ | Both in band, but 1.5x on the same axis is at the edge of noticeable. Low priority; revisit if anyone complains. |
+| **14** | 🧱 **INFRA** | **AttributeFix global clamp: `attack_damage max 20.0`** (§2.3) | 20 min | ⭐⭐ | Safety net, not a fix. Install **after** the targeted work so you can tell what the net actually caught. Blunt — will clip things you didn't intend. |
+| **15** | 📣 **COMMS** | **Post the §4 track menu to Discord before launch** | 10 min | ⭐⭐⭐⭐ | Prevents the argument rather than settling it. Arguably belongs at #1; it's here only because the menu's numbers depend on fixes 1–5 landing first. |
+
+**If you only do five things: 1, 2, 3, 4, 6.** Two measurements, one nerf, one de-gate, one
+infra mod. That covers both extremes of the table and takes under three hours.
+
+> **⚠️ Four amendments to this list (completeness review):**
+>
+> **A. Add a new #0, above everything: reconcile the two documents.** Doc 00 and this doc use
+> different metrics (`P÷H` vs `(P−1)/(H·T)`) and disagree on Cataclysm P, Apotheosis P, and
+> Iron's H. **Doc 00 §0.5 has the reconciliation.** Half a day, and every fix below is
+> mis-prioritized until it's done. **Use `R = (P−1)/(H×T)` — Doc 00's `Payoff/hr` column is
+> absolute power with an hours column attached, which is not the question that was asked.**
+>
+> **B. Add a new #0b: identify Cobblemon, Jurassic Reborn, and "Primal."** Two are 60–100 hour
+> tracks on a non-combat axis with no row anywhere in this project; the third may be a **pack-wide
+> difficulty mod that silently invalidates every H estimate in both documents.** Higher value than
+> any affix nerf, because you cannot config your way out of "60 hours bought me nothing usable."
+>
+> **C. Promote #8 (Apotheosis) to #3.** Its `P` is **4.10**, not 2.00 (Doc 00 §4.1, source-read
+> from the affix JSON). Real rate ≈ **12× anchor**, not 3.8× — and it has the pack's worst
+> **variance** (R8) *and* the worst **effort-quality inversion** (highest payout for the most
+> tedious, lowest-tension activity). It is the largest single defect in the pack on four
+> independent axes. It currently sits at #8 because its P was understated.
+>
+> **D. Add a #0c that costs ten minutes and zero config: post the social rules.** Capstone bosses
+> are group events; balance changes land only in announced windows; nerfs close the tap rather
+> than reaching into inventories (§1.5.5). **Unequal hours-per-week and the latecomer problem are
+> more likely to end this campaign than any affix range**, and neither is fixable by a config
+> file after the fact.
+
+---
+
+# 6. TESTING PROTOCOL
+
+## 6.1 Measuring a track's real P and H (do this before fixing anything)
+
+### Measuring P — the exact commands
+
+```
+/gamemode creative
+/give @s <mod:the_reward_item>
+```
+
+Hold it, then:
+
+```
+# Your total attack damage including the held item's modifier.
+# NOTE: 1.21 dropped the `generic.` prefix. It is `minecraft:attack_damage`, NOT
+# `minecraft:generic.attack_damage`. The old form silently fails.
+/attribute @s minecraft:attack_damage get
+
+/attribute @s minecraft:attack_speed get
+/attribute @s minecraft:armor get
+/attribute @s minecraft:armor_toughness get
+/attribute @s minecraft:max_health get
+```
+
+Ground truth for the item itself:
+
+```
+/data get entity @s SelectedItem
+```
+
+That prints the full component map including `minecraft:attribute_modifiers` with real amounts
+and operations. **This is the number that matters** — the `/attribute get` value can be polluted
+by other equipment.
+
+Then:
+
+```
+DPS = attack_damage × attack_speed
+P   = DPS / 18.0
+```
+
+### Measuring P for non-damage rewards
+
+There's no clean command. Use a comparison harness:
+
+1. Build a flat test arena. Summon a fixed target:
+   `/summon minecraft:zombie ~ ~ ~5 {Attributes:[{id:"minecraft:max_health",base:200}],Health:200f,NoAI:1b}`
+   ⚠ **VERIFY** the `Attributes` NBT key shape on 1.21.1 — attribute NBT changed around 1.21 and
+   I'm not certain of the exact form. If it errors, summon a normal mob and use
+   `/attribute @e[type=zombie,limit=1] minecraft:max_health base set 200`.
+2. Time how long it takes to kill with (a) Sharp V netherite, (b) the track's reward. Ratio = P.
+3. For mobility/utility rewards, P isn't measurable this way — **fall back to R4 (axis match)
+   and just make sure it's honestly advertised in the menu.** Don't fake a number.
+
+### Measuring H
+
+**There is no shortcut. Play it, or ask someone who has.** The dishonest move is estimating H
+optimistically because you already know the route. Estimate H for *a player who doesn't know
+where anything is*, because that's who's playing.
+
+Cheapest real method: have each of the six log their track's hours in a Discord thread. After
+two weeks you have real H values and the whole table becomes fact instead of guesswork.
+
+## 6.2 Verifying a nerf actually landed
+
+**Config changes:**
+1. Stop the server fully. **Edit configs only while stopped** — many mods rewrite their config
+   from memory on shutdown and will clobber a live edit. (Same trap as Palworld's
+   `PalWorldSettings.ini`; see the project CLAUDE.md.)
+2. Restart.
+3. `/reload` does **not** reload mod TOML configs. Only a restart does.
+4. Re-run the §6.1 measurement. **Compare numbers, not vibes.**
+
+**Datapack changes:**
+1. `/reload` — this *does* reload datapacks.
+2. Watch the console. A malformed JSON file produces a **red parse error naming the file**. If
+   you see no error and no change, your **path is wrong** — the file loaded as a new,
+   never-referenced resource. This is the #1 failure mode and it looks identical to "nothing
+   happened."
+3. `/datapack list` — confirm `bd-balance` is in the **enabled** list, not available-but-disabled.
+
+**Recipe changes:** open **JEI**, search the item, press **U** (uses) and **R** (recipes).
+JEI reads the *live* recipe manager, so if JEI still shows the old recipe after `/reload`, the
+override didn't land. **JEI is your fastest recipe-verification tool by a wide margin.**
+
+**Loot changes:**
+```
+/loot give @s loot <namespace>:<path>
+```
+Runs the table straight into your inventory. If the path is wrong you get an immediate error,
+which is exactly the feedback you want. Run it 20 times to eyeball the distribution.
+
+**Enchantment changes:**
+```
+/enchant @s minecraft:sharpness 5
+```
+If you set `max_level: 4`, this should now **fail**. If it succeeds, your enchantment JSON
+didn't load — go back to the `/reload` console output.
+
+## 6.3 The parity test bench
+
+Make a permanent creative test world (Paxi means your balance datapack loads into it
+automatically). Keep a function at
+`data/bdbalance/function/debug/parity_kit.mcfunction` that gives you the baseline in one command:
+
+```mcfunction
+# The P=1.00 reference loadout. Everything gets measured against this.
+give @s minecraft:netherite_sword[minecraft:enchantments={levels:{"minecraft:sharpness":5}}] 1
+give @s minecraft:netherite_helmet[minecraft:enchantments={levels:{"minecraft:protection":4}}] 1
+give @s minecraft:netherite_chestplate[minecraft:enchantments={levels:{"minecraft:protection":4}}] 1
+give @s minecraft:netherite_leggings[minecraft:enchantments={levels:{"minecraft:protection":4}}] 1
+give @s minecraft:netherite_boots[minecraft:enchantments={levels:{"minecraft:protection":4}}] 1
+```
+
+⚠ **VERIFY the component syntax.** 1.21 replaced NBT with components and the enchantment
+component shape (`minecraft:enchantments={levels:{...}}`) changed again in 1.21.5. Test the
+first line by hand before saving the file.
+
+Run it, measure, write the numbers in the Section 1.3 table. **Then** measure the mod. Never
+measure a mod without re-measuring the baseline in the same session — it takes 10 seconds and it
+catches the case where a previous change moved the floor.
+
+## 6.4 Bisecting a crash in a 150-mod pack
+
+**Before you bisect, read the crash report.** Most of the time you don't need to bisect at all.
+
+```powershell
+# Newest crash report
+Get-ChildItem "C:\Game Servers\Minecraft\server\crash-reports" |
+  Sort-Object LastWriteTime -Descending | Select-Object -First 1
+```
+
+In the stack trace, the **first non-`minecraft`/non-`neoforge` package name** is usually your
+culprit. NeoForge also prints a mod list at the bottom of the report — cross-reference.
+
+If the game **won't start** and the log is unhelpful, bisect:
+
+```powershell
+$mods = "C:\Game Servers\Minecraft\server\mods"
+$park = "C:\Game Servers\Minecraft\server\mods-parked"
+New-Item -ItemType Directory -Force $park
+
+# Move half the jars out
+$all  = Get-ChildItem $mods -Filter *.jar | Sort-Object Name
+$half = $all | Select-Object -First ([math]::Floor($all.Count / 2))
+$half | Move-Item -Destination $park
+```
+
+Start. Crash persists → the culprit is in the remaining half. Crash gone → it's in the parked
+half. Move half of the guilty set back and repeat. **150 mods → ~8 restarts.**
+
+**Three things that make bisection actually work:**
+1. **Never move library mods.** Keep JEI, Architectury, Curios, GeckoLib, Balm, Moonlight,
+   YUNG's API, Puzzles Lib, Kotlin for Forge, Bookshelf, Collective, Resourceful Lib,
+   Cloth Config, TerraBlender in `mods/` for every round. Moving a library produces a
+   *different* crash and poisons the bisect. Park them in a separate `libs/` folder mentally
+   and treat them as untouchable.
+2. **Bisect on a scratch world**, never the real one. A half-modded world load will strip
+   entities and blocks belonging to the parked mods, permanently.
+3. **Note the crash's exception class each round.** If the exception changes, you didn't
+   isolate the original bug — you found a second one. Back up a step.
+
+**Known conflicts to check before bisecting** (these are documented and version-specific):
+- **`java.lang.IllegalStateException: Mod 'architectury' is not available!`** with Architectury
+  clearly installed → a mod is bundling **OmegaConfig**, which prevents Architectury from
+  initializing. Hunt the bundled OmegaConfig; don't reinstall Architectury.
+  ([report](https://github.com/lostmyself8/Mekanism-Extras-neoforge/issues/20))
+- **`Conflicting default methods: ...DeferredSupplier.getKey`** → the Architectury/Apotheosis
+  conflict, [issue #592](https://github.com/architectury/architectury-api/issues/592), still open.
+- **Cloth Config version mismatch** → Cloth routes through Architectury on NeoForge. **Pin one
+  Architectury build at pack-freeze and never let the launcher auto-bump it mid-campaign.**
+
+## 6.5 Performance verification (32GB box, six players, also a gaming rig)
+
+**Profile before you tune.** Guessing at RAM on this machine is a known failure mode (Palworld's
+crashes traced to the RAM ceiling; see CLAUDE.md).
+
+```
+/spark profiler start --timeout 300
+/spark heapsummary
+/spark tps
+```
+
+On a 150-mod pack the bottleneck is almost always either **(a)** one badly-behaved mod's tick
+handler or **(b)** heap pressure from mod registries. ModernFix and FerriteCore address (b).
+**Nothing addresses (a) except finding it**, and spark is the only way to find it.
+
+**Chunky-pregenerate the spawn region before launch night.** It removes the single largest source
+of "why is the server lagging" complaints in week one, and it costs you an afternoon of unattended
+CPU time instead of six people's evening.
+
+---
+
+## APPENDIX — Every open question in one place
+
+**Blocking (answer before applying fixes):**
+- [ ] Vanilla 1.21.1 JSON syntax: ingredient form, recipe result form, enchantment effect names,
+      attribute modifier `uuid+name` vs `id`. → **§3.6 extraction command answers all four.**
+- [ ] Real 6-player H for the Cataclysm gauntlet. → **The entire band depends on this.**
+- [ ] Antarchy: does it exist on 1.21.1, what are its numbers, does it have a config?
+- [ ] The actual modlist. This doc was written without it.
+
+**Config paths, all inferred, all unconfirmed:**
+- [ ] `config/ars_n_spells-common.toml` and its real key names (repo lags binary by 2 versions)
+- [ ] `config/irons_spellbooks-server.toml` — `maxUpgrades`, `spellPowerMultiplier`
+- [ ] `config/simplyswords-*` — does it expose unique-effect magnitudes at all?
+- [ ] `config/cataclysm-common.toml` — is boss HP exposed?
+- [ ] `config/apotheosis/` — filenames and affix tier structure
+- [ ] `config/attributefix.json` — 1.21.1 key format
+
+**Availability, unverified:**
+- [ ] Relics on 1.21.1 (CurseForge slug 404'd)
+- [ ] Simply Swords: Cataclysm — does it do any rebalancing, or is it pure content?
+- [ ] Savage Ender Dragon / True Ending / Wither: Reincarnated / Boss Refreshed on 1.21.1
+- [ ] Structure Gel API on 1.21.1 NeoForge (Modrinth slug 404s; likely CurseForge-only)
+- [ ] Does Architectury 13.0.11 fix the Apotheosis conflict?
+
+**Known dead ends — do not spend time here:**
+- ❌ Alex's Caves, Alex's Mobs — 1.20.1 only, stalled since 2024, no replacement
+- ❌ Majrusz's Progressive Difficulty — abandoned 2026-04-26, no 1.21.1 equivalent identified.
+      **This is the biggest structural loss in the reconstruction.**
+- ❌ Simply Swords: Overhaul — 1.20.1 Forge only, will never port
+- ❌ Datapack-editing a modded item's attack damage in 1.21.1 — **not possible**, see §2.0

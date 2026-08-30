@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "deeperdarker:warden_upgrade_smithing_template" },
+  "base": { "item": "minecraft:netherite_sword" },
+  "addition": { "item": "deeperdarker:reinforced_echo_shard" },
+  "result": {
+    "count": 1,
+    "id": "deeperdarker:warden_sword",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "id": "minecraft:base_attack_damage",
+            "amount": 11.0,
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "id": "minecraft:base_attack_speed",
+            "amount": -2.4,
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      }
+    }
+  }
+}

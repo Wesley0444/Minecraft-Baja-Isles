@@ -1,0 +1,5 @@
+# Force LF everywhere — packwiz verifies pack files by sha256, so CRLF
+# rewrites on checkout would break hash checks. All content here is text.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf

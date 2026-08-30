@@ -1,0 +1,36 @@
+# Modrinth slugs
+# Auto-extracted from the audit's own fetched source URLs, 2026-08-30.
+# Cuts from planning/03-FINAL-DECISIONS.md already removed.
+# VERIFIED 2026-08-30 (scratchpad modrinth-check): every uncommented slug exists and
+# has ≥1 neoforge-1.21.1 version.
+
+# Moved here from the CF list 2026-08-30 — author disabled third-party distribution
+# on CurseForge, but both ship proper neoforge-1.21.1 builds on Modrinth:
+ars-n-spells
+structory-towers
+
+aether
+antarchy
+apotheosis
+ars-nouveau
+confluence
+cult-of-azazel
+deeperdarker
+embers-floating-islands
+envelope
+gateway-of-doom
+guard-villagers
+irons-spells-n-spellbooks
+l_enders-cataclysm
+moogs-voyager-structures
+simply-bows
+simply-tooltips
+sophisticated-storage
+structurify
+terralith
+# the-twilight-forest-unofficial — DROPPED 2026-08-30: zero 1.21.1 versions on Modrinth
+# (any loader). The official Twilight Forest comes from the CF list instead.
+the-undergarden
+towns-and-towers
+xaeros-minimap
+xaeros-world-map

@@ -1,0 +1,68 @@
+// ##########################################################################
+// # SPARSE STRUCTURES 3.0  --  structure density normalization
+// # DEPLOY TO: C:\Game Servers\Minecraft\config\sparsestructures.json5
+// #
+// # ### THE MOD REQUIRES A RESTART OF THE SERVER TO APPLY CHANGES ###
+// # ### SET THIS BEFORE THE WORLD IS CREATED. Structure placement is
+// #     baked per-chunk at generation time; already-generated chunks
+// #     keep whatever spacing was live when they generated. ###
+// #
+// # WHY: ~12 structure mods each ship structure sets at roughly vanilla
+// # spacing (~32 chunks). Areal density scales as 1/spacing^2, so 12 mods
+// # stacked on vanilla produce ~3.7x vanilla structure density. That is
+// # both the interpenetration cause AND a parity break: the exploration
+// # track earns ~3.7x the loot per hour of a boss-fight track.
+// #
+// # spreadFactor 2.5 -> spacing x2.5 -> modded density / 6.25
+// #   => 12 structure mods contribute about what 2 would, on top of
+// #      untouched vanilla. Net world density ~= vanilla + 45%.
+// #   Use 3.0 instead for exactly vanilla + 30%.
+// #   Do NOT go above ~3.5: travel time becomes its own under-reward.
+// ##########################################################################
+{
+  // Applies to EVERY structure set that is not pinned below.
+  // All the mod structure sets land here.
+  "spreadFactor": 2.5,
+
+  // Custom factors OVERRIDE the global value -- they do NOT multiply with it.
+  // (Verified in source: the lookup is .orElse(global), not a product.)
+  //
+  // "structure" matches EITHER a structure_set id OR any structure id
+  // contained in a set. Matching a structure id modifies its whole set.
+  //
+  // Every vanilla 1.21.1 set is pinned to 1.0 so vanilla worldgen is
+  // byte-identical to an unmodded world. This is what preserves the
+  // "vanilla-plus" feel -- without these pins, global 2.5 would push
+  // villages from 34 to 85 chunks apart and the world would feel dead.
+  "customSpreadFactors": [
+    { "structure": "minecraft:villages",          "factor": 1.0 },
+    { "structure": "minecraft:pillager_outposts", "factor": 1.0 },
+    { "structure": "minecraft:desert_pyramids",   "factor": 1.0 },
+    { "structure": "minecraft:igloos",            "factor": 1.0 },
+    { "structure": "minecraft:jungle_temples",    "factor": 1.0 },
+    { "structure": "minecraft:swamp_huts",        "factor": 1.0 },
+    { "structure": "minecraft:ocean_ruins",       "factor": 1.0 },
+    { "structure": "minecraft:shipwrecks",        "factor": 1.0 },
+    { "structure": "minecraft:ocean_monuments",   "factor": 1.0 },
+    { "structure": "minecraft:woodland_mansions", "factor": 1.0 },
+    { "structure": "minecraft:ruined_portals",    "factor": 1.0 },
+    { "structure": "minecraft:ancient_cities",    "factor": 1.0 },
+    { "structure": "minecraft:trail_ruins",       "factor": 1.0 },
+    { "structure": "minecraft:trial_chambers",    "factor": 1.0 },
+    { "structure": "minecraft:nether_complexes",  "factor": 1.0 },
+    { "structure": "minecraft:nether_fossils",    "factor": 1.0 },
+    { "structure": "minecraft:end_cities",        "factor": 1.0 },
+    { "structure": "minecraft:buried_treasures",  "factor": 1.0 },
+    { "structure": "minecraft:mineshafts",        "factor": 1.0 },
+    { "structure": "minecraft:strongholds",       "factor": 1.0 }
+
+    // ---- STEP 2, after you run /dumpstructuresets (see notes) ----
+    // Pin back to ~1.2-1.5 any MODDED set whose structures are the
+    // headline content you actually want players to find. 2.5 is the
+    // right default for filler/ambient structures; it is too harsh for
+    // a mod whose entire reward loop is "find the big dungeon".
+    // Example shape (replace with real ids from the dump):
+    // ,{ "structure": "dungeons_arise:<set_name>",  "factor": 1.4 }
+    // ,{ "structure": "t_and_t:<set_name>",         "factor": 1.0 }
+  ]
+}

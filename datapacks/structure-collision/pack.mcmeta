@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 48,
+    "description": "Structure collision control: exclusion_zone separation between the biggest modded structure sets. Density itself is handled by config/sparsestructures.json5, NOT here."
+  }
+}

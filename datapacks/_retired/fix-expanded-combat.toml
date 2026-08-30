@@ -1,0 +1,154 @@
+# =============================================================================
+# Expanded Combat — parity remediation patch
+# Target file on the server: config/expanded_combat.toml
+# Mod: Expanded Combat (userofbricks), branch neoforge-1.21.1
+# Serializer: Cloth Config AutoConfig + Toml4jConfigSerializer  => TOML
+#
+# HOW TO APPLY:
+#   1. Boot the server ONCE with EC installed so it generates config/expanded_combat.toml
+#   2. Edit the generated file in place, changing ONLY the keys below.
+#      Do NOT hand-author the whole file from this template - the table layout is
+#      produced by AutoConfig and must be taken from the generated file.
+#   3. Restart the server. Weapon attributes are baked into the item's default
+#      DataComponents at registry init, so a reload/`/reload` will NOT pick this up.
+#   4. *** SHIP THIS SAME FILE TO ALL 6 CLIENTS. *** See note at bottom.
+#
+# VERIFIED SOURCE FORMULAS (from ECWeaponItem.java / ECArrow.java / GauntletItem.java):
+#   melee tooltip damage = 1 (player base) + 3 + material.offense.addedAttackDamage
+#                            + weaponType.baseAttackDamage
+#   attack speed         = 4.0 + weaponType.attackSpeed
+#   arrow hit damage     = ceil(arrow_velocity * material.offense.arrowDamage)
+#                          where arrow_velocity = 3.0 * bow_material.velocityMultiplier
+#   gauntlet             = +addedAttackDamage/2 to ATTACK_DAMAGE, always, Curios "hands"
+#
+# BASELINE: vanilla netherite sword = 8 dmg @ 1.6 spd = 12.8 DPS
+# GOAL: every EC weapon lands 10.5-13.3 raw DPS (0.82-1.04x). Payoff becomes
+#       VARIETY (grip, reach, knockback, shields, quivers), not raw power.
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# 1. MELEE — the fast weapons come DOWN, the slow weapons go UP.
+#    11 of 14 weapons need only an `attackSpeed` change. Only dagger,
+#    dancers_sword and sickle also need `baseAttackDamage` changed.
+# -----------------------------------------------------------------------------
+
+# --- OVERPAYING: nerf ---------------------------------------------------------
+
+[dagger]                       # was 7 dmg @ 2.8 = 19.6 DPS (1.53x), dual ~25 DPS (1.96x)
+baseAttackDamage = -3          # was -1   -> netherite 5 dmg
+attackSpeed      = -1.9        # was -1.2 -> speed 2.1 -> 10.5 raw, ~13.4 dual-wielded
+
+[dancers_sword]                # was 10 dmg @ 2.2 = 22.0 DPS (1.72x)  <-- worst offender
+baseAttackDamage = -1          # was  2   -> netherite 7 dmg
+attackSpeed      = -2.1        # was -1.8 -> speed 1.9 -> 13.3 DPS (1.04x)
+
+[sickle]                       # was 8 dmg @ 2.2 = 17.6 DPS (1.375x)
+baseAttackDamage = -2          # was  0   -> netherite 6 dmg
+attackSpeed      = -2.2        # was -1.8 -> speed 1.8 -> 10.8 raw, ~13.8 dual-wielded
+
+[katana]                       # was 10 dmg @ 1.6 = 16.0 DPS (1.25x)
+attackSpeed      = -2.8        # was -2.4 -> speed 1.2 -> 12.0 DPS  (keeps arrow-block utility)
+
+[battlestaff]                  # was 6 dmg @ 2.6 = 15.6 DPS (1.22x)
+attackSpeed      = -1.8        # was -1.4 -> speed 2.2 -> 13.2 DPS
+
+[cutlass]                      # was 8 dmg @ 1.8 = 14.4 DPS (1.13x)
+attackSpeed      = -2.5        # was -2.2 -> speed 1.5 -> 12.0 DPS
+
+
+# --- UNDERPAYING: buff. Nine of fourteen EC weapons were BELOW a netherite
+#     sword. A player who picked a Spear was doing 52% of a friend who picked a
+#     Dancer's Sword - the group's exact stated failure mode, inside one mod.
+# -----------------------------------------------------------------------------
+
+[broadsword]                   # was 11 dmg @ 1.0 = 11.0 DPS (0.86x)
+attackSpeed      = -2.9        # was -3.0 -> speed 1.1 -> 12.1 DPS
+
+[claymore]                     # was 10 dmg @ 1.0 = 10.0 DPS (0.78x)
+attackSpeed      = -2.7        # was -3.0 -> speed 1.3 -> 13.0 DPS
+
+[mace]                         # was 12 dmg @ 0.8 = 9.6 DPS (0.75x)
+attackSpeed      = -3.0        # was -3.2 -> speed 1.0 -> 12.0 DPS
+
+[great_hammer]                 # was 13 dmg @ 0.7 = 9.1 DPS (0.71x)
+attackSpeed      = -3.1        # was -3.3 -> speed 0.9 -> 11.7 DPS (kept low: free Ground Slam 2)
+
+[glaive]                       # was 11 dmg @ 0.8 = 8.8 DPS (0.69x)
+attackSpeed      = -2.85       # was -3.2 -> speed 1.15 -> 12.65 DPS
+
+[flail]                        # was 12 dmg @ 0.6 = 7.2 DPS (0.56x)
+attackSpeed      = -3.0        # was -3.4 -> speed 1.0 -> 12.0 DPS  (+67%)
+
+[scythe]                       # was 12 dmg @ 0.6 = 7.2 DPS (0.56x)
+attackSpeed      = -2.95       # was -3.4 -> speed 1.05 -> 12.6 DPS  (+75%)
+
+[spear]                        # was 11 dmg @ 0.6 = 6.6 DPS (0.52x)  <-- worst trap option
+attackSpeed      = -2.85       # was -3.4 -> speed 1.15 -> 12.65 DPS  (+92%)
+
+
+# -----------------------------------------------------------------------------
+# 2. RANGED — the single most broken thing in the mod. Netherite bow + netherite
+#    arrow = 20 damage/shot vs vanilla's 6 (3.3x), on renewable, RECOVERABLE ammo
+#    at zero risk. Gold arrows (4.0) also out-damaged diamond (3.75) despite being
+#    far cheaper - a straight internal inversion. Both fixed below.
+#
+#    Nested table names come from MaterialConfig.java field `offense`.
+# -----------------------------------------------------------------------------
+
+[iron.offense]
+arrowDamage        = 2.1       # was 3.0
+velocityMultiplier = 1.05      # was 1.15   -> iron bow + iron arrow = 7 dmg (was 11)
+
+[gold.offense]
+arrowDamage        = 2.0       # was 4.0    -> now correctly BELOW diamond
+velocityMultiplier = 1.05      # was 1.10
+
+[diamond.offense]
+arrowDamage        = 2.3       # was 3.75
+velocityMultiplier = 1.12      # was 1.30   -> diamond bow + diamond arrow = 8 dmg (was 15)
+
+[netherite.offense]
+arrowDamage        = 2.5       # was 4.5
+velocityMultiplier = 1.20      # was 1.45   -> netherite bow + netherite arrow = 9 dmg (was 20)
+# DO NOT touch netherite.offense.addedAttackDamage (4) - it is shared between
+# weapon damage and gauntlet damage, and the melee table above is tuned around 4.
+
+
+# -----------------------------------------------------------------------------
+# 3. GAUNTLETS — recommended OFF.
+#    GauntletItem.getAttributeModifiers() puts +addedAttackDamage/2 onto
+#    Attributes.ATTACK_DAMAGE from a Curios slot. A netherite gauntlet is a
+#    permanent +2 attack damage on EVERY weapon in the pack - Cataclysm's,
+#    Simply Swords', Epic Knights'. It contaminates every parity comparison in
+#    the modlist, and it CANNOT be nerfed on its own because the value it reads
+#    (addedAttackDamage) is the same field that sets melee weapon damage.
+#    It also claims Curios slot "hands" (ExpandedCombat.GAUNTLET_CURIOS_IDENTIFIER),
+#    which is the same slot Artifacts gloves use.
+#    Turning it off fixes the cross-mod contamination and the slot collision at once.
+# -----------------------------------------------------------------------------
+
+enableGauntlets = false        # was true   (@RequiresRestart)
+
+# If you keep gauntlets instead: everything above still applies, but subtract a
+# further 0.4-0.6 from attackSpeed on dagger / sickle / battlestaff / dancers_sword.
+# A flat +2 damage is worth far more DPS on a 2.2-speed weapon than a 1.0-speed one,
+# so leaving gauntlets on re-opens the fast/slow spread this patch just closed.
+
+
+# =============================================================================
+# RESULT
+#   Internal spread collapses from 3.31x (6.6 -> 22.0 DPS) to 1.27x (10.5 -> 13.3).
+#   No EC weapon at ANY tier beats a vanilla netherite sword before netherite.
+#   Best iron-tier EC weapon: spear at 10.35 DPS (was: iron dagger at 14.0 DPS,
+#   which beat a netherite sword while wearing iron).
+#   Cataclysm's Infernal Forge (13 DPS, boss-gated) returns to the top of the ladder.
+#
+# *** CLIENT SYNC - DO NOT SKIP ***
+#   ECWeaponItem passes the attribute modifiers to Item.Properties.component(), which
+#   makes them the item's DEFAULT DataComponents - baked at registration from each
+#   machine's OWN config file, not synced from the server. Attack speed is
+#   client-predicted. If a client's expanded_combat.toml differs from the server's,
+#   that player gets wrong tooltips and a desynced attack cooldown.
+#   Ship this exact file to all 6 clients (drop it in their instance's config/ folder).
+# =============================================================================

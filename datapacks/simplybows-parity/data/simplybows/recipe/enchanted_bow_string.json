@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SSS",
+    "PAP",
+    "SSS"
+  ],
+  "key": {
+    "S": { "item": "minecraft:string" },
+    "P": { "item": "minecraft:phantom_membrane" },
+    "A": { "item": "minecraft:amethyst_shard" }
+  },
+  "result": {
+    "id": "simplybows:upgrades/enchanted_bow_string",
+    "count": 1
+  }
+}

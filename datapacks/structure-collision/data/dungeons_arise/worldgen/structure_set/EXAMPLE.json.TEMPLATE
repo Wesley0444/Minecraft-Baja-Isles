@@ -1,0 +1,35 @@
+{
+  "_comment_NOT_LOADED": [
+    "Rename to <exact_set_name>.json and place under",
+    "data/<modid>/worldgen/structure_set/ to override that mod's set.",
+    "",
+    "CRITICAL: a datapack override REPLACES the whole file, it does not merge.",
+    "You must copy the mod's ORIGINAL json (from /dumpstructuresets or the jar)",
+    "and add only the exclusion_zone block. If you omit the structures array or",
+    "the salt, you have silently changed the mod's worldgen.",
+    "",
+    "Do NOT edit spacing/separation here. Sparse Structures multiplies whatever",
+    "is in the loaded set at runtime, so editing both means you are stacking two",
+    "multipliers and will lose track of the real value.",
+    "",
+    "exclusion_zone is a SINGLE OBJECT, not an array: each structure set can",
+    "avoid exactly ONE other set. You cannot build a full mutual-exclusion mesh.",
+    "Spend the one slot per set on the pairing that actually looks broken.",
+    "chunk_count is clamped to 1-16. Vanilla uses 10 for pillager_outposts",
+    "avoiding villages -- that is the reference value for 'big thing near big thing'."
+  ],
+
+  "structures": [
+    { "structure": "dungeons_arise:REPLACE_ME", "weight": 1 }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 8,
+    "salt": 1234567,
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 10
+    }
+  }
+}

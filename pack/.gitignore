@@ -1,0 +1,10 @@
+# packwiz stores POINTERS, never jars. If a jar shows up here, something is wrong.
+*.jar
+*.zip
+mods/*.jar
+.packwizignore.local
+# launcher/runtime junk
+.minecraft/
+instance.cfg
+logs/
+crash-reports/

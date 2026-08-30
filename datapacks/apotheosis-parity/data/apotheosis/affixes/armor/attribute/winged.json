@@ -1,0 +1,22 @@
+{
+    "type": "apotheosis:attribute",
+    "attribute": "apothic_attributes:elytra_flight",
+    "categories": [
+        "apotheosis:chestplate"
+    ],
+    "definition": {
+        "affix_type": "stat",
+        "exclusive_set": [],
+        "weights": {
+            "haven":    { "weight": 0 },
+            "frontier": { "weight": 0 },
+            "ascent":   { "weight": 0 },
+            "summit":   { "weight": 10, "quality": 0.1 },
+            "pinnacle": { "weight": 15, "quality": 0.1 }
+        }
+    },
+    "operation": "add_value",
+    "values": {
+        "apotheosis:mythic": 1.0
+    }
+}

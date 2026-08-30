@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 48,
+    "description": "Parity: Simply Bows. Converts upgrade-component acquisition from pure chest RNG (~250 chests for a maxed kit) into a deterministic craft. Soft-gated on netherite scrap / amethyst / echo shard so it draws on several tracks, not one. 1.21.1."
+  }
+}
