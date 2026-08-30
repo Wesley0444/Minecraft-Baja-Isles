@@ -9,32 +9,37 @@
 // #
 // # WHY: ~12 structure mods each ship structure sets at roughly vanilla
 // # spacing (~32 chunks). Areal density scales as 1/spacing^2, so 12 mods
-// # stacked on vanilla produce ~3.7x vanilla structure density. That is
-// # both the interpenetration cause AND a parity break: the exploration
-// # track earns ~3.7x the loot per hour of a boss-fight track.
+// # stacked on vanilla produce ~3.7x vanilla structure density.
 // #
-// # spreadFactor 2.5 -> spacing x2.5 -> modded density / 6.25
-// #   => 12 structure mods contribute about what 2 would, on top of
-// #      untouched vanilla. Net world density ~= vanilla + 45%.
-// #   Use 3.0 instead for exactly vanilla + 30%.
-// #   Do NOT go above ~3.5: travel time becomes its own under-reward.
+// # spreadFactor 2.5 -> spacing x2.5 -> modded density / 6.25 for anything
+// # not pinned below. Pins added 2026-08-30 (step 5) from the live
+// # /dumpstructuresets output (255 sets), by these RULES:
+// #   A. Other-dimension sets -> 1.0   (the stacking argument is Overworld-
+// #      only; TF/Undergarden/AC/ES-dim density was tuned by one mod alone)
+// #   B. Progression-critical / boss-track sets -> 1.0-1.2 (Cataclysm is
+// #      the difficulty benchmark; fortresses/strongholds gate vanilla
+// #      progression; a 2.5x thin on a FINITE 12.8k-block world can starve
+// #      a set entirely)
+// #   C. "rare"-named sets -> 1.0-1.2  (native spacing already delivers
+// #      rarity; x2.5 on a finite world compounds to near-zero instances)
+// #   D. Headline raid content -> 1.2-1.8 (WDA, IDAS, T&T -- the content
+// #      players are MEANT to find; 2.5 is for ambient filler)
+// #   E. Everything unlisted -> global 2.5 (ambient/deco filler: all of
+// #      Moog's, supplementaries galleons/road signs, envelope, etc.)
+// #   F. DELIBERATELY left at 2.5 as balance nerfs -- do not pin these:
+// #      aether:bronze_dungeon + silver_and_gold_dungeons (doc 01 §2.18,
+// #      farmable Valkyrie Lance density), eternal_starlight:portal_ruins_*
+// #      (doc 01 §2.11, unkillable pre-dragon Gatekeeper ambush density),
+// #      apotheosis:towers (the pack's biggest overpayer needs no help).
 // ##########################################################################
 {
-  // Applies to EVERY structure set that is not pinned below.
-  // All the mod structure sets land here.
   "spreadFactor": 2.5,
+  "idBasedSalt": true,
 
   // Custom factors OVERRIDE the global value -- they do NOT multiply with it.
   // (Verified in source: the lookup is .orElse(global), not a product.)
-  //
-  // "structure" matches EITHER a structure_set id OR any structure id
-  // contained in a set. Matching a structure id modifies its whole set.
-  //
-  // Every vanilla 1.21.1 set is pinned to 1.0 so vanilla worldgen is
-  // byte-identical to an unmodded world. This is what preserves the
-  // "vanilla-plus" feel -- without these pins, global 2.5 would push
-  // villages from 34 to 85 chunks apart and the world would feel dead.
   "customSpreadFactors": [
+    // ---- vanilla pinned 1.0: vanilla worldgen stays byte-identical ----
     { "structure": "minecraft:villages",          "factor": 1.0 },
     { "structure": "minecraft:pillager_outposts", "factor": 1.0 },
     { "structure": "minecraft:desert_pyramids",   "factor": 1.0 },
@@ -54,15 +59,109 @@
     { "structure": "minecraft:end_cities",        "factor": 1.0 },
     { "structure": "minecraft:buried_treasures",  "factor": 1.0 },
     { "structure": "minecraft:mineshafts",        "factor": 1.0 },
-    { "structure": "minecraft:strongholds",       "factor": 1.0 }
+    { "structure": "minecraft:strongholds",       "factor": 1.0 },
 
-    // ---- STEP 2, after you run /dumpstructuresets (see notes) ----
-    // Pin back to ~1.2-1.5 any MODDED set whose structures are the
-    // headline content you actually want players to find. 2.5 is the
-    // right default for filler/ambient structures; it is too harsh for
-    // a mod whose entire reward loop is "find the big dungeon".
-    // Example shape (replace with real ids from the dump):
-    // ,{ "structure": "dungeons_arise:<set_name>",  "factor": 1.4 }
-    // ,{ "structure": "t_and_t:<set_name>",         "factor": 1.0 }
+    // ---- RULE A: other-dimension sets (no Overworld stacking there) ----
+    { "structure": "twilightforest:aurora_palace",      "factor": 1.0 },
+    { "structure": "twilightforest:camp",               "factor": 1.0 },
+    { "structure": "twilightforest:dark_tower",         "factor": 1.0 },
+    { "structure": "twilightforest:fallen_trunk",       "factor": 1.0 },
+    { "structure": "twilightforest:final_castle",       "factor": 1.0 },
+    { "structure": "twilightforest:giant_house",        "factor": 1.0 },
+    { "structure": "twilightforest:hedge_maze",         "factor": 1.0 },
+    { "structure": "twilightforest:hollow_tree",        "factor": 1.0 },
+    { "structure": "twilightforest:hydra_lair",         "factor": 1.0 },
+    { "structure": "twilightforest:knight_stronghold",  "factor": 1.0 },
+    { "structure": "twilightforest:labyrinth",          "factor": 1.0 },
+    { "structure": "twilightforest:large_hollow_hill",  "factor": 1.0 },
+    { "structure": "twilightforest:lich_tower",         "factor": 1.0 },
+    { "structure": "twilightforest:medium_hollow_hill", "factor": 1.0 },
+    { "structure": "twilightforest:naga_courtyard",     "factor": 1.0 },
+    { "structure": "twilightforest:quest_grove",        "factor": 1.0 },
+    { "structure": "twilightforest:small_hollow_hill",  "factor": 1.0 },
+    { "structure": "twilightforest:troll_cave",         "factor": 1.0 },
+    { "structure": "twilightforest:yeti_cave",          "factor": 1.0 },
+    { "structure": "undergarden:catacombs",             "factor": 1.0 },
+    { "structure": "undergarden:denizen_camp",          "factor": 1.0 },
+    { "structure": "undergarden:depleted_mine",         "factor": 1.0 },
+    { "structure": "undergarden:forgotten_vestige",     "factor": 1.0 },
+    { "structure": "alexscaves:abyssal_ruins",          "factor": 1.0 },
+    { "structure": "alexscaves:acid_pit",               "factor": 1.0 },
+    { "structure": "alexscaves:cake_cave",              "factor": 1.0 },
+    { "structure": "alexscaves:dino_bowl",              "factor": 1.0 },
+    { "structure": "alexscaves:donut_arch",             "factor": 1.0 },
+    { "structure": "alexscaves:ferrocave",              "factor": 1.0 },
+    { "structure": "alexscaves:forlorn_bridge",         "factor": 1.0 },
+    { "structure": "alexscaves:forlorn_canyon",         "factor": 1.0 },
+    { "structure": "alexscaves:gingerbread_town",       "factor": 1.0 },
+    { "structure": "alexscaves:licowitch_tower",        "factor": 1.0 },
+    { "structure": "alexscaves:ocean_trench",           "factor": 1.0 },
+    { "structure": "alexscaves:soda_bottle",            "factor": 1.0 },
+    { "structure": "alexscaves:underground_cabin",      "factor": 1.0 },
+    { "structure": "alexscaves:volcano",                "factor": 1.0 },
+    { "structure": "eternal_starlight:cursed_garden",   "factor": 1.0 },
+    { "structure": "eternal_starlight:golem_forge",     "factor": 1.0 },
+    { "structure": "eternal_starlight:stranghoul_den",  "factor": 1.0 },
+    { "structure": "deeperdarker:ancient_temples",      "factor": 1.0 },
+    { "structure": "aether:large_aercloud",             "factor": 1.0 },
+    { "structure": "structory_towers:end_towers",       "factor": 1.0 },
+
+    // ---- RULE B: progression-critical / boss-track ----
+    { "structure": "betterfortresses:fortress",         "factor": 1.0 },
+    { "structure": "integrated_stronghold:stronghold",  "factor": 1.0 },
+    { "structure": "confluence:dungeon_altar",          "factor": 1.0 },
+    { "structure": "cataclysm:abandoned_structures",    "factor": 1.2 },
+    { "structure": "cataclysm:acropolis",               "factor": 1.2 },
+    { "structure": "cataclysm:amethyst_nest",           "factor": 1.2 },
+    { "structure": "cataclysm:ancient_factory",         "factor": 1.2 },
+    { "structure": "cataclysm:burning_arena",           "factor": 1.2 },
+    { "structure": "cataclysm:cursed_pyramid",          "factor": 1.2 },
+    { "structure": "cataclysm:desert_structures",       "factor": 1.2 },
+    { "structure": "cataclysm:frosted_prison",          "factor": 1.2 },
+    { "structure": "cataclysm:ruined_citadel",          "factor": 1.2 },
+    { "structure": "cataclysm:soul_black_smith",        "factor": 1.2 },
+    { "structure": "cataclysm:sunken_city",             "factor": 1.2 },
+    { "structure": "mowziesmobs:frostmaw_spawns",       "factor": 1.2 },
+    { "structure": "mowziesmobs:monasteries",           "factor": 1.2 },
+    { "structure": "mowziesmobs:umvuthana_groves",      "factor": 1.2 },
+    { "structure": "mowziesmobs:wrought_chambers",      "factor": 1.2 },
+    { "structure": "irons_spellbooks:catacombs",        "factor": 1.2 },
+    { "structure": "irons_spellbooks:citadel",          "factor": 1.2 },
+    { "structure": "irons_spellbooks:evoker_fort",      "factor": 1.2 },
+    { "structure": "ars_nouveau:wilden_den_set",        "factor": 1.2 },
+    { "structure": "aquamirae:pirate_ship",             "factor": 1.2 },
+    { "structure": "aquamirae:pirate_outpost",          "factor": 1.2 },
+    { "structure": "aquamirae:pirate_shelter",          "factor": 1.2 },
+    { "structure": "aquamirae:shipwreck",               "factor": 1.2 },
+    { "structure": "aquamirae:surface",                 "factor": 1.2 },
+
+    // ---- RULE C: natively-rare sets (finite world would starve them) ----
+    { "structure": "idas:idas_rare",                    "factor": 1.0 },
+    { "structure": "idas:idas_underground_rare",        "factor": 1.0 },
+    { "structure": "structory_towers:rare_towers",      "factor": 1.0 },
+    { "structure": "structory_towers:ultra_rare_towers","factor": 1.0 },
+    { "structure": "antarchy:elythia_rare",             "factor": 1.0 },
+    { "structure": "terralith:rare_village",            "factor": 1.0 },
+    { "structure": "terralith:rare_dungeon",            "factor": 1.2 },
+    { "structure": "integrated_villages:air_villages",  "factor": 1.5 },
+
+    // ---- RULE D: headline raid content ----
+    { "structure": "dungeons_arise:major_structures",   "factor": 1.3 },
+    { "structure": "dungeons_arise:minor_structures",   "factor": 1.8 },
+    { "structure": "idas:idas_common",                  "factor": 1.4 },
+    { "structure": "idas:idas_underground",             "factor": 1.5 },
+    { "structure": "idas:idas_ocean",                   "factor": 1.5 },
+    { "structure": "towns_and_towers:towns",            "factor": 1.2 },
+    { "structure": "towns_and_towers:towers",           "factor": 1.5 },
+    { "structure": "towns_and_towers:other",            "factor": 1.8 },
+    { "structure": "integrated_villages:regular_villages", "factor": 1.2 },
+    { "structure": "betterarcheology:archeology_sites", "factor": 1.5 },
+    { "structure": "betterarcheology:fossil_sites",     "factor": 1.5 },
+    { "structure": "betterarcheology:underwater_ruins", "factor": 1.5 },
+    { "structure": "awakened:arbiter_arena",            "factor": 1.5 },
+    { "structure": "awakened:evoker_spire",             "factor": 1.5 },
+    { "structure": "awakened:sunken_vault",             "factor": 1.5 },
+    { "structure": "confluence:queen_bee_hive",         "factor": 1.5 },
+    { "structure": "confluence:enchanted_sword_shrine", "factor": 1.5 }
   ]
 }

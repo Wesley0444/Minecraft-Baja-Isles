@@ -1,0 +1,6 @@
+{
+  "mix_type": "potion",
+  "from": "apothic_attributes:levitation",
+  "ingredient": { "item": "minecraft:nether_star" },
+  "to": "apothic_attributes:flying"
+}

@@ -52,17 +52,26 @@ across parallel tracks"). Wesley revised this on 2026-08-30 after an hour with t
 
 > **Obligations created by the 2026-08-30 Integrated reversal** (tracked here so they
 > don't evaporate):
-> 1. **Quark's worldgen module must be configured (keep/trim/off) BEFORE pregen** — it is
->    fully toggleable but only pre-world. This is a step-5/6 BLOCKER.
+> 1. ✅ **Quark's worldgen module — DECIDED at step 5 (2026-08-30): all 17 world modules
+>    stay ON** (kitchen-sink call; none are gear; permanence was already accepted since
+>    Quark is on the never-remove list regardless). Trimmable in `quark-common.toml
+>    [world]` any time **before pregen**, never after.
 > 2. Create + Supplementaries worldgen (zinc veins, wild flax / way signs) becomes
 >    permanent at pregen — **they join BoP/Terralith on the never-remove list**, as does
 >    the whole Integrated family and Alex's Caves.
-> 3. Step-5 JEI audit: verify no combat gear is gated behind Create parts (the playbook's
->    Create-tax concern). Create is an economy track, not a gear gate.
+> 3. ✅ **Audit DONE at step 5 (all 121 jars' recipes scanned) — and it caught a real
+>    violation:** `integrated_cataclysm` overrode six base-Cataclysm recipes (laser
+>    gatling, WASW, meat shredder, the incinerator, mech eye, Mechanical Fusion Anvil)
+>    to require Create Mechanical Crafters, with no loot fallback. **Fixed:** base
+>    recipes restored via `pack-balance` datapack (doc 06 §1; 2-minute revert if David
+>    prefers the Create gate). Nothing else in the pack Create-gates combat gear.
 > 4. Accepted as-is: the four deps enter unaudited (doc 00 had them "decide — insufficient
 >    data"), and IDAS loot tables reference Ice & Fire / BYG items this pack never had →
 >    those chests roll slightly light, and its `dread_citadel` spawner list logs a benign
 >    parse error at boot. Known, accepted, do not "fix".
+> 5. ✅ **Alex's Caves gear skim — DONE at step 5**, obligation from the §1 AC row closed:
+>    one config nerf (Sugar Rush tick-slow off) + a watch list (Dreadbow, Totem-on-players,
+>    nukes). Full table in `06-STEP5-BALANCE-PASS.md §4`.
 >
 > **Freeze status after this:** reopened three times on 2026-08-30 (Integrated cut →
 > AC/perf/doc-03-adds → Integrated reversal), now closed FOR GOOD. The next reopening

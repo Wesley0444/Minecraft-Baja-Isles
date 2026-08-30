@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "cataclysm:wrath_of_the_desert", "required": false },
+    { "id": "cataclysm:cursed_bow", "required": false },
+    { "id": "twilightforest:triple_bow", "required": false },
+    { "id": "twilightforest:seeker_bow", "required": false },
+    { "id": "twilightforest:ender_bow", "required": false },
+    { "id": "twilightforest:ice_bow", "required": false },
+    { "id": "aether:phoenix_bow", "required": false }
+  ]
+}

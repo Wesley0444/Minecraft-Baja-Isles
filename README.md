@@ -12,8 +12,9 @@ Pack URL: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>.
 **The server is BUILT and boot-verified (step 4 complete, 2026-08-30):** NeoForge
 21.1.249 in this folder, four ops scripts live, firewall hardened (explicit RCON block —
 the Palworld lesson), SYSTEM boot task + backup/presence tasks elevated-verified.
-Next: datapacks + config nerfs (step 5) — **Quark's worldgen module config is a
-step-5/6 BLOCKER** (doc 03 §1 obligations block).
+**Step 5 (balance pass) APPLIED + boot-verified 2026-08-30** — record in
+`planning/06-STEP5-BALANCE-PASS.md`; the Quark-worldgen blocker is DECIDED (all
+modules on). Next: **step 6, pregen + splice** (record both seeds!).
 
 - **Who:** Wesley (host) + Leyton, DJ, David, Dan +1. Six players.
 - **What:** long shared campaign, months-long world, ~130 mods.
@@ -73,9 +74,19 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
    wrongly marked client-side → flipped to both). Session log: zero errors.
    Port forward verified from the internet (check-host, 2 continents).
    → `planning/02-SERVER-BUILD-PLAN.md` (house conventions in `../CLAUDE.md`)
-5. **Apply the datapacks + config nerfs.** Deeper and Darker's Resonarium fix is the single
-   highest-priority change and must land **before anyone joins**.
-   → `planning/03-FINAL-DECISIONS.md §4`
+5. ✅ **Datapacks + config nerfs APPLIED — 2026-08-30 (step 5).** All Tier-0 fixes live
+   (Resonarium 100%-immunity bug dead, Omen + Apotheosis executes dead, TF uncrafting
+   off, Epic Knights KB immunity gone, Antarchy ultimate kit at netherite parity,
+   wither-spawner reward gone) + ~45 config keys, 5 Paxi-deployed balance datapacks,
+   boss `#c:bosses` fencing (no spawner/Drygmy boss farming), flying potion re-gated
+   behind a nether star, structure density pinned per-set (~75 pins from the live set
+   dump), Quark worldgen decided (all on), AC gear skim done, and the Create-gate audit
+   caught + fixed integrated_cataclysm hard-gating six Cataclysm items behind
+   Mechanical Crafters. **The full applied record — every key, every skip, every open
+   item — is `planning/06-STEP5-BALANCE-PASS.md`.** Verified: two clean boots, 5 packs
+   loaded, zero new errors. ⚠ Wesley's 10-min in-game checklist (doc 06 §7) still
+   pending — run it at the step-6 session's client hop.
+   → `planning/03-FINAL-DECISIONS.md §4` + `planning/06-STEP5-BALANCE-PASS.md`
 6. **Pregen + splice** (R=3000 today, extend to 6000 overnight).
    → `planning/05-WORLD-SPLICE.md`
 7. **Onboard players.** Export a Prism instance zip, drop it in `pack-tools/instance/`,
@@ -91,6 +102,7 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 | File | What it is |
 |---|---|
 | `planning/03-FINAL-DECISIONS.md` | ⭐ **The decision record. Read this first.** Cuts, adds, tuning jobs, accepted risks. Supersedes doc 00 wherever they disagree. |
+| `planning/06-STEP5-BALANCE-PASS.md` | ⭐ **What actually LANDED at step 5** — every config key (config\ is gitignored; this doc is the record), datapack inventory, skips, open items, Wesley's in-game checklist. Supersedes doc 01 wherever they disagree. |
 | `planning/05-WORLD-SPLICE.md` | The BoP × Terralith hard seam at X=0. Procedure, sizing, phased pregen. |
 | `planning/04-PACK-DISTRIBUTION.md` | packwiz → GitHub Pages → Prism. Launcher choice and why. |
 | `planning/02-SERVER-BUILD-PLAN.md` | RAM math, JVM flags, install sequence, the four scripts, risk register. |
