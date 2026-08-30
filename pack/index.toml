@@ -67,7 +67,7 @@ metafile = true
 
 [[files]]
 file = "mods/balm.pw.toml"
-hash = "48ccf754257a1d140c12e4cee3bd7901392023fcd5a3fc961b7275448459fe73"
+hash = "7dba9a4a9894a6bbab3a8c7edcc718499297412247fc0e8ccebf75b760c85140"
 metafile = true
 
 [[files]]
@@ -582,7 +582,7 @@ metafile = true
 
 [[files]]
 file = "mods/waystones.pw.toml"
-hash = "8bcf5e1090d99f4b1e448d4c02cb14ac450e53c466233e514315e069f179b6b9"
+hash = "90636b75638eaa7102b6d6098299ea500887a708130df081ba5aa9c7ba5d8927"
 metafile = true
 
 [[files]]

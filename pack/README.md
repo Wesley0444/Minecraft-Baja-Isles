@@ -34,11 +34,16 @@ boot, `Done (16.202s)`, 0 chunk errors):
 - **structory-towers** is pinned to v1.0.15 (version-id `lefqbuOP`). Newer builds target
   the next MC line and crash 1.21.1 ("Missing ModLoader in file"). Re-pin after any bulk
   update.
-- **minecolonies** is pinned to the 1.1.1368 STABLE release (CF file-id `8562588`), not
-  the newest snapshot: 1.1.1375-snapshot crashes every CLIENT at the title screen
-  ("Cannot get config value before config is loaded", onPlaySoundEvent) — found in the
-  2026-08-30 join test. Server boots never catch this class of bug (no sound engine);
-  a client launch is part of any Minecolonies bump from now on.
+- **minecolonies** is pinned to the 1.1.1368 STABLE release (CF file-id `8562588`) —
+  stay on the stable channel, never snapshots, for a months-long world.
+- **waystones** is pinned to 21.1.27 + **balm** 21.0.65 (Modrinth version-id `xMz5Hial`):
+  Confluence 1.2.4's Waystones-integration client mixin targets a method newer Waystones
+  refactored away → mixin apply fails → mod construction aborts → every client crashes
+  before the title screen, **with a crash report that falsely blames Minecolonies**
+  (its sound handler trips on the never-loaded configs first). Found in the 2026-08-30
+  join test. Confluence 1.2.4 is its newest build; re-check this pairing whenever
+  Confluence updates. **A client launch is part of the smoke test for any client-facing
+  mod bump — server boots cannot catch client-GUI mixin failures.**
 
 ## `side` status
 

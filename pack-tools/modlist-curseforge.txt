@@ -119,6 +119,15 @@ the-undergarden:379849
 towns-and-towers:626761
 vanilla-loot-addon-for-loot-integrations:1128055
 visual-health:1473785
+# ⚠ PINNED to 21.1.27 (Modrinth version-id xMz5Hial, + matching Balm 21.0.65), NOT newest:
+# Confluence 1.2.4's Waystones-integration CLIENT mixin targets 'createWaystoneButton' in
+# WaystoneSelectionScreenBase, which newer Waystones (21.1.41 confirmed) refactored away →
+# mixin apply fails → Mod Construction aborts → every client dies before the title screen
+# (and the crash report BLAMES MINECOLONIES — its sound handler trips first on the
+# never-loaded configs; that red herring cost a full debug cycle 2026-08-30). Confluence
+# 1.2.4 (2026-02-25) is the NEWEST build; Waystones 21.1.28 shipped the day after it.
+# Server boots can't catch this (client GUI class). Third pin: structory-towers,
+# minecolonies, now waystones. `packwiz update --all` re-breaks all three.
 waystones:245755
 when-dungeons-arise:442508
 xaeros-minimap:263420
