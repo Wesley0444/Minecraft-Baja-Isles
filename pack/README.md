@@ -47,7 +47,11 @@ boot, `Done (16.202s)`, 0 chunk errors):
 
 ## `side` status
 
-`client`: Xaero's ×3, Jade, JEI — the server never sees them.
+`client`: Xaero's minimap + world map, Jade, JEI — the server never sees them.
+**NOT client: the Xaero's↔Waystones bridge (`w2w2`)** — it registers a required network
+channel, so a client-side mark makes every join fail with a misleading "Incompatible
+client! Please use NeoForge 21.1.249". Found+fixed in the 2026-08-30 join test; it is
+`both` now and must stay that way.
 **Deliberate deviation:** `simply-tooltips` stays `both` even though it looks client-only —
 Simply Bows + Simply Swords declare it a *required* dep, and a `client` mark would strip
 it from the server install and risk a boot refusal. Candidates never flipped (unverified,

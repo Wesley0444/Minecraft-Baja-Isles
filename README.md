@@ -66,6 +66,12 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
    live: RCON flush → robocopy slot on H: → zip from the quiesced slot. Three defects in
    doc 02's script drafts found+fixed (banner at doc 02 §7). Server syncs mods via
    `update.bat` → packwiz-installer → the live Pages URL.
+   **Client join test PASSED same day** (Wesley, via the Prism instance that becomes the
+   step-7 template): the test earned its keep — it caught three client-only failures no
+   server boot can see (a Waystones/Confluence mixin break → Waystones+Balm version pin;
+   a Minecolonies crash-report red herring → stable-channel pin; the w2w2 bridge
+   wrongly marked client-side → flipped to both). Session log: zero errors.
+   Port forward verified from the internet (check-host, 2 continents).
    → `planning/02-SERVER-BUILD-PLAN.md` (house conventions in `../CLAUDE.md`)
 5. **Apply the datapacks + config nerfs.** Deeper and Darker's Resonarium fix is the single
    highest-priority change and must land **before anyone joins**.
