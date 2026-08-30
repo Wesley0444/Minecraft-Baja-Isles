@@ -158,6 +158,9 @@ Players get it next launch. Server gets it next restart.
 
 The pack was built this day (98 stubs: 66 CF + 32 Modrinth incl. auto-deps; dual-listed
 mods sourced from **Modrinth** — open API, immune to future CF distribution-flag flips).
+*(Later the same day, at server build, it grew to **126 stubs**: the doc-02 §5 perf stack,
+Alex's Caves via the unofficial port, doc 03 §2's dropped ADD table, and the Integrated
+family reversal — see item 5 below and doc 03 §1. All boot-verified together.)*
 Validated end-to-end: `packwiz serve` → `packwiz-installer -g -s server` → NeoForge
 21.1.249 boots to `Done` on a throwaway server. Five landmines found, all by **boot
 testing**, none by metadata inspection:
@@ -177,7 +180,10 @@ testing**, none by metadata inspection:
    see rule 5 above). Loader tags on Modrinth versions are author-supplied claims.
 5. **The Integrated family hard-required Create+Quark+Zeta+Supplementaries** (NeoForge
    level, boot-proven both ways) → cut per doc 03 §1. `integrated-api` alone stays
-   (Antarchy needs it).
+   (Antarchy needs it). **⟳ REVERSED later the same day** (David weighed in, Wesley
+   approved): family back in, the four deps admitted as deliberate roster members.
+   The landmine itself stands — the point was that CF metadata never disclosed the
+   dependency, and only boot testing did.
 
 **The moral, twice-earned:** the pack's true dependency graph is only discoverable by
 booting a server against the built pack. That smoke test (serve + install + boot) is now

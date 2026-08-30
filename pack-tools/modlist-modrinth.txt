@@ -51,3 +51,38 @@ the-undergarden
 towns-and-towers
 xaeros-minimap
 xaeros-world-map
+
+# ── Doc 03 §2 ADD table (landed 2026-08-30 at server build) ──────────────────────────
+# These five were DECIDED pre-freeze in doc 03 §2 but the manifest extraction only
+# applied doc 03's CUTS — the adds silently fell through and the freeze locked without
+# them. Found at server build; Wesley chose "all five". GraveStone also settles the
+# doc-01 §1.10.2 death-penalty decision (grave mod, not full-loss).
+gravestone-mod
+combat-roll
+shield-expansion
+lootr
+# Doc 03 named "Sparse Structures Reforged" (CF fork), assuming the original was
+# Fabric-only — wrong: the ORIGINAL sparsestructures ships neoforge-1.21.1 v3.0 on
+# Modrinth, server_only. Took the original.
+sparsestructures
+
+# ── Server perf stack (added 2026-08-30 at server build, per doc 02 §5) ──────────────
+# NOT content and NOT subject to the worldgen freeze: these are behavior-preserving
+# optimization/ops mods, all planned in 02-SERVER-BUILD-PLAN.md §5 from day one.
+# side=server (players never download them): lithium, spark, chunky, fastsuite,
+#   alternate-current, noisium, servercore, paxi
+# side=both (memory wins apply client-side too / registers a synced entity): modernfix,
+#   ferrite-core, clumps
+# Deliberately SKIPPED per doc 02 §5: radium, canary, krypton, c2me, scalablelux.
+# In Control! deferred to step 5 (spawn-shaping is balance work, add if needed).
+lithium
+spark
+chunky
+modernfix
+ferrite-core
+fastsuite
+alternate-current
+noisium
+servercore
+clumps
+paxi

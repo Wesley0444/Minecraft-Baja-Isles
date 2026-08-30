@@ -1,13 +1,19 @@
 # Minecraft 1.21.1 NeoForge — server project
 
 **Entry point. Start here.** Planning is COMPLETE as of 2026-08-30, all three
-modlist-gating tests **PASSED** (same day), and the **MODLIST IS FROZEN as of 2026-08-30**
-(reopened + reclosed once, same day: the Integrated family cut at pack-build — doc 03 §1).
-Nothing worldgen-related may change from here, ever. The **packwiz pack is BUILT,
-boot-verified, and LIVE on GitHub Pages** (step 3 complete, 2026-08-30) — see
-`planning/04-PACK-DISTRIBUTION.md §7` for the five landmines the build surfaced.
+modlist-gating tests **PASSED** (same day), and the **MODLIST IS FROZEN as of 2026-08-30 —
+FOR GOOD** (reopened three times that day: Integrated family cut at pack-build → Alex's
+Caves + perf stack + doc 03's dropped ADD table at server build → Integrated family
+REVERSAL on David's vote — all in doc 03 §1. Next reopening request gets refused by
+default and escalated to Wesley in person). Nothing worldgen-related may change
+post-pregen, ever. The **packwiz pack is BUILT (126 stubs), boot-verified, and LIVE on
+GitHub Pages** — see `planning/04-PACK-DISTRIBUTION.md §7` for the landmines.
 Pack URL: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>.
-Next: server build (step 4).
+**The server is BUILT and boot-verified (step 4 complete, 2026-08-30):** NeoForge
+21.1.249 in this folder, four ops scripts live, firewall hardened (explicit RCON block —
+the Palworld lesson), SYSTEM boot task + backup/presence tasks elevated-verified.
+Next: datapacks + config nerfs (step 5) — **Quark's worldgen module config is a
+step-5/6 BLOCKER** (doc 03 §1 obligations block).
 
 - **Who:** Wesley (host) + Leyton, DJ, David, Dan +1. Six players.
 - **What:** long shared campaign, months-long world, ~130 mods.
@@ -41,6 +47,8 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 2. ✅ **MODLIST FROZEN — 2026-08-30 (Wesley's call).** Everything downstream depends on
    this. Nothing worldgen-related may change afterwards, ever. The frozen manifest =
    `pack-tools/modlist-curseforge.txt` (65) + `pack-tools/modlist-modrinth.txt` (26).
+   *(After the three build-day reopenings — doc 03 §1 — the closed-for-good manifest is
+   73 CF + 43 Modrinth active entries.)*
 3. ✅ **Pack BUILT — 2026-08-30.** packwiz (CI build, `pack-tools/bin/`, gitignored) →
    98 stubs in `pack/` (dual-listed mods sourced from Modrinth), validated end-to-end:
    `packwiz serve` → `packwiz-installer -s server` → NeoForge boots to `Done`. Five
@@ -49,7 +57,15 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
    `packwiz update --all` would break. All in `planning/04-PACK-DISTRIBUTION.md §7`.
    Pushed + **LIVE**: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>
    (installer verified against the live URL same day).
-4. **Stand up the server** — NeoForge 1.21.1, configs, the four scripts, firewall, boot task.
+4. ✅ **Server BUILT — 2026-08-30.** NeoForge 21.1.249 installed at repo root (runtime is
+   gitignored; the ops scripts are committed). Stage-0 vanilla boot `Done (7.577s)` via
+   the SYSTEM boot task; full 126-stub modded boot `Done (16.202s)`, fresh world, 0 chunk
+   errors. Firewall: allow 25565 only + **explicit BLOCK on RCON 25575** (it binds
+   0.0.0.0 — the block rule is the only thing keeping it off the LAN, and setup purged
+   10 stray program-scoped java rules incl. two for this very JDK). Backup chain proven
+   live: RCON flush → robocopy slot on H: → zip from the quiesced slot. Three defects in
+   doc 02's script drafts found+fixed (banner at doc 02 §7). Server syncs mods via
+   `update.bat` → packwiz-installer → the live Pages URL.
    → `planning/02-SERVER-BUILD-PLAN.md` (house conventions in `../CLAUDE.md`)
 5. **Apply the datapacks + config nerfs.** Deeper and Darker's Resonarium fix is the single
    highest-priority change and must land **before anyone joins**.
@@ -75,8 +91,8 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 | `planning/01-BALANCE-PLAYBOOK.md` | Config keys and pastable JSON per mod. 52 fenced blocks. |
 | `planning/00-MODLIST-AUDIT.md` | The full audit. 110 mods, parity table, 101-row verdict table. **Its §6/§10 redundancy calls are partly superseded by doc 03.** |
 | `pack-tools/PLAYER-SETUP.md` | Player onboarding. Served live at <https://cards.archidicks.com/guides/mc-setup> (auth-gated) — edit the file, page updates. |
-| `pack-tools/modlist-*.txt` | 62 CurseForge (pinned `slug:id`) + 27 Modrinth slugs after the 2026-08-30 pack build: Integrated family (5 entries) cut; boot-breaking hidden deps added explicitly (`curios`, `cupboard`, `integrated-api`, `sizeable-foliage` — Modrinth dep metadata lies, 3 mods confirmed). Other libraries still auto-added by packwiz at install. |
-| `pack/` | ⭐ **The built packwiz pack** (source of truth for client + server): `pack.toml` (MC 1.21.1, NeoForge 21.1.249) + 98 mod stubs. Boot-verified 2026-08-30. Serve locally with `pack-tools/bin/packwiz.exe serve`. |
+| `pack-tools/modlist-*.txt` | 73 CurseForge (pinned `slug:id`) + 43 Modrinth slugs after build day: Integrated family cut → REVERSED same day (Create/Quark/Zeta/Supplementaries now deliberate members); Alex's Caves via unofficial port; doc 02 §5 perf stack; doc 03 §2's dropped ADD table; boot-breaking hidden deps explicit (`curios`, `cupboard`, `integrated-api`, `sizeable-foliage` — Modrinth dep metadata lies). Other libraries still auto-added by packwiz at install. |
+| `pack/` | ⭐ **The built packwiz pack** (source of truth for client + server): `pack.toml` (MC 1.21.1, NeoForge 21.1.249) + 126 mod stubs. Boot-verified 2026-08-30 (incl. the reversal roster). Serve locally with `pack-tools/bin/packwiz.exe serve`. |
 | `datapacks/` | 6 active datapacks, all `pack_format 48`, all valid JSON. Newest: `confluence-gate-life-crystal` (test-2 verdict, empirically verified). |
 | `datapacks/_retired/` | Datapacks retired by later decisions, each with a WHY note. Not deleted. |
 
@@ -94,7 +110,10 @@ individual cells.
    script must use the absolute JDK 21 path.
 2. **BoP and Terralith can never be removed** once the world is spliced. Chunk NBT
    references their biome IDs; removing either is data loss, not a recoverable crash.
-   Terralith is a *datapack* — it must stay in the world folder too.
+   Terralith is a *datapack* — it must stay in the world folder too. **Post-reversal,
+   the never-remove list also includes: Alex's Caves (5 underground biomes), the
+   Integrated family, and Create + Quark + Supplementaries** (zinc veins, Quark biomes/
+   structures if left on, wild flax / way signs — all in chunk data once pregen runs).
 3. **Record both seeds.** The splice uses a different seed per half. Without them the world
    can never be extended seamlessly.
 4. **Never change worldgen mods after generation.** Fragments chunks, and you find out

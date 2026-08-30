@@ -1,2 +1,32 @@
 # Tool binaries — never commit executables to the repo
 pack-tools/bin/
+
+# --- Server runtime (step 4) — generated, secret, or huge. Never committed. ---
+# The four ops scripts (launch.bat, update.bat, admin_setup.bat, setup-tasks.ps1,
+# backup.ps1) ARE committed — they hold no secrets (RCON password is read from
+# server.properties at runtime, and server.properties is ignored below).
+/libraries/
+/mods/
+/world/
+/world*/
+/logs/
+/crash-reports/
+/config/
+/defaultconfigs/
+/eula.txt
+/server.properties
+/usercache.json
+/usernamecache.json
+/banned-ips.json
+/banned-players.json
+/ops.json
+/whitelist.json
+/maintenance.lock
+/.mixin.out/
+/dynamic-data-pack-cache/
+/run.bat
+/run.sh
+/user_jvm_args.txt
+/*.jar
+/*.log
+/packwiz.json

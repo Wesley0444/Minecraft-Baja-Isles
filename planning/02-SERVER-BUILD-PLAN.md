@@ -538,7 +538,21 @@ Then per dimension, repeating `world` / `center` / `radius` / `start`. Other com
 
 ## 7. THE FOUR SCRIPTS
 
-### Deviations from the house convention, declared up front
+> ✅ **BUILT 2026-08-30 — the live scripts in the server root are now the source of
+> truth, not the drafts below.** The build found and fixed **three real defects in these
+> drafts** (details live as comments in the scripts themselves):
+> 1. `-RepetitionDuration ([TimeSpan]::MaxValue)` on repeating triggers → out-of-range
+>    task XML (0x80041318); Register-ScheduledTask THROWS. Omit the parameter (omitted =
+>    indefinite; the proven Palworld setup does the same).
+> 2. `backup.ps1`'s `$OFFSITE` config variable collides with its `[switch]$Offsite`
+>    parameter (PS vars are case-insensitive) → binding explosion on every invocation.
+>    Renamed `$OFFSITE_DIR`.
+> 3. Snapshot robocopy dies on `world\session.lock` — the running server holds a
+>    byte-range lock on it (that IS the vanilla session lock). `/XF session.lock`.
+> Also changed at build: `update.bat` self-elevates (SYSTEM task /Run needs it), its
+> wait-loop matches the server's command line instead of any `java.exe` (this box also
+> runs Wesley's CLIENT java), and the manual jar-swap pause became the packwiz sync from
+> doc 04 §2. Java is the Microsoft JDK 21.0.4 already on the box, not a new Temurin.
 
 1. **`update.bat` does not auto-update.** The house standard is "SteamCMD patches in place." There is no SteamCMD here, and more importantly **auto-updating a modded server mid-campaign is how you brick a months-old world.** Every mod version is pinned deliberately (§4); a silent bump reintroduces the Architectury/OmegaConfig and Architectury/Apotheosis conflicts the recon documented. So `update.bat` is a *controlled maintenance bounce*: announce → flush → graceful stop → archive → **stop and wait for the operator to swap jars by hand** → restart. It refuses to touch a jar on its own. That is a feature.
 

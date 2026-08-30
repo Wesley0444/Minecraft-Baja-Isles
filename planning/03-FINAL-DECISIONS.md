@@ -40,7 +40,7 @@ across parallel tracks"). Wesley revised this on 2026-08-30 after an hour with t
 | **Grim and Bleak** | Pre-iron portal (chiseled deepslate) to a 25-base-damage charge-scaling sword. **No config file exists in any of its nine published versions** — MCreator, closed source, no wiki. Unfixable by design. Wesley's stated ground: nightly Overworld spawns. |
 | **Knaves' Needs** | Broken, not overpowered. The shipped 1.21.1 beta stubs the Warden tier at `0.0` attack bonus → a **1-damage** Warden Katana. Beta-only, 5 open bugs, registers 520 items. |
 | **Expanded Combat** | An *iron* Dagger at 14 DPS already beats a netherite sword; a +2 flat-damage gauntlet sits in a free Curios hands slot buffing every weapon in the pack; ships **zero** Better Combat data (`registerTransforms()` commented out) so its weapons fall through to fallback regexes and double-dip on reach. Also collides with Artifacts over the Curios hands slot. |
-| **Alex's Caves** | No 1.21.1 build exists. (Also kills T.O Magic 'n Extras — hard dependency.) |
+| **Alex's Caves** | ~~No 1.21.1 build exists.~~ **⟳ REVERSED 2026-08-30 (Wesley's call at server build): the cut premise expired** — Raguto's unofficial 1.21.1 NeoForge port (`alexscaves-2.0.10` + his Citadel port, GPLv3, 16M downloads across 30 projects) is real and boot-verified in the pack. Accepted risks, stated to and by Wesley: one-maintainer community port, upstream stuck on 1.20.1, 5 permanent underground biomes = forever-mod at pregen, and **zero balance audit — the AC gear skim (raygun, magnet kit, hazmat tier) is a REQUIRED step-5 item.** (T.O Magic 'n Extras stays cut — its own alpha-quality grounds, §"cut on availability", unrelated to AC's return.) |
 | **Saint's Dragons** | No 1.21.1 build exists (three independent confirmations). |
 | **Cobblemon** | TPS. Persistent AI entities per player × 6 players × 8+ dimensions. MC's game loop is single-threaded, so 64GB does not help. Also a parallel combat system that makes gear irrelevant while in use. |
 | **Jurassic Reborn** | 164 MB jar (largest on the list), 108 GeckoLib models, open crash issue #82 with VintageFix. Highest per-entity cost of any mob adder. |
@@ -48,7 +48,25 @@ across parallel tracks"). Wesley revised this on 2026-08-30 after an hour with t
 | **Fights and Frights** | MCreator-generated, per-tick procedure triggers, explicit author compatibility disclaimer, audit confidence LOW. Same grounds as Grim and Bleak. |
 | **Traveler's Backpack** | Second incompatible upgrade economy alongside Sophisticated. See §3. |
 | *Confluence: Otherworld* | ~~CONDITIONAL~~ → **IN (test passed 2026-08-30)** — Life Crystal worldgen test §4.3 passed; entry-gated via `confluence-gate-life-crystal` datapack. |
-| **The Integrated family** (IDAS, Integrated Cataclysm, Integrated Stronghold, Integrated Villages + their Loot Integrations addon; the `integrated-api` lib itself STAYS — Antarchy hard-requires it) | **CUT 2026-08-30 (Wesley's call at pack-build; freeze reopened + reclosed same day).** The entire family hard-requires **Create + Quark + Zeta + Supplementaries** at the NeoForge `mods.toml` level — boot-verified both ways on a throwaway server (with the four: `Done (12.3s)`; without: ModSorter refuses to load). Their structures are literally built from those mods' blocks, so there is no partial option. Doc 02 predicted exactly this (risk register #6: "a Create pack by side effect"); doc 00 had all five as **"decide — insufficient data"** and the batch-audit never happened, so they slid onto the frozen list unadjudicated. Wesley chose cutting 4 structure mods over admitting 4 unaudited content mods (incl. a full tech economy + 3 new permanent worldgen sources) into a frozen roster. Bonus evidence: IDAS loot tables here referenced Ice & Fire and BYG items this pack never had — it is tuned for a different universe. |
+| **The Integrated family** (IDAS, Integrated Cataclysm, Integrated Stronghold, Integrated Villages + their Loot Integrations addon; the `integrated-api` lib itself STAYS — Antarchy hard-requires it) | **CUT 2026-08-30 (Wesley's call at pack-build; freeze reopened + reclosed same day).** The entire family hard-requires **Create + Quark + Zeta + Supplementaries** at the NeoForge `mods.toml` level — boot-verified both ways on a throwaway server (with the four: `Done (12.3s)`; without: ModSorter refuses to load). Their structures are literally built from those mods' blocks, so there is no partial option. Doc 02 predicted exactly this (risk register #6: "a Create pack by side effect"); doc 00 had all five as **"decide — insufficient data"** and the batch-audit never happened, so they slid onto the frozen list unadjudicated. Wesley chose cutting 4 structure mods over admitting 4 unaudited content mods (incl. a full tech economy + 3 new permanent worldgen sources) into a frozen roster. Bonus evidence: IDAS loot tables here referenced Ice & Fire and BYG items this pack never had — it is tuned for a different universe. **⟳ REVERSED 2026-08-30, same day, at server build: David weighed in wanting the family, Wesley approved.** All five re-added; Create + Quark + Zeta + Supplementaries entered the roster as **deliberate members** (pinned in the modlist, ids read off the generated stubs). Boot-verified in the step-4 smoke (126 stubs, fresh world, `Done (16.202s)`, 0 chunk errors). The unaudited-entry risk and the mistuned-loot caveat above were accepted as-is — see the obligations block below the table. |
+
+> **Obligations created by the 2026-08-30 Integrated reversal** (tracked here so they
+> don't evaporate):
+> 1. **Quark's worldgen module must be configured (keep/trim/off) BEFORE pregen** — it is
+>    fully toggleable but only pre-world. This is a step-5/6 BLOCKER.
+> 2. Create + Supplementaries worldgen (zinc veins, wild flax / way signs) becomes
+>    permanent at pregen — **they join BoP/Terralith on the never-remove list**, as does
+>    the whole Integrated family and Alex's Caves.
+> 3. Step-5 JEI audit: verify no combat gear is gated behind Create parts (the playbook's
+>    Create-tax concern). Create is an economy track, not a gear gate.
+> 4. Accepted as-is: the four deps enter unaudited (doc 00 had them "decide — insufficient
+>    data"), and IDAS loot tables reference Ice & Fire / BYG items this pack never had →
+>    those chests roll slightly light, and its `dread_citadel` spawner list logs a benign
+>    parse error at boot. Known, accepted, do not "fix".
+>
+> **Freeze status after this:** reopened three times on 2026-08-30 (Integrated cut →
+> AC/perf/doc-03-adds → Integrated reversal), now closed FOR GOOD. The next reopening
+> request gets refused by default and escalated to Wesley in person.
 
 **Cut on availability** (no 1.21.1 NeoForge build): T.O Magic 'n Extras · Ars Elixirum ·
 Aether 2 · Primal Frontier · Stained Lenses · Metus Oblita · Street Art · Crop and Kettle ·
@@ -58,6 +76,15 @@ Dark Fantasy: Nordic Tombs · Paradise Lost (Sinytra repack only, zero stable re
 ---
 
 ## 2. ADD — not on anyone's original list
+
+> ✅ **LANDED 2026-08-30 (server build)** — with a confession: this table was decided
+> pre-freeze but the frozen manifest extraction only applied §1's CUTS, so these five
+> silently never entered the modlists or the pack. Found during the step-4 doc pass;
+> Wesley chose "all five". One substitution: doc 03 named *Sparse Structures Reforged*
+> (CF fork) assuming the original was Fabric-only — wrong, the **original
+> `sparsestructures` ships a neoforge-1.21.1 v3.0 on Modrinth, server_only**; took the
+> original. GraveStone landing also **settles doc 01 §1.10.2's death-penalty decision:
+> grave mod** (not full-loss, not keepInventory).
 
 | Mod | Why |
 |---|---|

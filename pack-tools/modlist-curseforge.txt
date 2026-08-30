@@ -1,5 +1,7 @@
 # ❄ FROZEN 2026-08-30 — modlist freeze declared (all three gating tests passed).
-# No additions/removals without reopening the freeze; worldgen mods can NEVER change.
+# Reopened THREE times same day (Integrated cut → AC/perf/doc-03 adds → Integrated
+# reversal), then closed FOR GOOD. Per Wesley: the next reopening request gets refused
+# by default and escalated to him in person. Worldgen mods can NEVER change post-pregen.
 # CurseForge slugs, pinned as slug:projectId
 # Auto-extracted from the audit's own fetched source URLs, 2026-08-30.
 # Cuts from planning/03-FINAL-DECISIONS.md already removed.
@@ -9,6 +11,15 @@
 # (minecolonies → a modpack, naturalist → "Naturalist+").
 
 aether:255308
+# Added 2026-08-30 (Wesley's call, freeze reopened a SECOND time, same day, at server
+# build): Alex's Caves via the unofficial 1.21.1 NeoForge port (upstream is stuck on
+# 1.20.1 Forge; porter = Raguto, 16M downloads across 30 projects, GPLv3 so fully legal).
+# Risks accepted by Wesley explicitly: one-maintainer community port with no upstream
+# fix path, last update ~4 months old, and 5 permanent underground biomes = forever-mod
+# once pregen runs (removal = chunk-data loss, not a rollback). Zero balance audit yet —
+# gear skim (raygun, magnet kit, hazmat tier) is a step-5 REQUIRED item. Requires the
+# citadel-1-21-1-port lib below. Boot-verified in the 2026-08-30 step-4 smoke test.
+alexs-caves-unofficial-port:1420348
 antarchy:1504802
 apotheosis:313970
 apothic-attributes:898963
@@ -23,7 +34,15 @@ better-combat-by-daedelus:639842
 biomes-o-plenty:220318
 block-pack:1574574
 cataclysm-x-yungs:1348970
+# Added 2026-08-30: REQUIRED dep of alexs-caves-unofficial-port (same porter, Raguto's
+# unofficial Citadel 1.21.1 port — 1.7M downloads). Library only.
+citadel-1-21-1-port:1415723
 confluence:1209464
+# create/quark/zeta/supplementaries: the Integrated family's four hard deps, deliberate
+# roster members since the 2026-08-30 reversal (see the idas block below). Ids read off
+# the generated pw.toml stubs, not guessed. Quark's worldgen module MUST be configured
+# before pregen (step-5/6 blocker, tracked in doc 03 §1).
+create:328085
 # Added 2026-08-30 (pack-build boot test): REQUIRED dep of lootintegrations (crashes at
 # boot without it). packwiz does NOT resolve deps-of-deps — lootintegrations itself only
 # entered the pack as a dep of its addons, so cupboard was never prompted for.
@@ -47,22 +66,26 @@ gateway-of-doom:1499145
 gateways-to-eternity:417802
 goblin-traders:363703
 guard-villagers:360203
-# idas:605375 — CUT 2026-08-30 (Wesley's call, freeze reopened+reclosed same day): the whole
-# Integrated family hard-requires Create+Quark+Zeta+Supplementaries at the NeoForge level
-# (boot-verified, not just CF metadata). Doc 02 predicted this; audit had them as "decide —
-# insufficient data" and the batch-audit never happened. Cut with:
-# integrated-cataclysm, integrated-stronghold, integrated-villages,
-# loot-integrations-integrated-dungeons-villages. NOTE: integrated-api (the lib) STAYS —
-# antarchy hard-requires it too (Antarchy's second hidden dep; Modrinth metadata lies).
-# integrated-cataclysm:1164949 — CUT 2026-08-30 (see idas note above)
-# integrated-stronghold:815548 — CUT 2026-08-30 (see idas note above)
-# integrated-villages:661376 — CUT 2026-08-30 (see idas note above)
+# ⟳ REVERSED 2026-08-30, same day as the cut (David weighed in, Wesley approved): the
+# Integrated family is back IN, and its four hard deps (create, quark, zeta,
+# supplementaries — pinned at their alphabetical slots below) enter the roster as
+# DELIBERATE members now, not stowaways. That exact config already boot-passed clean
+# ("boot #2" of the pack build, Done 12.3s). Accepted as-is: the four enter unaudited
+# (doc 00 had them "decide — insufficient data"), and IDAS loot tables reference
+# Ice & Fire / BYG items this pack never had → those chests roll slightly empty. Known,
+# accepted, do not "fix". New obligations this creates are tracked in doc 03 §1.
+# NOTE: integrated-api (the lib) was never part of the cut/reversal — antarchy
+# hard-requires it too (Antarchy's second hidden dep; Modrinth metadata lies).
+idas:605375
+integrated-cataclysm:1164949
+integrated-stronghold:815548
+integrated-villages:661376
 irons-spells-n-spellbooks:855414
 jade:324717
 jei:238222
 lendercataclysm:551586
 loot-integrations-cataclysm:1134260
-# loot-integrations-integrated-dungeons-villages:1149272 — CUT 2026-08-30 (see idas note above)
+loot-integrations-integrated-dungeons-villages:1149272
 loot-integrations-when-dungeons-arise:1142880
 loot-journal-neoforge:1120395
 minecolonies:245506
@@ -72,12 +95,14 @@ mowzies-cataclysm:1128348
 mowzies-mobs:250498
 naturalist:627986
 oceans-delight:841262
+quark:243121
 simply-bows:1475770
 simply-entity-equipment:1643238
 simply-swords:659887
 simply-tooltips:1475755
 skeleton-uses-custom-bow:1451144
 sophisticated-backpacks:422301
+supplementaries:412082
 # structory-towers:783522 — moved to modlist-modrinth.txt 2026-08-30 (CF third-party distribution disabled)
 terralith:513688
 the-awakening:1565092
@@ -91,3 +116,4 @@ when-dungeons-arise:442508
 xaeros-minimap:263420
 xaeros-minimap-world-map-waystones-compability:887484
 yungs-better-nether-fortresses-neoforge:1015118
+zeta:968868
