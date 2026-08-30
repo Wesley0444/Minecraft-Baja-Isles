@@ -1,3 +1,5 @@
+# ❄ FROZEN 2026-08-30 — modlist freeze declared (all three gating tests passed).
+# No additions/removals without reopening the freeze; worldgen mods can NEVER change.
 # CurseForge slugs, pinned as slug:projectId
 # Auto-extracted from the audit's own fetched source URLs, 2026-08-30.
 # Cuts from planning/03-FINAL-DECISIONS.md already removed.
@@ -22,8 +24,8 @@ biomes-o-plenty:220318
 block-pack:1574574
 cataclysm-x-yungs:1348970
 confluence:1209464
-# creature-features:1640797 — PENDING CUT 2026-08-30 (Wesley to confirm): no 1.21.1 build
-# exists ANYWHERE. Its only file ever is 1.20.1 Forge v1.0.0; not on Modrinth at all.
+# creature-features:1640797 — CUT 2026-08-30 (Wesley confirmed): no 1.21.1 build exists
+# ANYWHERE. Its only file ever is 1.20.1 Forge v1.0.0; not on Modrinth at all.
 cult-of-azazel:1571005
 deeper-and-darker-spellbooks:1432746
 deeperdarker:659011

@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 48,
+    "description": "Confluence: remove life_crystal from open Overworld cave gen (doc 03 §4.3). Glowing-mushroom-biome gen + fishing crates untouched. Overrides confluence:overworld_ud keeping its other 19 features. TESTED 2026-08-30: 131 chunks -> 0."
+  }
+}

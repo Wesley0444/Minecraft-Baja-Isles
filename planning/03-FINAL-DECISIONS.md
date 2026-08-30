@@ -47,7 +47,7 @@ across parallel tracks"). Wesley revised this on 2026-08-30 after an hour with t
 | **Ghosts** | **Defect, not balance.** Every owned ghost force-loads its chunk every tick and **never releases the force on entity removal** (source-verified). A progressive chunk-loading leak on a months-long world. No config exposes it. |
 | **Fights and Frights** | MCreator-generated, per-tick procedure triggers, explicit author compatibility disclaimer, audit confidence LOW. Same grounds as Grim and Bleak. |
 | **Traveler's Backpack** | Second incompatible upgrade economy alongside Sophisticated. See §3. |
-| *Confluence: Otherworld* | **CONDITIONAL — see §4.3.** In only if the Life Crystal worldgen test passes. |
+| *Confluence: Otherworld* | ~~CONDITIONAL~~ → **IN (test passed 2026-08-30)** — Life Crystal worldgen test §4.3 passed; entry-gated via `confluence-gate-life-crystal` datapack. |
 
 **Cut on availability** (no 1.21.1 NeoForge build): T.O Magic 'n Extras · Ars Elixirum ·
 Aether 2 · Primal Frontier · Stained Lenses · Metus Oblita · Street Art · Crop and Kettle ·
@@ -207,6 +207,30 @@ reward for entering the mod.
 - **Test fails** → Confluence is **CUT**. An ungated, tradeable, hardcoded +100 max HP
   available from hour-one caving is exactly the "great power, no effort" case §0 says to kill.
 
+**✅ TEST PASSED — 2026-08-30. Confluence is IN.** Empirical, on a throwaway headless
+NeoForge 21.1.249 server (Confluence 1.2.4-260226), two worlds, same seed, 3,364 chunks
+region-scanned each:
+- **Control** (no datapack): `confluence:life_crystal_block` in **131 chunks**.
+- **Override** (datapack active): **0 chunks** — and the canary held (`demon_altar` still
+  generated, 129 chunks), proving the modifier was *replaced*, not disabled.
+- **Mechanism:** fully data-driven. `confluence:overworld_ud` is a `neoforge:add_features`
+  biome modifier on `#c:is_overworld` adding 20 features. The shipped datapack
+  **`datapacks/confluence-gate-life-crystal`** overrides that one file with the same list
+  minus `confluence:life_crystal` — the other 19 (gem trees, **Crimson/Demon altars**,
+  traps, detonator veins) are progression-critical and untouched. Do NOT "simplify" it to
+  `neoforge:none`.
+- **Corrections to the premise:** Confluence has **no custom dimension** — its biomes
+  (corruption/crimson via world presets, `glowing_mushroom` via bundled TerraBlender)
+  inject into the Overworld. The gate is therefore *biome*-gated, not dimension-gated:
+  the `glowing_mushroom` cave biome carries its own `glowing_mushroom_life_crystal`
+  feature (6/chunk, deliberately untouched), so crystals = find a glowing mushroom cave.
+  Second path: golden/titanium **fishing crates** roll a life crystal at 10/80 (12.5%) —
+  a slow trickle, acceptable.
+- **Side findings:** (1) Confluence hard-requires **Curios ≥9.5.1** — Modrinth metadata
+  falsely says zero deps; server crashes at boot without it. `curios` added to
+  modlist-modrinth.txt. (2) Confluence bundles **TerraBlender 4.1.0.8** jar-in-jar — BoP
+  also uses TerraBlender; jar-in-jar resolves highest version, but watch it at pack-build.
+
 ### 4.4 Boss-check datapacks — approved
 Apply the `#c:bosses` tagging so Apothic Spawners cannot farm Cataclysm / Mowzie's elites.
 (The Alex's Caves leg is moot — that mod is now cut.)
@@ -238,7 +262,10 @@ Apply the `#c:bosses` tagging so Apothic Spawners cannot farm Cataclysm / Mowzie
    *"Can't find element … of type 'minecraft:attribute'"*. The `generic.` drop is 1.21.2+.
    Every on-disk datapack already uses `generic.` — **change nothing**; doc 00's "fix" would
    have broken them silently.
-2. **The Confluence Life Crystal worldgen test** (§4.3) — decides one mod's inclusion.
+2. ✅ **The Confluence Life Crystal worldgen test — RESOLVED 2026-08-30, PASSED.**
+   Confluence is IN, entry-gated by `datapacks/confluence-gate-life-crystal` (full results
+   in §4.3). All three freeze-gating tests are now complete, and the **modlist was FROZEN
+   the same day** (Wesley's call, 2026-08-30).
 3. **Every `Hours` figure in doc 00 §2 is estimated, not measured.** Acceptable under §0
    (triage sort, not tuning target) — but do not quote them as fact.
 4. ~~Naturalist vs Primal~~ — **RESOLVED 2026-08-30.** Naturalist wins; 8 keys off in
@@ -248,11 +275,11 @@ Apply the `#c:bosses` tagging so Apothic Spawners cannot farm Cataclysm / Mowzie
    **(b)** datapack out Primal's craftable `minecraft:trident`.
 5. **12 "insufficient data" mods** were never audited for power numbers (`00 §9`). Under §0
    this is lower-stakes: re-open only if one turns out to hand out cheap strong gear.
-6. **Creature Features — PENDING CUT (Wesley to confirm).** Surfaced by the 2026-08-30
+6. ✅ **Creature Features — CUT (Wesley confirmed 2026-08-30).** Surfaced by the
    distribution scan: **no 1.21.1 build exists anywhere.** Its only file ever is
    `creature_features-1.0.0.jar` (1.20.1 **Forge**, CF id 1640797); not on Modrinth at all.
-   Same category as Alex's Caves — unavailable, not cut-by-judgment. Commented out in
-   `modlist-curseforge.txt` pending confirmation. *(Scan side-results, already applied:
+   Same category as Alex's Caves — unavailable, not cut-by-judgment. Removed from
+   `modlist-curseforge.txt`. *(Scan side-results, already applied:
    `ars-n-spells` + `structory-towers` block third-party CF downloads → moved to the
    Modrinth list, both with proper neoforge-1.21.1 builds; every other slug verified
    downloadable — 65 CF pinned `slug:id` + 25 Modrinth.)*

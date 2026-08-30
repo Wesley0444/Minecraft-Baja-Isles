@@ -1,0 +1,26 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": [
+    "confluence:amber_tree",
+    "confluence:amethyst_tree",
+    "confluence:diamond_tree",
+    "confluence:jade_tree",
+    "confluence:ruby_tree",
+    "confluence:sapphire_tree",
+    "confluence:topaz_tree",
+    "confluence:crimson_altar_world",
+    "confluence:demon_altar_world",
+    "confluence:no_traps_gravitation_trap",
+    "confluence:no_traps_pneumatic_trap",
+    "confluence:no_traps_sculk_trap",
+    "confluence:no_traps_shimmer_trap",
+    "confluence:dart_trap",
+    "confluence:boulder_trap",
+    "confluence:death_chest_trap",
+    "confluence:water_chests",
+    "confluence:platinum_vein_with_detonator",
+    "confluence:gold_vein_with_detonator"
+  ],
+  "step": "underground_decoration"
+}

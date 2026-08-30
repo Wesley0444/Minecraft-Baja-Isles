@@ -1,7 +1,9 @@
 # Minecraft 1.21.1 NeoForge — server project
 
-**Entry point. Start here.** Planning is COMPLETE as of 2026-08-30. What remains is setup,
-and it starts with three tests that can still change the modlist.
+**Entry point. Start here.** Planning is COMPLETE as of 2026-08-30, all three
+modlist-gating tests **PASSED** (same day), and the **MODLIST IS FROZEN as of 2026-08-30**.
+Nothing worldgen-related may change from here, ever. Next step: packwiz pack build
+(order of operations, step 3).
 
 - **Who:** Wesley (host) + Leyton, DJ, David, Dan +1. Six players.
 - **What:** long shared campaign, months-long world, ~130 mods.
@@ -10,16 +12,16 @@ and it starts with three tests that can still change the modlist.
 
 ---
 
-## 🔴 DO THESE FIRST — they gate everything else
+## ✅ THE THREE GATES — all passed 2026-08-30
 
-Each can still change the modlist, and **the modlist must be frozen before pregen** (the
-world splice makes that absolute).
+Each could have changed the modlist, and **the modlist must be frozen before pregen** (the
+world splice makes that absolute). All three are done; nothing blocks the freeze.
 
 | # | Test | Why it blocks | Time |
 |---|---|---|---|
 | 1 | ✅ **`/attribute` prefix check — DONE 2026-08-30.** Verified on a headless vanilla 1.21.1 server: `generic.` prefix **required**; unprefixed IDs error. Audit was right — on-disk overrides are already correct, **change nothing**. `01-BALANCE-PLAYBOOK.md §0.1`. | done |
-| 2 | **Confluence Life Crystal worldgen test** | Decides whether Confluence is in or out. `+100 max HP` is hardcoded in Java, but the *ore generation* is worldgen and datapacks own that. Can Life Crystal ore be stripped from Overworld caves so it only spawns in Confluence's dimension? Pass → mod is IN, entry-gated. Fail → mod is CUT. `03-FINAL-DECISIONS.md §4.3`. | ~30 min |
-| 3 | ✅ **Blocked-mod scan — DONE 2026-08-30.** All 65 CF + 25 Modrinth entries verified downloadable for 1.21.1 NeoForge. `ars-n-spells` + `structory-towers` blocked CF downloads → **moved to the Modrinth list** (proper builds there). ⚠ **`creature-features` = PENDING CUT** — no 1.21.1 build exists anywhere (doc 03 §6.6). | done |
+| 2 | ✅ **Confluence Life Crystal worldgen test — PASSED 2026-08-30.** Confluence is **IN**, entry-gated. Empirical A/B on a throwaway NeoForge server, same seed: 131 chunks with life crystals → **0** with the `confluence-gate-life-crystal` datapack (now in `datapacks/`), other 19 overworld features intact. Full results + corrections (no custom dimension; biome-gated; Curios dep) in `03-FINAL-DECISIONS.md §4.3`. | done |
+| 3 | ✅ **Blocked-mod scan — DONE 2026-08-30.** All 65 CF + 25 Modrinth entries verified downloadable for 1.21.1 NeoForge. `ars-n-spells` + `structory-towers` blocked CF downloads → **moved to the Modrinth list** (proper builds there). `creature-features` = **CUT** (confirmed) — no 1.21.1 build exists anywhere (doc 03 §6.6). | done |
 
 ```bash
 node "C:/Game Servers/Minecraft/pack-tools/check-cf-distribution.mjs" "C:/Game Servers/Minecraft/pack-tools/modlist-curseforge.txt"
@@ -31,10 +33,10 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 
 ## Suggested order of operations
 
-1. **Run the three tests above.** Resolve any blocked mods (drop / find on Modrinth /
-   manual sideload — never self-host the jar).
-2. **FREEZE THE MODLIST.** Everything downstream depends on this. Nothing worldgen-related
-   may change afterwards, ever.
+1. ✅ **Run the three tests above** — all passed 2026-08-30.
+2. ✅ **MODLIST FROZEN — 2026-08-30 (Wesley's call).** Everything downstream depends on
+   this. Nothing worldgen-related may change afterwards, ever. The frozen manifest =
+   `pack-tools/modlist-curseforge.txt` (65) + `pack-tools/modlist-modrinth.txt` (26).
 3. **Install packwiz**, build the pack in `pack/`, push to GitHub, enable Pages.
    → `planning/04-PACK-DISTRIBUTION.md`
 4. **Stand up the server** — NeoForge 1.21.1, configs, the four scripts, firewall, boot task.
@@ -60,8 +62,8 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 | `planning/01-BALANCE-PLAYBOOK.md` | Config keys and pastable JSON per mod. 52 fenced blocks. |
 | `planning/00-MODLIST-AUDIT.md` | The full audit. 110 mods, parity table, 101-row verdict table. **Its §6/§10 redundancy calls are partly superseded by doc 03.** |
 | `pack-tools/PLAYER-SETUP.md` | Hand to the group as-is. |
-| `pack-tools/modlist-*.txt` | 65 CurseForge (pinned `slug:id`) + 25 Modrinth slugs, cuts removed. **All verified downloadable 2026-08-30**; `creature-features` commented out pending cut. |
-| `datapacks/` | 4 active parity datapacks, all `pack_format 48`, all valid JSON. |
+| `pack-tools/modlist-*.txt` | 65 CurseForge (pinned `slug:id`) + 26 Modrinth slugs, cuts removed. **All verified downloadable 2026-08-30.** `curios` added (required dep of confluence + irons-spells — Modrinth metadata lies about confluence having zero deps). Lists exclude other libraries; packwiz prompts for those at install time. |
+| `datapacks/` | 6 active datapacks, all `pack_format 48`, all valid JSON. Newest: `confluence-gate-life-crystal` (test-2 verdict, empirically verified). |
 | `datapacks/_retired/` | Datapacks retired by later decisions, each with a WHY note. Not deleted. |
 
 ⚠ **Docs 00 and 01 use different formulas and different baselines and reach different

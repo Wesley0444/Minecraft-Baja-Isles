@@ -1,3 +1,5 @@
+# ❄ FROZEN 2026-08-30 — modlist freeze declared (all three gating tests passed).
+# No additions/removals without reopening the freeze; worldgen mods can NEVER change.
 # Modrinth slugs
 # Auto-extracted from the audit's own fetched source URLs, 2026-08-30.
 # Cuts from planning/03-FINAL-DECISIONS.md already removed.
@@ -8,6 +10,11 @@
 # on CurseForge, but both ship proper neoforge-1.21.1 builds on Modrinth:
 ars-n-spells
 structory-towers
+
+# Added 2026-08-30 (test-2 finding): REQUIRED dep of confluence (>=9.5.1+1.21.1, crashes
+# at boot without it) and of irons-spells-n-spellbooks. Was missing from both lists —
+# Modrinth's confluence version metadata falsely declares zero dependencies.
+curios
 
 aether
 antarchy
