@@ -214,6 +214,12 @@ switch) · **nuclear bomb** (griefing tool; social rule, config levers exist).
 3. **Track Menu / House Rules paste** (doc 01 §4): death rule is now settled
    (GraveStone), but rules 5–7 (unequal hours, PvP-on, shared gear chest) still need
    Wesley's edit + Discord post at step 7.
+4. **Ship stat-driving configs in the packwiz pack** (step 7, found during the in-game
+   verify): add `config/antarchy/*.toml`, `config/epicknights/*.json5`,
+   `config/simplyswords/*.toml` (+ any other config whose values bake into item
+   stats/tooltips) to `pack/` so clients bake the same numbers — kills the lying
+   tooltips and the creative-menu pre-enchanted-item quirk. **Client-facing pack
+   change → requires the client-launch smoke test** per the house rule.
 
 ## 7. Verification (2026-08-30)
 
@@ -229,7 +235,22 @@ switch) · **nuclear bomb** (griefing tool; social rule, config levers exist).
   enabled `(paxi)`, `structure-collision` no longer loaded, zero parse errors from the
   pinned `sparsestructures.json5`. Both stops graceful via RCON; server left DOWN.
 
-### In-game checklist for Wesley (needs a player; ~10 min, creative)
+### In-game checklist — ✅ RUN BY WESLEY 2026-08-30, ALL PASS
+Results: (1) Resonarium `/damage` hit landed at full force — immunity dead;
+(2) Ultimate Chestplate = **8.0 armor server-side** via `/attribute` (see the
+client-tooltip caveat below); (3) no trident recipe in JEI; (4) Epic Knights knight
+chest+legs = **0.2 knockback resistance** (was 1.0 = immune); (5) Potion of Flying
+shows nether star; (6) laser gatling = plain crafting grid + witherite (base
+Cataclysm recipe, still boss-gated).
+
+⚠ **Client-config caveat found during the test:** mods that bake item stats from
+config at startup (Antarchy, Epic Knights, Simply Swords…) render TOOLTIPS from the
+**client's own default config**, and creative-menu grabs fabricate stacks from client
+defaults too (Wesley pulled a pre-enchanted 9-armor Ultimate Chestplate that the
+server can no longer craft). Gameplay math is server-authoritative and correct;
+tooltips lie until the configs ship to clients. **Fix queued as §6 item 4.**
+
+The original checklist, for re-runs:
 1. **Resonarium** (the big one): wear full Resonarium set, `/damage @s 20 minecraft:generic`
    → health MUST drop.
 2. Craft/give an Antarchy Ultimate Chestplate → must be UNenchanted, 8 armor.

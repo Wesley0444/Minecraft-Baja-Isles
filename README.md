@@ -84,8 +84,9 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
    caught + fixed integrated_cataclysm hard-gating six Cataclysm items behind
    Mechanical Crafters. **The full applied record — every key, every skip, every open
    item — is `planning/06-STEP5-BALANCE-PASS.md`.** Verified: two clean boots, 5 packs
-   loaded, zero new errors. ⚠ Wesley's 10-min in-game checklist (doc 06 §7) still
-   pending — run it at the step-6 session's client hop.
+   loaded, zero new errors, **and Wesley's in-game checklist (doc 06 §7) ALL-PASS
+   same day** (server-truth attribute checks; found the client-config tooltip caveat,
+   queued as doc 06 §6 item 4 for step 7).
    → `planning/03-FINAL-DECISIONS.md §4` + `planning/06-STEP5-BALANCE-PASS.md`
 6. **Pregen + splice** (R=3000 today, extend to 6000 overnight).
    → `planning/05-WORLD-SPLICE.md`
