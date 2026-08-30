@@ -3,9 +3,11 @@
 **Entry point. Start here.** Planning is COMPLETE as of 2026-08-30, all three
 modlist-gating tests **PASSED** (same day), and the **MODLIST IS FROZEN as of 2026-08-30**
 (reopened + reclosed once, same day: the Integrated family cut at pack-build — doc 03 §1).
-Nothing worldgen-related may change from here, ever. The **packwiz pack is BUILT and
-boot-verified** (step 3, 2026-08-30) — see `planning/04-PACK-DISTRIBUTION.md §7` for the
-five landmines the build surfaced. Next: push + GitHub Pages, then server build (step 4).
+Nothing worldgen-related may change from here, ever. The **packwiz pack is BUILT,
+boot-verified, and LIVE on GitHub Pages** (step 3 complete, 2026-08-30) — see
+`planning/04-PACK-DISTRIBUTION.md §7` for the five landmines the build surfaced.
+Pack URL: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>.
+Next: server build (step 4).
 
 - **Who:** Wesley (host) + Leyton, DJ, David, Dan +1. Six players.
 - **What:** long shared campaign, months-long world, ~130 mods.
@@ -45,7 +47,8 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
    landmines found by boot testing, incl. the **Integrated family cut** (freeze
    reopened + reclosed, Wesley's call) and a **Structory Towers version pin** that
    `packwiz update --all` would break. All in `planning/04-PACK-DISTRIBUTION.md §7`.
-   **Still open: push to GitHub + enable Pages** (needs Wesley's go).
+   Pushed + **LIVE**: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>
+   (installer verified against the live URL same day).
 4. **Stand up the server** — NeoForge 1.21.1, configs, the four scripts, firewall, boot task.
    → `planning/02-SERVER-BUILD-PLAN.md` (house conventions in `../CLAUDE.md`)
 5. **Apply the datapacks + config nerfs.** Deeper and Darker's Resonarium fix is the single
