@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "README.md"
-hash = "7b2bdd5aef1756094c66872d12773b3a57754655ccf6e66513064b1f39206cf3"
+hash = "c372e0346106bb8b56b105aedf1ad6aa2894d2d49008619cebf2ea5ca0d29e16"
 
 [[files]]
 file = "mods/aether.pw.toml"
@@ -312,11 +312,6 @@ metafile = true
 [[files]]
 file = "mods/l_enders-cataclysm.pw.toml"
 hash = "0a509504c937a398ccabc71d56029690d43806378c7121928776407083c669ef"
-metafile = true
-
-[[files]]
-file = "mods/lendercataclysm.pw.toml"
-hash = "b21e4c7a4bbf9d8acadfe5d0e2dc8d250a17740b2516a28a906c30edec0149b0"
 metafile = true
 
 [[files]]
