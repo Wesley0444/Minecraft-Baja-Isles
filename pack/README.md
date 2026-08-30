@@ -6,7 +6,7 @@ hash, side). That is what makes it safe to make public: it redistributes nothing
 Setup, rationale and the update workflow: `../planning/04-PACK-DISTRIBUTION.md`
 Player onboarding doc to hand out: `../pack-tools/PLAYER-SETUP.md`
 
-## ✅ BUILT 2026-08-30 — 126 stubs, boot-verified
+## ✅ BUILT 2026-08-30 — 125 stubs, boot-verified
 
 Bootstrapped with packwiz (CI build in `../pack-tools/bin/`, gitignored). MC 1.21.1,
 NeoForge 21.1.249. Dual-listed mods sourced from **Modrinth**; the rest pinned CF ids.
@@ -15,8 +15,9 @@ boots to `Done` on a fresh world. The five landmines the build hit (hidden deps,
 CF-blocked dep, broken "neoforge" jar, the Integrated family cut) are documented in
 `../planning/04-PACK-DISTRIBUTION.md §7` — **read that before changing anything here.**
 
-Grew 98 → **126** later the same day, at server build (every addition rode one fresh-world
-smoke boot, `Done (16.202s)`, 0 chunk errors):
+Grew 98 → **125** later the same day, at server build (126 briefly, then the resurrected
+`lendercataclysm` dupe stub was re-removed; every addition rode one fresh-world smoke
+boot, `Done (16.202s)`, 0 chunk errors):
 - **doc 02 §5 server perf stack** (11): lithium, spark, chunky, fastsuite,
   alternate-current, noisium, servercore, paxi = `side=server`; modernfix, ferrite-core,
   clumps = `both`.

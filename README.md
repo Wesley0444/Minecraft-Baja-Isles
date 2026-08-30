@@ -6,7 +6,7 @@ FOR GOOD** (reopened three times that day: Integrated family cut at pack-build �
 Caves + perf stack + doc 03's dropped ADD table at server build → Integrated family
 REVERSAL on David's vote — all in doc 03 §1. Next reopening request gets refused by
 default and escalated to Wesley in person). Nothing worldgen-related may change
-post-pregen, ever. The **packwiz pack is BUILT (126 stubs), boot-verified, and LIVE on
+post-pregen, ever. The **packwiz pack is BUILT (125 stubs), boot-verified, and LIVE on
 GitHub Pages** — see `planning/04-PACK-DISTRIBUTION.md §7` for the landmines.
 Pack URL: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>.
 **The server is BUILT and boot-verified (step 4 complete, 2026-08-30):** NeoForge
@@ -92,7 +92,7 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 | `planning/00-MODLIST-AUDIT.md` | The full audit. 110 mods, parity table, 101-row verdict table. **Its §6/§10 redundancy calls are partly superseded by doc 03.** |
 | `pack-tools/PLAYER-SETUP.md` | Player onboarding. Served live at <https://cards.archidicks.com/guides/mc-setup> (auth-gated) — edit the file, page updates. |
 | `pack-tools/modlist-*.txt` | 73 CurseForge (pinned `slug:id`) + 43 Modrinth slugs after build day: Integrated family cut → REVERSED same day (Create/Quark/Zeta/Supplementaries now deliberate members); Alex's Caves via unofficial port; doc 02 §5 perf stack; doc 03 §2's dropped ADD table; boot-breaking hidden deps explicit (`curios`, `cupboard`, `integrated-api`, `sizeable-foliage` — Modrinth dep metadata lies). Other libraries still auto-added by packwiz at install. |
-| `pack/` | ⭐ **The built packwiz pack** (source of truth for client + server): `pack.toml` (MC 1.21.1, NeoForge 21.1.249) + 126 mod stubs. Boot-verified 2026-08-30 (incl. the reversal roster). Serve locally with `pack-tools/bin/packwiz.exe serve`. |
+| `pack/` | ⭐ **The built packwiz pack** (source of truth for client + server): `pack.toml` (MC 1.21.1, NeoForge 21.1.249) + 125 mod stubs. Boot-verified 2026-08-30 (incl. the reversal roster). Serve locally with `pack-tools/bin/packwiz.exe serve`. |
 | `datapacks/` | 6 active datapacks, all `pack_format 48`, all valid JSON. Newest: `confluence-gate-life-crystal` (test-2 verdict, empirically verified). |
 | `datapacks/_retired/` | Datapacks retired by later decisions, each with a WHY note. Not deleted. |
 
