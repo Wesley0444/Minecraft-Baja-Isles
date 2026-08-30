@@ -46,8 +46,11 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
    → `planning/03-FINAL-DECISIONS.md §4`
 6. **Pregen + splice** (R=3000 today, extend to 6000 overnight).
    → `planning/05-WORLD-SPLICE.md`
-7. **Onboard players.** Export a Prism instance, hand out `pack-tools/PLAYER-SETUP.md`.
-   Can run in parallel with step 6.
+7. **Onboard players.** Export a Prism instance zip, drop it in `pack-tools/instance/`,
+   and send the group <https://cards.archidicks.com/guides/mc-setup> — the cards site
+   renders `pack-tools/PLAYER-SETUP.md` live (auth-gated, edits show immediately) and
+   serves the newest zip in `instance/` as its download button. Can run in parallel
+   with step 6.
 
 ---
 
@@ -61,7 +64,7 @@ of `/v1/mods/search`, so the modlist pins every entry as `slug:projectId` — ke
 | `planning/02-SERVER-BUILD-PLAN.md` | RAM math, JVM flags, install sequence, the four scripts, risk register. |
 | `planning/01-BALANCE-PLAYBOOK.md` | Config keys and pastable JSON per mod. 52 fenced blocks. |
 | `planning/00-MODLIST-AUDIT.md` | The full audit. 110 mods, parity table, 101-row verdict table. **Its §6/§10 redundancy calls are partly superseded by doc 03.** |
-| `pack-tools/PLAYER-SETUP.md` | Hand to the group as-is. |
+| `pack-tools/PLAYER-SETUP.md` | Player onboarding. Served live at <https://cards.archidicks.com/guides/mc-setup> (auth-gated) — edit the file, page updates. |
 | `pack-tools/modlist-*.txt` | 65 CurseForge (pinned `slug:id`) + 26 Modrinth slugs, cuts removed. **All verified downloadable 2026-08-30.** `curios` added (required dep of confluence + irons-spells — Modrinth metadata lies about confluence having zero deps). Lists exclude other libraries; packwiz prompts for those at install time. |
 | `datapacks/` | 6 active datapacks, all `pack_format 48`, all valid JSON. Newest: `confluence-gate-life-crystal` (test-2 verdict, empirically verified). |
 | `datapacks/_retired/` | Datapacks retired by later decisions, each with a WHY note. Not deleted. |
