@@ -1,6 +1,11 @@
 hash-format = "sha256"
 
 [[files]]
+file = "config/irons_spellbooks-client.toml"
+hash = "0e245770d87a0d057686af9f03d116d4646a07f24669a856782d0360ccd6d2de"
+preserve = true
+
+[[files]]
 file = "config/paxi/resourcepacks/baja-splashes/assets/minecraft/texts/splashes.txt"
 hash = "161c830fbf7ac4fd7bbf03c91e2576b14e0f7ca2946b8d6494149e37914b7dbf"
 
