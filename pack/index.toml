@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "config/irons_spellbooks-client.toml"
-hash = "0e245770d87a0d057686af9f03d116d4646a07f24669a856782d0360ccd6d2de"
+hash = "a7163b19076596b4fa2af5d40c69c7acee453b5e742796b42f6ef6405f6f7cb3"
 preserve = true
 
 [[files]]
