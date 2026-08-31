@@ -1,6 +1,14 @@
 hash-format = "sha256"
 
 [[files]]
+file = "config/paxi/resourcepacks/baja-splashes/assets/minecraft/texts/splashes.txt"
+hash = "161c830fbf7ac4fd7bbf03c91e2576b14e0f7ca2946b8d6494149e37914b7dbf"
+
+[[files]]
+file = "config/paxi/resourcepacks/baja-splashes/pack.mcmeta"
+hash = "a6cdbe9ca06a18939469b051a672b9b4e955d880674966458f741da1f6c3f0ee"
+
+[[files]]
 file = "mods/aether.pw.toml"
 hash = "cc3f6e6e8f1838d16e47cce9241e32176279673efb1438ff4451ccffa9579b14"
 metafile = true
@@ -417,7 +425,7 @@ metafile = true
 
 [[files]]
 file = "mods/paxi.pw.toml"
-hash = "be902d2c4974af9f5acf917a5cced85009bae6e7224d954bf35bfda55a51a54a"
+hash = "215d597764d5c5db89e700fc3495b72dc0a7f09c975de19dc8c580bde3469a5e"
 metafile = true
 
 [[files]]
