@@ -140,8 +140,9 @@ Result: `world\` = 100 region files, 915 MB.
   heap back to **10G**. Terralith jar stays in mods\ **forever** (doc 05 §4).
 - Ship boot clean: zero chunk-load / biome-registry errors (only the 5 known
   pre-existing IDAS/tag noise lines).
-- `worldborder center 0 0` + `set 3800` (±1900, inside the R=2000 pregen edge),
-  `setworldspawn 0 80 0` — spawn ON the seam as decided.
+- `worldborder center 0 0` + `set 3800` (±1900, inside the R=2000 pregen edge).
+- Spawn: initially 0,80,0; after Wesley's seam scouting flyover, **final spawn =
+  `0, 80, -620`** (still on the seam — his pick, 2026-08-30).
 - Live `/seed` reports seed B (shipped level.dat is the terralith copy's) — expected.
   ⚠ **`locate` on the live server is meaningless for the baked world**: it queries the
   live MERGED biome source (BoP+Terralith, seed B), not chunk NBT. Splice correctness
@@ -150,9 +151,11 @@ Result: `world\` = 100 region files, 915 MB.
 
 ## VERIFICATION
 
-- Server-side: boot clean (above). PENDING: Wesley's seam flyover — F3 biome flip at
-  X=0 (biomesoplenty:*/vanilla east, terralith:*/vanilla west), the underground seam
-  wall, no visual chunk tears.
+- Server-side: boot clean (above). ✅ **Wesley's seam flyover PASSED 2026-08-30** ("seam
+  worked") — no chunk tears reported; he scouted the seam line in creative and picked
+  the spawn stretch at Z=-620. (Seed itself rated "not amazing" — re-roll declined; a
+  full re-roll now costs ~1h15m with the debugged machinery if the group ever wants one
+  BEFORE real play starts. After real play it's off the table.)
 - PENDING: backup task flips [FAIL]→[OK] at the next :00/:30 mark now that
   world\level.dat exists; presence poller goes UP.
 
