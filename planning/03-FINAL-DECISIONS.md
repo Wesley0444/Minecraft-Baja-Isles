@@ -91,6 +91,8 @@ across parallel tracks"). Wesley revised this on 2026-08-30 after an hour with t
 > ~2000 variants through Rechiseled's chisel UI). **All three content mods join the
 > never-remove list the moment a variant block is placed** — removing a block-adder deletes
 > every placed block. Freeze RE-CLOSED with this entry; escalation path unchanged.
+> **Verified 2026-08-30:** server boot clean (all 8 in the mod table, only known
+> pre-existing noise) + Wesley's client join via the Prism instance passed same night.
 
 **Cut on availability** (no 1.21.1 NeoForge build): T.O Magic 'n Extras · Ars Elixirum ·
 Aether 2 · Primal Frontier · Stained Lenses · Metus Oblita · Street Art · Crop and Kettle ·
