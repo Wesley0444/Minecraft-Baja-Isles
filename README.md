@@ -14,7 +14,15 @@ Pack URL: <https://wesley0444.github.io/Minecraft-Baja-Isles/pack/pack.toml>.
 the Palworld lesson), SYSTEM boot task + backup/presence tasks elevated-verified.
 **Step 5 (balance pass) APPLIED + boot-verified 2026-08-30** — record in
 `planning/06-STEP5-BALANCE-PASS.md`; the Quark-worldgen blocker is DECIDED (all
-modules on). Next: **step 6, pregen + splice** (record both seeds!).
+modules on). **Step 6 CORE DONE 2026-08-30: the spliced world is LIVE** — BoP east ×
+Terralith west, hard seam at X=0, R=2000, border ±1900, spawn on the seam. Full record
++ **BOTH SEEDS** = `planning/07-STEP6-PREGEN-SPLICE.md` (A/BoP `2158333272300648890`,
+B/Terralith `-2531613582497795438`; source half-worlds `world-bop`/`world-terralith`
+kept in the server root as the ring-extension seed carriers — NEVER delete them).
+⚠ `level-seed` is DEAD in this pack (Confluence mixin bug) — every new world uses the
+level.dat reseed flow in doc 07. ⚠ Chunky pregen MUST run with the save-flush loop
+(doc 07) or the server OOMs with nothing written. Open: ring extension 2000→6000 +
+dimension pregen (doc 07 tail), then **step 7** (distribution + onboarding).
 
 - **Who:** Wesley (host) + Leyton, DJ, David, Dan +1. Six players.
 - **What:** long shared campaign, months-long world, ~130 mods.
