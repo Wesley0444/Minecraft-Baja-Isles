@@ -76,6 +76,21 @@ across parallel tracks"). Wesley revised this on 2026-08-30 after an hour with t
 > **Freeze status after this:** reopened three times on 2026-08-30 (Integrated cut →
 > AC/perf/doc-03-adds → Integrated reversal), now closed FOR GOOD. The next reopening
 > request gets refused by default and escalated to Wesley in person.
+>
+> **⟳ Reopening #4 — 2026-08-30, post-step-6 (Wesley's call): the chisel suite.** One of
+> the group basically only builds; pack had no block-variant mod (Domum Ornamentum/Quark
+> partially cover it, deemed insufficient). Added AFTER pregen + splice + ring-bake
+> scheduling, which is safe because all 8 jars were **empirically scanned entry-by-entry
+> before adding: zero worldgen, zero biome modifiers, zero structures, zero dimensions,
+> zero global loot modifiers, no vanilla recipe overrides** (only own-block self-drop loot
+> tables + vanilla tag merges). The PregenRig bake clone has its own static mods copy and
+> does not sync from Pages — rings bake on the 125 set; identical chunks either way.
+> Stubs (pack 125 → 133): `chipped` 4.0.2 + deps `resourceful-lib` 3.0.12, `athena` 4.0.6 ·
+> `rechiseled` 1.2.5 + deps `supermartijn642s-core-lib` 1.1.24, `supermartijn642s-config-lib`
+> 1.1.8, `fusion-connected-textures` 1.3.14a · `rechiseled-chipped` 2.0 (bridge: Chipped's
+> ~2000 variants through Rechiseled's chisel UI). **All three content mods join the
+> never-remove list the moment a variant block is placed** — removing a block-adder deletes
+> every placed block. Freeze RE-CLOSED with this entry; escalation path unchanged.
 
 **Cut on availability** (no 1.21.1 NeoForge build): T.O Magic 'n Extras · Ars Elixirum ·
 Aether 2 · Primal Frontier · Stained Lenses · Metus Oblita · Street Art · Crop and Kettle ·
