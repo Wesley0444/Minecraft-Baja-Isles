@@ -159,12 +159,30 @@ Result: `world\` = 100 region files, 915 MB.
 - PENDING: backup task flips [FAIL]→[OK] at the next :00/:30 mark now that
   world\level.dat exists; presence poller goes UP.
 
-## STILL OPEN (step 6 tail)
+## RING BAKE — SCHEDULED (2026-08-31 02:00, unattended)
 
-- **Ring extension 2000→6000** (doc 05 §5.1, adapted): re-swap configs per the run table,
-  `chunky corners` the L-shaped bands **in world-bop / world-terralith directly** (they
-  carry the seeds — no fresh worlds, no reseed dance needed), splice the rings into
-  `world\` during a maintenance stop, push border to 11800. Use the flush loop again.
+Soft launch happened at R=2000 the evening of 08-30; the ring bakes overnight WHILE the
+live server keeps serving, on a full clone at `C:\Game Servers\Minecraft-PregenRig\`
+(ports 25566/25576, 16G heap, its own mods/config, copies of both source worlds — the
+originals in the server root stay pristine). Smoke-tested alongside the live server:
+boots, RCON answers, seed A verified, clean stop. ⚠ PS gotcha found: java's
+`@argfile` with a spaced path needs the quotes embedded in the token (`'@"' + $path + '"'`)
+when launched via `Start-Process -ArgumentList`.
+
+- **Task:** `Minecraft Ring Bake` — one-shot SYSTEM task, 02:00, elevated-verified
+  (state Ready). Runs `PregenRig\ring-bake.ps1`: Run A (Terralith jar → hold\, weights
+  stock, world-bop, 3 L-bands: `2000 -6000 6000 6000` / `0 -6000 2000 -2000` /
+  `0 2000 2000 6000`) → swap → Run B (jar back, weights 0/0/0, world-terralith,
+  mirrored bands) → stop. Flush loop every 2 min, seed asserts before each run, stall
+  watchdog (16 min no progress = abort), 9.5h global deadline, all java control by PID
+  (never touches the live server). Log: `PregenRig\ring-bake.log`; success marker:
+  `PregenRig\RING-BAKE-DONE.txt`. ~500k chunks total ≈ 5–7h → done ~07:00–09:00.
+- **INSERT (manual, next day, ~30 min downtime):** stop live server → MCA import both
+  rings from the PregenRig worlds into `world\` → `worldborder set 11800` → restart.
+  🔴 Import selection must take ONLY chunks beyond the old pregen edge (chunk coord
+  magnitude > 125, i.e. blocks ±2000) so nothing player-touched is overwritten — the
+  ±1900 border means players cannot have modified anything out there. Import took 12s
+  for 4.6k chunks → expect ~20–25 min for 500k.
 - Nether/End/TF/modded-dimension pregen (doc 02 §6 targets) — do on `world\` during the
   same maintenance window(s).
 - Delete `H:\...\heapdumps\java_pid32416.hprof` (14.8 GB) once nothing more to learn.
