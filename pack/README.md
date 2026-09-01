@@ -47,7 +47,16 @@ boot, `Done (16.202s)`, 0 chunk errors):
 
 ## `side` status
 
-`client`: Xaero's minimap + world map, Jade, JEI — the server never sees them.
+`client`: Xaero's minimap + world map, Jade, Sodium, LambDynamicLights — the server never
+sees them.
+**NOT client: JEI** — flipped to `both` 2026-09-01. JEI 19.51 no longer reads the
+vanilla-synced recipe manager: with no server-side JEI to push recipes, `JeiStarter` falls back to
+`VanillaClientRecipeLoader` (rebuilds from the *client's own jars*) and then calls
+`RecipeManager.replaceRecipes` on the client. Result: JEI showed **mod-default** recipes and every
+`pack-balance` / `pack-buffs` datapack override was invisible, the vanilla recipe book was wrong
+too, and the recipe-transfer **+** button was dead (`jei.tooltip.error.recipe.transfer.no.server`).
+Symptom is a chat warning on join, not a crash — which is why this hid longer than `w2w2` below.
+Server-side JEI adds no content; cheat mode stays gated to creative/op.
 **NOT client: the Xaero's↔Waystones bridge (`w2w2`)** — it registers a required network
 channel, so a client-side mark makes every join fail with a misleading "Incompatible
 client! Please use NeoForge 21.1.249". Found+fixed in the 2026-08-30 join test; it is

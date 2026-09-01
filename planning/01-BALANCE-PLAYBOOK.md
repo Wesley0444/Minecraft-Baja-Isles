@@ -2077,6 +2077,14 @@ singular `tags/item/` and that the tag id matches `DDTags.Items`.
 
 ### 6.2 Did the recipe change land? — JEI
 
+> **⚠ PREREQUISITE (found 2026-09-01): JEI must be installed SERVER-side, or this entire
+> section lies to you.** JEI 19.51 takes its recipe set from a *server-side JEI push*; with no JEI
+> on the server it rebuilds recipes from the client's own jars and overwrites the client recipe
+> manager, so it displays mod-default recipes no matter what your datapack did. Symptom: a chat
+> warning on join. JEI was `side = "client"` from pack build until 2026-09-01 — **any recipe
+> "verified in JEI" against the live server before that date is UNVERIFIED.** Re-check by actually
+> crafting the item, or via RCON.
+
 `/reload`, then in JEI type the item name and press **U** (uses) / **R** (recipes).
 
 - **Recipe still shows the old ingredients** → your override did not bind. Ninety percent of the
