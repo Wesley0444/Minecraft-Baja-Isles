@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "building",
+    "key": {
+        "S": {
+            "item": "minecraft:stone_bricks"
+        }
+    },
+    "pattern": [
+        "S S",
+        "   ",
+        "S S"
+    ],
+    "result": {
+        "count": 4,
+        "id": "cataclysm:stone_tiles"
+    }
+}
