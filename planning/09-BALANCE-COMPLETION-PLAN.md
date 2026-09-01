@@ -1,9 +1,19 @@
 # 09 — BALANCE COMPLETION PLAN (handoff for a fresh session)
 
-**Status: BUILT 2026-08-31 evening — STAGED, awaiting the bounce.** Everything below
-is implemented on disk; nothing is live until `balance-bounce.ps1` (server root) runs
-in the go window (Wesley's call — Teyters was online). Original plan text kept below
-for the record; per-item status + build findings in §8 at the end. Written at the end
+**Status: ✅ LIVE 2026-08-31 ~19:54 (bounce run + recovery, all verified).** The
+bounce applied everything (configs, 6 datapacks, push); its restart step failed —
+`schtasks /Run` on a SYSTEM task is **Access-denied non-elevated** (the SYSTEM-task
+trap's 4th costume; the registry's "/Run works non-elevated" note was about the
+BOT's Wesley-owned task) — recovered by relaunching detached as Wesley-user (SYSTEM
+boot task reclaims it at next reboot). Second gotcha: the script's Pages wait
+false-negatived because `Invoke-WebRequest .Content` is a **byte[] for TOML** —
+regex never matched; fixed in the script. FallingTree was delivered in a second
+empty-server mini-bounce once that was understood. Mid-run, a parallel session
+caught **Sodium 0.6.13 breaking client boot** (Supplementaries 3.9.6 requires
+sodium ≥0.8.12) and bumped the pack to **0.8.13** — §7's 0.6.13 pin is superseded.
+Verified live: RCON `datapack list` shows pack-buffs + pack-balance (correct order),
+boot log has the Awakening override-keys line, FallingTree loaded, zero errors in
+any override namespace. Per-item status + build findings in §8 at the end. Written at the end
 of the session that ran the reseed (doc 08) and then diffed doc 00 against everything
 downstream (doc 01 §2/§5 tiers, doc 03 decisions, doc 06 applied record, the on-disk
 datapacks, live configs). Result: several audit items never received a decision
@@ -423,3 +433,14 @@ re-discovers it as a "miss".
 7. Better Combat: swing Khopesh/Meat Shredder — new combo animations (proves BC sync).
 8. **Prism client smoke test for Sodium+LDL** (§7 — the ONLY client-facing change):
    GeckoLib mobs + spell VFX + held-torch light. If broken: pull sodium stub, repush.
+   - **2026-08-31 first attempt FAILED at mod load** (before any rendering could be
+     judged): Supplementaries 3.9.6 declares `incompatible with sodium [0, 0.8.12-beta.1)`
+     — the §7 "battle-tested 0.6.13" pin sat inside the banned range. The ledger's own
+     footnote had flagged 0.8.13's existence; that line is release-channel on 1.21.1
+     since June (0.8.12 rel 2026-07-06, 0.8.13 rel 2026-08-28). **Fix: bumped the pin
+     to 0.8.13** (packwiz update; side=client kept; commits 7d4e13d + e871e7a — the
+     second ships pack.toml's index hash, missed in the first). LDL 4.8.10 loaded fine
+     on the failed boot (exactly 1 loader error) so it stays as-is. ⚠ Lesson: a jar
+     scan of the NEW mod can't see incompats declared by EXISTING mods against it —
+     grep the pack's manifests for the new modid too. Rendering smoke test itself
+     still pending on the relaunch.

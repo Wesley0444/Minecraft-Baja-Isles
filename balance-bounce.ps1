@@ -94,7 +94,10 @@ if (-not $SkipPush) {
     $ok = $false; $deadline = (Get-Date).AddMinutes(6)
     while ((Get-Date) -lt $deadline) {
         try {
-            $remote = (Invoke-WebRequest -UseBasicParsing -Uri $PACK_URL -TimeoutSec 15).Content
+            # .Content is byte[] for non-text content types (TOML!) -- decode explicitly,
+            # or the regex silently never matches (cost us a false "Pages stale" 2026-08-31).
+            $resp = Invoke-WebRequest -UseBasicParsing -Uri $PACK_URL -TimeoutSec 15
+            $remote = if ($resp.Content -is [byte[]]) { [Text.Encoding]::UTF8.GetString($resp.Content) } else { [string]$resp.Content }
             if ($remote -match [regex]::Escape($localIndexHash)) { $ok = $true; break }
         } catch { }
         Start-Sleep -Seconds 20
