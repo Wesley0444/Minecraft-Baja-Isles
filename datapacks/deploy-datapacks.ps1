@@ -29,11 +29,15 @@ $order  = Join-Path $repo 'config\paxi\datapack_load_order.json'
 
 # Load order: later packs override earlier ones. pack-balance stays last so
 # cross-mod fixes win any future collision with a per-mod parity pack.
+# pack-buffs (doc 09 §3 under-reward buff pass) sits just before it: its files
+# are per-mod recipe/loot buffs that nothing else overrides today, and if a
+# collision ever appears, pack-balance winning is the correct outcome.
 $active = @(
     'confluence-gate-life-crystal',
     'deeperdarker-parity',
     'apotheosis-parity',
     'simplybows-parity',
+    'pack-buffs',
     'pack-balance'
 )
 

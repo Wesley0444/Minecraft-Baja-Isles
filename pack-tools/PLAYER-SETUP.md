@@ -27,8 +27,12 @@ the account you already own the game with — Prism is just a different way to l
 
 ## 3. Import the instance
 
-Grab the instance `.zip` from the download button at the top of this page. (No
-button there, or you're reading this as a plain file? Ask Wesley for the zip.)
+Grab the instance `.zip`:
+
+<!--download-->
+
+(No button above? You're probably reading this as a plain file — ask Wesley for
+the zip.)
 
 **Prism → Add Instance → Import from zip → pick the file → OK.**
 

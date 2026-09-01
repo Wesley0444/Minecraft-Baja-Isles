@@ -36,3 +36,8 @@ pack-tools/bin/
 discord-bot-token.txt
 *token*
 *.secret
+
+# Distributed instance zips — served to friends by the cards site's download
+# button, never through this public repo (they may carry servers.dat = the
+# server address).
+pack-tools/instance/*.zip

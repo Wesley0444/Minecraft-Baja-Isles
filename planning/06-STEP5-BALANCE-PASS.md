@@ -38,8 +38,10 @@ reproducible record.** If a config ever regenerates, restore values from §3.
 
 Active set + load order (later overrides earlier):
 `confluence-gate-life-crystal → deeperdarker-parity → apotheosis-parity →
-simplybows-parity → pack-balance`. Deploy with `datapacks\deploy-datapacks.ps1`
-after ANY datapack edit. `structure-collision\` is tooling, not a loaded pack.
+simplybows-parity → pack-buffs → pack-balance`. Deploy with
+`datapacks\deploy-datapacks.ps1` after ANY datapack edit. `structure-collision\`
+is tooling, not a loaded pack. (`pack-buffs` added 2026-08-31 by the doc 09
+balance-completion pass — the revived under-reward buff half.)
 
 ### deeperdarker-parity
 - **`tags/item/resonarium_armor.json` → emptied** (was wrongly listing 3 pieces = 75%

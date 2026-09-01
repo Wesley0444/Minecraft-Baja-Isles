@@ -186,3 +186,14 @@ when launched via `Start-Process -ArgumentList`.
 - Nether/End/TF/modded-dimension pregen (doc 02 §6 targets) — do on `world\` during the
   same maintenance window(s).
 - Delete `H:\...\heapdumps\java_pid32416.hprof` (14.8 GB) once nothing more to learn.
+
+## 2026-08-31 UPDATE — ring bake failed + re-run; reseed campaign
+
+The 02:00 ring bake DIED in 90 s (Invoke-Rcon 1-element array unrolled by PS →
+Assert-Seed read char 'S'; fixed `return ,$out` in ring-bake.ps1) and was re-run
+09:51 as a non-elevated Wesley-user process — same bands, same flush loop. The hprof
+is deleted. Launch night went sideways on overworld difficulty (~96 deaths) → full
+record, config hotfix, fresh fallback seed pairs, and the seam-selection campaign live
+in **`08-BALANCE-HOTFIX-AND-RESEED.md`**. The spliced `world\` of 08-30 is condemned
+(group-blessed restart); the R=6000 carrier extensions now serve seam-shopping for the
+replacement world instead of ring-insert into the old one.
