@@ -10,7 +10,9 @@ REM    4. Waits for THE SERVER's java process to fully exit (NOT taskkill -- a
 REM       modded world killed mid-write is a chunk-corruption event).
 REM    5. Takes a full archive backup of the now-quiesced world.
 REM    6. Syncs mods/ from the packwiz manifest on GitHub Pages.
-REM    7. PAUSES so the operator can review / edit configs, then restarts via
+REM    7. Rebuilds pack-tools\MOD-INDEX.md so the Discord librarian's modlist
+REM       knowledge matches the jars that are actually installed.
+REM    8. PAUSES so the operator can review / edit configs, then restarts via
 REM       the boot task and clears the lock.
 REM
 REM  WHY THE PACKWIZ SYNC IS NOT "AUTO-UPDATING"
@@ -29,10 +31,20 @@ REM  ORDER MATTERS: announce -> stop -> backup -> sync -> start.
 REM  Never back up before the flush; never touch mods/ before the process exits.
 REM ============================================================================
 
+REM  /unattended -- skip the operator pauses (no config-edit window, no final
+REM  keypress) so the bounce can be driven by a script. Default behaviour is
+REM  unchanged: with no argument every pause still blocks as before.
+set "UNATTENDED="
+if /I "%~1"=="/unattended" set "UNATTENDED=1"
+
 net session >nul 2>&1
 if errorlevel 1 (
   echo [update] Elevating...
-  powershell -NoProfile -Command "Start-Process -Verb RunAs -FilePath '%~f0'"
+  if defined UNATTENDED (
+    powershell -NoProfile -Command "Start-Process -Verb RunAs -FilePath '%~f0' -ArgumentList '/unattended'"
+  ) else (
+    powershell -NoProfile -Command "Start-Process -Verb RunAs -FilePath '%~f0'"
+  )
   exit /b
 )
 
@@ -72,9 +84,17 @@ echo [update] Syncing mods/ from the packwiz manifest...
 "%JAVA%" -jar "%SRV%\packwiz-installer-bootstrap.jar" -g -s server "%PACK_URL%"
 if errorlevel 1 (
   echo [update] *** PACKWIZ SYNC FAILED -- server NOT restarted. Fix and re-run. ***
-  pause
+  if not defined UNATTENDED pause
   exit /b 1
 )
+
+REM  Rebuild the mod index so the Discord librarian (/ask) can still answer
+REM  "which mod owns this modid" and "does anything ban this version" after the
+REM  modlist moved. It reads jars, so it MUST run after the sync. Non-fatal:
+REM  a stale index is worse than a fresh one but far better than a failed bounce.
+echo [update] Rebuilding the mod index for /ask...
+%PS% -File "%SRV%\pack-tools\build-mod-index.ps1"
+if errorlevel 1 echo [update] WARNING: mod index rebuild failed -- pack-tools\MOD-INDEX.md is now STALE.
 
 echo.
 echo ============================================================
@@ -82,7 +102,7 @@ echo  SERVER IS DOWN, BACKED UP, AND SYNCED TO THE MANIFEST.
 echo  If you are here to edit configs, do it now.
 echo  Press any key to restart the server.
 echo ============================================================
-pause
+if not defined UNATTENDED pause
 
 echo [update] Starting the server via the boot task...
 schtasks /Run /TN "%TASK%"
@@ -90,4 +110,4 @@ schtasks /Run /TN "%TASK%"
 del "%SRV%\maintenance.lock" 2>nul
 echo [update] Done. Watch logs\latest.log; a config or mod change may not survive boot.
 endlocal
-pause
+if not defined UNATTENDED pause

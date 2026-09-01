@@ -34,6 +34,20 @@ mirroring, then group. Rules that matter for a re-run:
 - **Evaluate conditions.** A recipe behind a false `zeta:flag` / `supplementaries:flag` /
   `neoforge:false` never loads and is not a conflict. Check the config, don't assume.
 - Skip `datapacks\_retired\` — it is not deployed.
+- **Index VANILLA too.** Its recipes live in
+  `libraries
+et\minecraft\server\<ver>\server-<ver>-extra.jar` (634 shaped ones).
+  Scanning only mod jars misses every vanilla collision — see §7.
+- **Index custom recipe TYPES, not just `minecraft:crafting_shaped`.** Anything that
+  resolves in the 3x3 grid competes in the same lookup: `bf_blockpack:crafting_shaped`,
+  `sophisticatedstorage:storage_tier_upgrade`, `sophisticatedcore:upgrade_next_tier`,
+  `apotheosis:potion_charm_crafting`. Separate stations do NOT compete and must be
+  excluded: `create:mechanical_crafting`, `twilightforest:uncrafting`,
+  `gateways:gate_recipe`, and Confluence's heavy_work_bench / hardmode_anvil / loom /
+  sawmill / solidifier.
+- **Known blind spot:** this method finds only EXACT signature matches. Tag-vs-item
+  overlaps (`#minecraft:planks` vs `minecraft:oak_planks`) are real in-game collisions
+  it does NOT report. 8 oak planks matched three recipes at once for exactly this reason.
 
 ## 3. Findings — 11 shape collisions, 8 real
 
@@ -98,3 +112,62 @@ harmless Confluence lead-ingot duplicate above.
 Re-run the index after any modlist change, pack update, or new recipe datapack. A conflict
 is silent: no log line, no crash, just a player getting the wrong item and assuming they
 misremembered the recipe.
+
+---
+
+## 7. CORRECTION (same day, 2026-09-01) — the numbers above were wrong
+
+Sections 3–5 came from a scanner that indexed **only mod jars** and **only
+`minecraft:crafting_shaped`**. Both limits were wrong, and §5's "5374 distinct shapes,
+1 remaining collision" was badly understated.
+
+| scan scope | collisions found |
+|---|---|
+| mod jars, vanilla recipe type only (§3) | 11 |
+| + custom grid recipe types | 61 |
+| + vanilla's own 634 recipes | **130** |
+| after removing Block Pack | **7** |
+
+**Block Pack was the whole story.** `bf_blockpack` accounted for ~120 of the 130. It
+duplicated Quark's decorative blocks wholesale, collided with *itself* (`X_roof` vs
+`X_roof_small`, four copper guardrails), and — the serious part — collided with roughly
+**70 vanilla recipes**, including `iron_chestplate`, `iron_boots`, `minecart`, `rail`,
+`white_wool`, `lantern`, `stone_bricks`, and every wooden fence / trapdoor / slab /
+chiseled-copper variant. Which side won each was arbitrary hash order, so core
+progression items were silently uncraftable.
+
+Removed from the pack (commit `0daafd9`), delivered 2026-09-01 14:29. Cost was measured
+first, across 752 region files and 1109 entity files with zero decompression errors:
+**1** placed block (`bf_blockpack:workbench`), **43** wandering-trader entities, **0**
+items in any player inventory, ender chest, or container. Those traders carried
+`PersistenceRequired` with no spawn config anywhere — an unbounded entity leak, reason
+enough on its own.
+
+### 7.1 A regression this sweep introduced
+
+§4 moved `awakened:water_canteen` onto a 2×2 iron square. That is the **vanilla
+`minecraft:iron_trapdoor` recipe**, so one of the two has been uncraftable ever since.
+The scanner could not see it because vanilla was not indexed. Corrected to the 3×3
+corners shape (`I I` / `   ` / `I I`), verified free against all 6102 grid recipes.
+
+**This is the whole point of the document: verify a replacement shape against vanilla +
+mods + datapacks + custom types, or you just move the bug.** While picking the
+replacement, the natural-looking `I.I / .I.` turned out to be `minecraft:bucket`.
+
+### 7.2 The 7 that remain
+
+- **Real:** `minecraft:chiseled_polished_blackstone` vs `cataclysm:blackstone_pillar`;
+  `minecraft:stone_pressure_plate` vs `confluence:stone_pressure_plate`
+- **Harmless** (two recipes, one output): `spectral_arrow`, `cake`, `leather`
+  (Naturalist duplicates of vanilla), `confluence:lead_ingot` (two ids, same result)
+- **Fixed, pending a `/reload` or restart:** `awakened:water_canteen`
+
+### 7.3 Not a collision
+
+`sophisticatedstorage:chest` was reported in-game as losing to `quark:oak_chest`. It is
+not a collision: **all 24 recipes producing an SS chest require a lever in the centre
+slot** (`PPP/PLP/PPP`), while Quark's chests are the empty-centre vanilla shape from
+planks or logs. They never competed. The genuine contention on 8 oak planks was
+vanilla's `#planks` chest vs `quark:oak_chest` vs `bf_blockpack:empty_crate` — a
+tag-vs-item overlap the scanner cannot report (§2). In-game confirmation of the lever
+craft is still outstanding.
