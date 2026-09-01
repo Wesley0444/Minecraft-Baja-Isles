@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "#": {
+            "tag": "c:ingots/iron"
+        },
+        "/": {
+            "item": "minecraft:stick"
+        }
+    },
+    "pattern": [
+        "/#"
+    ],
+    "result": {
+        "count": 1,
+        "id": "confluence:iron_short_sword"
+    }
+}
