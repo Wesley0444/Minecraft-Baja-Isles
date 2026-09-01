@@ -104,11 +104,6 @@ hash = "f6f723c2d15da3b36a2c29408deb914f6c4bdbe4a20aa652f3f07642011fce8e"
 metafile = true
 
 [[files]]
-file = "mods/block-pack.pw.toml"
-hash = "590a16dafea4f0e815c1f16ee7541e70e4fd1198e4371787df81a48eef0151b1"
-metafile = true
-
-[[files]]
 file = "mods/blockui.pw.toml"
 hash = "05abf6fafe4a8adf5aaa24f09b7dedfbe199a8727d925e816fc608d6357f5ba8"
 metafile = true
