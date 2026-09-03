@@ -20,7 +20,7 @@ metafile = true
 
 [[files]]
 file = "mods/alexs-caves-unofficial-port.pw.toml"
-hash = "dad63ca9ff3eb3a5cbabaa66142caecc7e4acfafab504fcc1009aeae1de0c508"
+hash = "e3c3f5b053f3e36d4ca643dfeecbe231d69ade1ec5ca8341928dc092b75c7241"
 metafile = true
 
 [[files]]
@@ -421,11 +421,6 @@ metafile = true
 [[files]]
 file = "mods/multi-piston.pw.toml"
 hash = "bc9449306cb2c32f16347779291d68e5fba67f85d7aca04b4b9cc1c033ec4083"
-metafile = true
-
-[[files]]
-file = "mods/naturalist.pw.toml"
-hash = "e74d1dbb803ac46a9cfcfe8fd0eb5bd2a6e1c0483a5bbdb1b08e895a7d61973d"
 metafile = true
 
 [[files]]

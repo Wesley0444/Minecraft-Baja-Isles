@@ -45,6 +45,16 @@ boot, `Done (16.202s)`, 0 chunk errors):
   Confluence updates. **A client launch is part of the smoke test for any client-facing
   mod bump — server boots cannot catch client-GUI mixin failures.**
 
+- **alexs-caves-unofficial-port** is no longer sourced from CurseForge. It is a locally
+  patched build — `alexscaves-2.0.10-nomagnet.jar`, sha1 `c25c483598a3d3f98f9cd94e07ed8bf1b10eaf8d`
+  — served from this repo's GitHub Release **`ac-nomagnet-2.0.10`** (patch source + rationale
+  there). The three per-entity magnet block scans in `MagnetUtil` return empty: they cost
+  **~19% of the server thread** at 4 players (spark `p6VYeVzLLm`, 2026-09-02) on a world
+  where nobody was near a magnet. Magnets no longer pull/attach; everything else in AC is
+  untouched. Its `.pw.toml` deliberately has **no `[update]` block**, so `packwiz update`
+  cannot revert it to the CF build. If upstream ever fixes it, re-apply or drop the patch
+  consciously — never by bulk update.
+
 ## `side` status
 
 `client`: Xaero's minimap + world map, Jade, Sodium, LambDynamicLights — the server never
@@ -68,3 +78,13 @@ left `both` on purpose): `visual-health`, `loot-journal-neoforge`, `block-pack`.
 
 To change a side: edit `mods/<mod>.pw.toml` → `side = "both" | "client" | "server"`,
 then `packwiz refresh`.
+
+## Post-freeze modlist changes
+
+- **2026-09-01 — Block Pack (`bf_blockpack`) REMOVED.** Collided with ~70 vanilla recipes.
+- **2026-09-03 — Naturalist REMOVED.** 12.4% of the server thread for ambient animals
+  (bass 6.2%, bird 4.7%, butterfly 2.2%); nothing depends on it; its only worldgen was two
+  ant-hill features. Bass are vanilla-cost fish — the saving is that they spawned in swamps
+  and wetlands where vanilla puts none; birds/butterflies were genuinely pricier than the bats
+  that replace them (bats did not register in the profile at all).
+- **2026-09-03 — Alex's Caves swapped for the `ac-nomagnet` patched build** (see pins above).

@@ -1,13 +1,8 @@
-name = "Alex's Caves (Unofficial Port)"
-filename = "alexscaves-2.0.10.jar"
+name = "Alex's Caves (Unofficial Port) — magnetism scans stubbed"
+filename = "alexscaves-2.0.10-nomagnet.jar"
 side = "both"
 
 [download]
+url = "https://github.com/Wesley0444/Minecraft-Baja-Isles/releases/download/ac-nomagnet-2.0.10/alexscaves-2.0.10-nomagnet.jar"
 hash-format = "sha1"
-hash = "366ddaac40f14cd0102f026b4d999753fc1db2a4"
-mode = "metadata:curseforge"
-
-[update]
-[update.curseforge]
-file-id = 7981977
-project-id = 1420348
+hash = "c25c483598a3d3f98f9cd94e07ed8bf1b10eaf8d"
