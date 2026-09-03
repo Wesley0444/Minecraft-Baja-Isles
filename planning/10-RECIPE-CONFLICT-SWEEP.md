@@ -169,5 +169,41 @@ not a collision: **all 24 recipes producing an SS chest require a lever in the c
 slot** (`PPP/PLP/PPP`), while Quark's chests are the empty-centre vanilla shape from
 planks or logs. They never competed. The genuine contention on 8 oak planks was
 vanilla's `#planks` chest vs `quark:oak_chest` vs `bf_blockpack:empty_crate` — a
-tag-vs-item overlap the scanner cannot report (§2). In-game confirmation of the lever
-craft is still outstanding.
+tag-vs-item overlap the scanner cannot report (§2).
+
+**CONFIRMED IN-GAME by Wesley, 2026-09-03: both craft correctly, no fix shipped.**
+
+SS additionally ships its own escape hatches, so a quark or vanilla chest is never
+stranded inventory:
+
+| recipe | type | input |
+| --- | --- | --- |
+| `<wood>_chest` | shaped | 8 planks of that wood + **lever in the centre** |
+| `<wood>_chest_from_quark_<wood>_chest` | **shapeless** | quark chest + lever, anywhere in the grid |
+| `oak_chest_from_vanilla_chest` | **shapeless** | vanilla chest + lever |
+| `generic_chest` | `sophisticatedstorage:generic_wood_storage` | `#minecraft:planks` + lever; derives wood type from the planks used |
+
+24 = 11 woods x (direct + from_quark) + `generic_chest` + `oak_chest_from_vanilla_chest`.
+`copper_chest` (`CCC/CSC/CCC`, type `sophisticatedstorage:storage_tier_upgrade`) accepts
+**only** `sophisticatedstorage:chest` in the centre — that is correct, not a bug; convert
+first. Item enablement is config, not data: `sophisticatedcore-common.toml` ->
+`enabledItems` -> `sophisticatedstorage:chest|true`.
+
+### 7.4 Verifying a recipe on the RUNNING server
+
+A jar read proves what *should* load; a datapack read proves what *should* override. Only
+the live server knows what actually registered. There is no vanilla read-only recipe query,
+but `recipe give` is one by side effect:
+
+```
+recipe give @a sophisticatedstorage:oak_chest   ->  "No new recipes were learned"   (exists)
+recipe give @a sophisticatedstorage:not_a_thing ->  "Unknown recipe: ..."           (absent)
+```
+
+It parses the recipe id **before** it resolves targets, so it works with zero players
+online and mutates nothing when the players already know the recipe.
+
+**Always send a known-bad id in the same batch as a control.** Without one you are matching
+against a response string you never calibrated, which is how a silently-renamed recipe reads
+as present. Do not substitute JEI: it renders client-side, and before 2026-09-01 it was
+rebuilding recipes from client jars entirely (see playbook 01 §6.2).
