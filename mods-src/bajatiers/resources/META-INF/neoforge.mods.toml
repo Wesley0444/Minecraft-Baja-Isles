@@ -5,12 +5,12 @@ issueTrackerURL="https://github.com/Wesley0444/Minecraft-Baja-Isles/issues"
 
 [[mods]]
 modId="bajatiers"
-version="1.2.0"
+version="2.0.0"
 displayName="Baja Tiers"
 displayURL="https://github.com/Wesley0444/Minecraft-Baja-Isles"
 authors="Wesley0444"
 description='''
-Per-player mob damage / mob health scaling keyed off the player's Apotheosis World Tier. Server-side only.
+World Tiers as a difficulty dial: per-player mob damage / mob health, driven by tier_augments datapack entries and shown in the World Tier screen.
 '''
 
 [[dependencies.bajatiers]]
@@ -18,18 +18,25 @@ modId="neoforge"
 type="required"
 versionRange="[21.1,)"
 ordering="NONE"
-side="SERVER"
+side="BOTH"
 
 [[dependencies.bajatiers]]
 modId="minecraft"
 type="required"
 versionRange="[1.21.1,1.22)"
 ordering="NONE"
-side="SERVER"
+side="BOTH"
 
 [[dependencies.bajatiers]]
 modId="apotheosis"
 type="required"
 versionRange="[8.7,)"
 ordering="AFTER"
-side="SERVER"
+side="BOTH"
+
+[[dependencies.bajatiers]]
+modId="placebo"
+type="required"
+versionRange="[9.9,)"
+ordering="AFTER"
+side="BOTH"

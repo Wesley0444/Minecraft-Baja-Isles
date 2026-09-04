@@ -37,7 +37,7 @@ $active = @(
     'deeperdarker-parity',
     'apotheosis-parity',
     'apotheosis-modded-loot',
-    'apotheosis-tier-xp',
+    'apotheosis-world-tiers',
     'simplybows-parity',
     'pack-buffs',
     'pack-balance'

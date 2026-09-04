@@ -1,8 +1,9 @@
 # bajatiers — per-player mob damage / mob health by Apotheosis World Tier
 
-**Server-side only NeoForge mod (1.21.1 / NeoForge 21.1).** No registries, no network
-payloads, so clients that don't have it join fine (the Chunky mechanism). Ship it with
-`side = "server"` in packwiz; never add it to client instances.
+**Both-sides NeoForge mod (1.21.1 / NeoForge 21.1), ~10 KB.** Since 2.0.0 the numbers are
+`tier_augments` registry entries of two new types (`bajatiers:mob_damage`, `bajatiers:mob_health`)
+that Placebo syncs to clients and the World Tier detail screen lists under Monster Augments, so the
+client needs the codec. packwiz `side = "both"`, jar as a GitHub Release asset.
 
 ## Why not a `tier_augments` datapack on `generic.attack_damage`?
 Apotheosis bakes **monster** augments into a mob at spawn from the **nearest player's**
@@ -25,18 +26,16 @@ and absorption, so it stacks multiplicatively with the shipped per-tier pierce l
 
 **Do not also add attack_damage monster augments — they would double-dip.**
 
-## Config — `config/bajatiers-common.toml` (hot-reloads, no restart)
-| Tier | mob_damage | mob_health |
-|---|---|---|
-| haven | 70 | 100 |
-| frontier | 100 | 118 |
-| ascent | 200 | 143 |
-| summit | 300 | 182 |
-| pinnacle | 450 | 250 |
+## Where the numbers live
+`datapacks/apotheosis-world-tiers/data/baja/tier_augments/<tier>/{mob_damage,mob_health}.json`:
+```json
+{ "type": "bajatiers:mob_damage", "tier": "ascent", "target": "monsters", "sort_index": 40, "percent": 200 }
+```
+Percent of vanilla; a tier with no file is 100%. `/reload` applies. `ScalarAugment.apply/remove`
+are no-ops — the handler looks the entry up per hit via `TierAugmentRegistry.getAugments`.
 
-`log_hits = true` logs every scaled hit at INFO (`player (tier) takes from|deals to <mob> via <src>:
-a -> b (pct% -> xM)`) — the way to prove it live: get tapped by a zombie on Haven, switch to Ascent,
-get tapped again, read `logs/latest.log`. Turn it back off after.
+`config/bajatiers-common.toml` holds only `log_hits` (INFO line per scaled hit:
+`player (tier) takes from|deals to <mob> via <src>: a -> b (pct% -> xM)`). Leave it off.
 
 ## Build
 `powershell -File build.ps1` — javac against the server's own runtime jars (patched MC +
@@ -44,6 +43,8 @@ NeoForge universal + FML + Apotheosis + Placebo), no Gradle. Output `build/bajat
 + `.sha1`. Bump `version` in `resources/META-INF/neoforge.mods.toml` for a new build.
 
 ## History
+- 2.0.0 — 2026-09-04. Both sides. Multipliers moved out of the toml into datapack `tier_augments`
+  entries (new types), shown in the World Tier screen. GitHub Release `bajatiers-2.0.0`.
 - 1.2.0 — 2026-09-04. Config reworded to `mob_damage` / `mob_health` percents (same math as 1.1.0's
   0.7×…4.5× taken and 1.0×…0.4× dealt; "you do less damage" is a terrible sentence to hand gamers,
   "mobs have more health" is the same number). Old `[damage_taken]`/`[damage_dealt]` sections are

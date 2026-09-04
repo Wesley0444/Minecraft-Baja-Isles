@@ -88,3 +88,10 @@ then `packwiz refresh`.
   and wetlands where vanilla puts none; birds/butterflies were genuinely pricier than the bats
   that replace them (bats did not register in the profile at all).
 - **2026-09-03 — Alex's Caves swapped for the `ac-nomagnet` patched build** (see pins above).
+- **2026-09-04 — Baja Tiers (`bajatiers`) ADDED, both sides.** Our own ~10 KB mod, source in
+  `mods-src/bajatiers/`, jar as a GitHub Release asset (`[download] url=` stub, no `[update]`
+  block). World Tiers become a per-player difficulty dial: mob damage 70/100/200/300/450% and
+  effective mob health 100/118/143/182/250% by the PLAYER's tier, plus XP -40/0/+35/+55/+100%
+  (`datapacks/apotheosis-world-tiers`, the single source of truth). Needs the client because the
+  numbers are `tier_augments` registry entries of a new type, synced by Placebo and listed in the
+  World Tier screen under Monster Augments. No worldgen, no Minecraft registries.

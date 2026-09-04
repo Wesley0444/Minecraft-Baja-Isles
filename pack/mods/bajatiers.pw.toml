@@ -1,0 +1,8 @@
+name = "Baja Tiers — World Tiers as a difficulty dial"
+filename = "bajatiers-2.0.0.jar"
+side = "both"
+
+[download]
+url = "https://github.com/Wesley0444/Minecraft-Baja-Isles/releases/download/bajatiers-2.0.0/bajatiers-2.0.0.jar"
+hash-format = "sha1"
+hash = "17c9982cb0a1340075f0dab1c481158537558be6"

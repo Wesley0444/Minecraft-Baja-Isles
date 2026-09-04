@@ -1,0 +1,7 @@
+{
+    "type": "bajatiers:mob_health",
+    "tier": "ascent",
+    "target": "monsters",
+    "sort_index": 45,
+    "percent": 143
+}

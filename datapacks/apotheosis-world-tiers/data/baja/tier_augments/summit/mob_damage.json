@@ -1,0 +1,7 @@
+{
+    "type": "bajatiers:mob_damage",
+    "tier": "summit",
+    "target": "monsters",
+    "sort_index": 40,
+    "percent": 300
+}

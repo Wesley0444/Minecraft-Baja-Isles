@@ -25,6 +25,8 @@ $cp = @(
     "$srv\libraries\net\neoforged\bus\8.0.5\bus-8.0.5.jar",
     "$srv\libraries\org\slf4j\slf4j-api\2.0.9\slf4j-api-2.0.9.jar",
     "$srv\libraries\com\mojang\logging\1.2.7\logging-1.2.7.jar",
+    "$srv\libraries\com\mojang\datafixerupper\8.0.16\datafixerupper-8.0.16.jar",
+    "$srv\libraries\com\mojang\brigadier\1.3.10\brigadier-1.3.10.jar",
     (Get-ChildItem "$srv\mods\Apotheosis-*.jar" | Select-Object -First 1).FullName,
     (Get-ChildItem "$srv\mods\Placebo-*.jar"    | Select-Object -First 1).FullName
 ) -join ';'

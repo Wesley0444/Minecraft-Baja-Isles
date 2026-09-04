@@ -84,6 +84,11 @@ hash = "38bddea8d550568799dd7f208c0bbe10280de3e456016a0d59aa20de112a2345"
 metafile = true
 
 [[files]]
+file = "mods/bajatiers.pw.toml"
+hash = "a63d188297b29512513539302b0978f076cba8599030970f854eaac4e678b52d"
+metafile = true
+
+[[files]]
 file = "mods/balm.pw.toml"
 hash = "7dba9a4a9894a6bbab3a8c7edcc718499297412247fc0e8ccebf75b760c85140"
 metafile = true
