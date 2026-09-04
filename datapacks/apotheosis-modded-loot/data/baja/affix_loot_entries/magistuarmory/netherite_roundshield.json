@@ -1,0 +1,19 @@
+{
+    "type": "apotheosis:affix_loot_entry",
+    "neoforge:conditions": [
+        {
+            "type": "neoforge:mod_loaded",
+            "modid": "magistuarmory"
+        }
+    ],
+    "stack": {
+        "id": "magistuarmory:netherite_roundshield",
+        "count": 1
+    },
+    "weights": {
+        "pinnacle": {
+            "weight": 1,
+            "quality": 2.0
+        }
+    }
+}

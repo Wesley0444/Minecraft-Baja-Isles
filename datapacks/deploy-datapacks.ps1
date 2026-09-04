@@ -36,6 +36,7 @@ $active = @(
     'confluence-gate-life-crystal',
     'deeperdarker-parity',
     'apotheosis-parity',
+    'apotheosis-modded-loot',
     'simplybows-parity',
     'pack-buffs',
     'pack-balance'
@@ -58,6 +59,9 @@ Get-ChildItem $dst -Directory | Where-Object { $active -notcontains $_.Name } | 
 }
 
 # Paxi 5.x load-order format: { "loadOrder": [ "name", ... ] }
-@{ loadOrder = $active } | ConvertTo-Json | Out-File $order -Encoding utf8
+# BOM-less on purpose: PS 5.1's `-Encoding utf8` emits a UTF-8 BOM. Paxi/Gson tolerate
+# one today, but NeoForge's TOML parser does not, and shipping BOMs is how the
+# 2026-09-01 confluence-common.toml edit got silently reverted. Don't write them.
+[System.IO.File]::WriteAllText($order, (@{ loadOrder = $active } | ConvertTo-Json), (New-Object System.Text.UTF8Encoding $false))
 Write-Host "  wrote load order -> $order"
 Write-Host "OK: $($active.Count) datapacks deployed to Paxi."

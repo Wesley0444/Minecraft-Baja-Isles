@@ -1,0 +1,25 @@
+{
+    "type": "apotheosis:affix_loot_entry",
+    "neoforge:conditions": [
+        {
+            "type": "neoforge:mod_loaded",
+            "modid": "magistuarmory"
+        }
+    ],
+    "stack": {
+        "id": "magistuarmory:crusader_chestplate",
+        "count": 1
+    },
+    "weights": {
+        "frontier": {
+            "weight": 4,
+            "quality": 1.0
+        },
+        "ascent": {
+            "weight": 2
+        },
+        "summit": {
+            "weight": 2
+        }
+    }
+}

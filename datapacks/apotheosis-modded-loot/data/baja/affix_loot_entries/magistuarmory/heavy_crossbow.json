@@ -1,0 +1,35 @@
+{
+    "type": "apotheosis:affix_loot_entry",
+    "neoforge:conditions": [
+        {
+            "type": "neoforge:mod_loaded",
+            "modid": "magistuarmory"
+        }
+    ],
+    "stack": {
+        "id": "magistuarmory:heavy_crossbow",
+        "count": 1
+    },
+    "weights": {
+        "haven": {
+            "weight": 4,
+            "quality": 1.0
+        },
+        "frontier": {
+            "weight": 4,
+            "quality": 1.0
+        },
+        "ascent": {
+            "weight": 4,
+            "quality": 1.0
+        },
+        "summit": {
+            "weight": 4,
+            "quality": 1.0
+        },
+        "pinnacle": {
+            "weight": 4,
+            "quality": 1.0
+        }
+    }
+}
