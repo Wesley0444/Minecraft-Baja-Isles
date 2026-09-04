@@ -41,3 +41,7 @@ discord-bot-token.txt
 # button, never through this public repo (they may carry servers.dat = the
 # server address).
 pack-tools/instance/*.zip
+
+# Server-side mods we build ourselves (mods-src/): source is committed, build output is not —
+# the jar ships as a GitHub Release asset + packwiz stub, same as the AC magnetism patch.
+mods-src/*/build/
