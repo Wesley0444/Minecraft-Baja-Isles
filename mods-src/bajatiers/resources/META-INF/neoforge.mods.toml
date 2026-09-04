@@ -5,12 +5,12 @@ issueTrackerURL="https://github.com/Wesley0444/Minecraft-Baja-Isles/issues"
 
 [[mods]]
 modId="bajatiers"
-version="1.1.0"
+version="1.2.0"
 displayName="Baja Tiers"
 displayURL="https://github.com/Wesley0444/Minecraft-Baja-Isles"
 authors="Wesley0444"
 description='''
-Per-player damage taken / damage dealt scaling keyed off the player's Apotheosis World Tier. Server-side only.
+Per-player mob damage / mob health scaling keyed off the player's Apotheosis World Tier. Server-side only.
 '''
 
 [[dependencies.bajatiers]]

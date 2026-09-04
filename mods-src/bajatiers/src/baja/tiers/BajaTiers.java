@@ -31,10 +31,12 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * Ascent damage. Scaling on the receiving end makes the multiplier truly per-player, and
  * it also covers arrows / explosions / spells that never read attack_damage.
  *
- * Two mirrored scalings on the same event, both keyed off the PLAYER's own tier:
- *   damage_taken -- victim is a real ServerPlayer, attacker (DamageSource#getEntity, i.e. the
- *                   owner for projectiles) is a non-player LivingEntity.
- *   damage_dealt -- attacker is a real ServerPlayer, victim is any non-player LivingEntity.
+ * Two mirrored scalings on the same event, both keyed off the PLAYER's own tier, both expressed
+ * from the mob's side of the ledger so the config reads like the announcement:
+ *   mob_damage -- percent. Victim is a real ServerPlayer, attacker (DamageSource#getEntity, i.e.
+ *                 the owner for projectiles) is a non-player LivingEntity. damage *= pct/100.
+ *   mob_health -- percent of EFFECTIVE health. Attacker is a real ServerPlayer, victim is any
+ *                 non-player LivingEntity. damage *= 100/pct (143% health == hits land at 70%).
  * Fall, lava, drowning, starvation, PvP and block damage are untouched on purpose -- Haven
  * should not be lava-proof, and player-vs-player is never scaled either way.
  *
@@ -48,33 +50,35 @@ public class BajaTiers {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     static final ModConfigSpec SPEC;
-    static final Map<WorldTier, ModConfigSpec.DoubleValue> DAMAGE_TAKEN = new EnumMap<>(WorldTier.class);
-    static final Map<WorldTier, ModConfigSpec.DoubleValue> DAMAGE_DEALT = new EnumMap<>(WorldTier.class);
+    /** Percent of normal damage mobs deal to a player of this tier (100 = vanilla). */
+    static final Map<WorldTier, ModConfigSpec.DoubleValue> MOB_DAMAGE = new EnumMap<>(WorldTier.class);
+    /** Effective mob health as a percent (100 = vanilla): the player's hits are divided by this. */
+    static final Map<WorldTier, ModConfigSpec.DoubleValue> MOB_HEALTH = new EnumMap<>(WorldTier.class);
     static final ModConfigSpec.BooleanValue LOG_HITS;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.comment(
-            "Multiplier on damage a player TAKES from a non-player living attacker (mobs, their arrows,",
-            "their explosions, their spells), chosen by the VICTIM's Apotheosis World Tier.",
-            "1.0 = vanilla. Applied before armor / enchantments / absorption, so it stacks multiplicatively",
-            "with the shipped per-tier armor-pierce and prot-pierce monster augments.",
+            "Mob damage, as a PERCENT of vanilla (100 = unchanged), chosen by the World Tier of the player",
+            "being hit. Covers any non-player living attacker plus its arrows, explosions and spells.",
+            "Applied before armor / enchantments / absorption, so it stacks with the shipped per-tier",
+            "armor-pierce and prot-pierce monster augments. Fall, lava, drowning, PvP are never scaled.",
             "Edits hot-reload; no restart needed.")
-         .push("damage_taken");
-        double[] taken = { 0.7, 1.0, 2.0, 3.0, 4.5 };
+         .push("mob_damage");
+        double[] mobDamage = { 70, 100, 200, 300, 450 };
         for (WorldTier tier : WorldTier.values()) {
-            DAMAGE_TAKEN.put(tier, b.defineInRange(tier.getSerializedName(), taken[tier.ordinal()], 0.0, 100.0));
+            MOB_DAMAGE.put(tier, b.defineInRange(tier.getSerializedName(), mobDamage[tier.ordinal()], 0.0, 10000.0));
         }
         b.pop();
         b.comment(
-            "Multiplier on damage a player DEALS to any non-player living target (melee, arrows, spells --",
-            "anything whose damage source entity is the player), chosen by the ATTACKER's World Tier.",
-            "1.0 = vanilla. Applies to passive animals too: 'damage you deal' means all of it.",
-            "PvP is never scaled in either direction.")
-         .push("damage_dealt");
-        double[] dealt = { 1.0, 0.85, 0.7, 0.55, 0.4 };
+            "Effective mob health, as a PERCENT of vanilla (100 = unchanged), chosen by the World Tier of",
+            "the player attacking. Implemented by dividing the player's damage to any non-player living",
+            "target by this value (143 = your hits land at 70%). Health bars still show the vanilla number.",
+            "Applies to passive animals too. PvP is never scaled.")
+         .push("mob_health");
+        double[] mobHealth = { 100, 118, 143, 182, 250 };
         for (WorldTier tier : WorldTier.values()) {
-            DAMAGE_DEALT.put(tier, b.defineInRange(tier.getSerializedName(), dealt[tier.ordinal()], 0.0, 100.0));
+            MOB_HEALTH.put(tier, b.defineInRange(tier.getSerializedName(), mobHealth[tier.ordinal()], 1.0, 10000.0));
         }
         b.pop();
         LOG_HITS = b.comment("Log every scaled hit at INFO (player, tier, attacker, before -> after). Debug aid; leave off.")
@@ -85,7 +89,7 @@ public class BajaTiers {
     public BajaTiers(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.COMMON, SPEC);
         NeoForge.EVENT_BUS.addListener(BajaTiers::onIncomingDamage);
-        LOGGER.info("Baja Tiers loaded: per-player damage taken/dealt scaling by World Tier is active.");
+        LOGGER.info("Baja Tiers loaded: per-player mob damage / mob health scaling by World Tier is active.");
     }
 
     static void onIncomingDamage(LivingIncomingDamageEvent event) {
@@ -96,33 +100,35 @@ public class BajaTiers {
         // Player taking a hit from a non-player living attacker -> scale by the VICTIM's tier.
         if (victim instanceof ServerPlayer player && !(player instanceof FakePlayer)) {
             if (attacker instanceof LivingEntity && !(attacker instanceof Player)) {
-                scale(event, player, DAMAGE_TAKEN, "takes from", attacker);
+                scale(event, player, MOB_DAMAGE, false, "takes from", attacker);
             }
             return;
         }
 
         // Non-player living target hit by a real player -> scale by the ATTACKER's tier.
         if (attacker instanceof ServerPlayer player && !(player instanceof FakePlayer) && !(victim instanceof Player)) {
-            scale(event, player, DAMAGE_DEALT, "deals to", victim);
+            scale(event, player, MOB_HEALTH, true, "deals to", victim);
         }
     }
 
+    /** @param invert false: multiplier = pct/100 (mob damage); true: multiplier = 100/pct (mob health). */
     private static void scale(LivingIncomingDamageEvent event, ServerPlayer player,
-                              Map<WorldTier, ModConfigSpec.DoubleValue> table, String verb, Entity other) {
+                              Map<WorldTier, ModConfigSpec.DoubleValue> table, boolean invert, String verb, Entity other) {
         WorldTier tier = WorldTier.getTier(player);
         ModConfigSpec.DoubleValue cfg = table.get(tier);
         if (cfg == null) return;
-        double mult = cfg.get();
-        if (mult == 1.0) return;
+        double pct = cfg.get();
+        if (pct == 100.0) return;
+        double mult = invert ? 100.0 / pct : pct / 100.0;
 
         float before = event.getAmount();
         float after = (float) (before * mult);
         event.setAmount(after);
 
         if (LOG_HITS.get()) {
-            LOGGER.info("[bajatiers] {} ({}) {} {} via {}: {} -> {} (x{})",
+            LOGGER.info("[bajatiers] {} ({}) {} {} via {}: {} -> {} ({}% -> x{})",
                 player.getScoreboardName(), tier.getSerializedName(), verb,
-                other.getType().toShortString(), event.getSource().getMsgId(), before, after, mult);
+                other.getType().toShortString(), event.getSource().getMsgId(), before, after, pct, mult);
         }
     }
 }

@@ -12,7 +12,7 @@ from Apotheosis 8.7.0 (Paxi datapack, hot-loads with `/reload`).
 | Summit   | +75%   | +55%   | override |
 | Pinnacle | +125%  | +100%  | override |
 
-Damage taken / dealt per tier is NOT done here — that is the `bajatiers` server-side mod
+Mob damage / mob health per tier is NOT done here — that is the `bajatiers` server-side mod
 (scales incoming damage by the VICTIM's tier, so it stays per-player in mixed groups).
 Do not add `generic.attack_damage` monster augments on top: they would double-dip.
 The shipped armor / armor-pierce / prot-pierce monster ladder is left as-is.
