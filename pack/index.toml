@@ -14,6 +14,10 @@ file = "config/paxi/resourcepacks/baja-splashes/pack.mcmeta"
 hash = "a6cdbe9ca06a18939469b051a672b9b4e955d880674966458f741da1f6c3f0ee"
 
 [[files]]
+file = "config/the_trackers-client.toml"
+hash = "6e7dbe211d36f28739b6e1cc22b012e9d6198dc4db4965e56058d6707723c801"
+
+[[files]]
 file = "mods/aether.pw.toml"
 hash = "cc3f6e6e8f1838d16e47cce9241e32176279673efb1438ff4451ccffa9579b14"
 metafile = true
