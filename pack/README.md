@@ -55,6 +55,14 @@ boot, `Done (16.202s)`, 0 chunk errors):
   cannot revert it to the CF build. If upstream ever fixes it, re-apply or drop the patch
   consciously — never by bulk update.
 
+- **gravestone-x-curios-api-compat** + **baguettelib** are pinned by omission — neither
+  `.pw.toml` carries an `[update]` block. The compat mixes into Curios *internals*
+  (`top.theillusivec4.curios.common.inventory.CurioStacksHandler`, not the API) and both of its
+  mixins are `required: true`, so a version pair that drifts apart is a **hard boot crash**, not
+  a warning. Verified as a set against **curios 9.5.1**, **gravestone 1.0.40** and
+  **baguettelib 2.0.6** (every mixin target and cross-mod signature resolved by javap against the
+  jars we actually run, 2026-09-08). Move any one of the four only after re-checking all four.
+
 ## `side` status
 
 `client`: Xaero's minimap + world map, Jade, Sodium, LambDynamicLights — the server never
@@ -90,8 +98,27 @@ then `packwiz refresh`.
 - **2026-09-03 — Alex's Caves swapped for the `ac-nomagnet` patched build** (see pins above).
 - **2026-09-04 — Baja Tiers (`bajatiers`) ADDED, both sides.** Our own ~10 KB mod, source in
   `mods-src/bajatiers/`, jar as a GitHub Release asset (`[download] url=` stub, no `[update]`
-  block). World Tiers become a per-player difficulty dial: mob damage 70/100/200/300/450% and
-  effective mob health 100/118/143/182/250% by the PLAYER's tier, plus XP -40/0/+35/+55/+100%
+  block). World Tiers become a per-player difficulty dial: mob damage 50/100/150/225/300% and
+  effective mob health 100/120/150/180/225% by the PLAYER's tier (retuned 2026-09-05 from
+  70/100/200/300/450 and 100/118/143/182/250 after a Rare invader one-shot at Ascent), plus XP -40/0/+35/+55/+100%
   (`datapacks/apotheosis-world-tiers`, the single source of truth). Needs the client because the
   numbers are `tier_augments` registry entries of a new type, synced by Placebo and listed in the
   World Tier screen under Monster Augments. No worldgen, no Minecraft registries.
+
+- **2026-09-08 — Gravestone x Curios API Compat + BaguetteLib ADDED, both sides.** Fixes
+  "the grave hands your accessories back as loose inventory junk". Our Gravestone jar contains
+  **zero** Curios code, so every one of this pack's ~19 curios slot types (Cataclysm, Ars Nouveau,
+  Ars Elemental, Awakened, Iron's Spellbooks, Confluence, plus Curios' own 10) had to be
+  re-equipped by hand after every death. The addon tags each equipped/cosmetic curio at death with
+  its `(slotType, slotIndex, cosmetic)` as a data component, then restores it to that exact slot
+  when the grave is broken — with a delayed second pass for curios that *grant* slots, so a belt
+  is equipped before the pouches it unlocks. Overflow falls back to inventory, then the floor.
+  Honours Curios' own `keepCurios`; has an item blacklist + a Curse-of-Binding toggle.
+  **Swapping to Corpse was considered and rejected:** Corpse does not restore curios either (same
+  author, same shared `corelib`) — the fix is the addon, and its author ships the identical one
+  for both mods from one codebase (the Gravestone build's classes are still in package
+  `com.leclowndu93150.corpsecurioscompat`). Staying on Gravestone means the **52 graves already
+  in the world keep working** instead of being deleted with the block id. Client-facing because
+  BaguetteLib registers into the synced `DATA_COMPONENT_TYPE` registry. Graves that already exist
+  restore the old way — their items were never tagged — so no regression, and it self-heals from
+  the next death onward.

@@ -88,6 +88,11 @@ hash = "38bddea8d550568799dd7f208c0bbe10280de3e456016a0d59aa20de112a2345"
 metafile = true
 
 [[files]]
+file = "mods/baguettelib.pw.toml"
+hash = "38ad85972f4220fd9498f8de9142432c1a51549377d86800029995434c46ec77"
+metafile = true
+
+[[files]]
 file = "mods/bajatiers.pw.toml"
 hash = "a63d188297b29512513539302b0978f076cba8599030970f854eaac4e678b52d"
 metafile = true
@@ -285,6 +290,11 @@ metafile = true
 [[files]]
 file = "mods/gravestone-mod.pw.toml"
 hash = "d18f1ea4c6c1c2f99f18a8725d11e14c93abd29988df24c967794fc52e9c969c"
+metafile = true
+
+[[files]]
+file = "mods/gravestone-x-curios-api-compat.pw.toml"
+hash = "6adedc874650029f1424ce2687afc0de8c440747daefc39d82a31e14b3c645c5"
 metafile = true
 
 [[files]]
