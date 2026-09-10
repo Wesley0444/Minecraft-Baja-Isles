@@ -62,11 +62,18 @@ boot, `Done (16.202s)`, 0 chunk errors):
   a warning. Verified as a set against **curios 9.5.1**, **gravestone 1.0.40** and
   **baguettelib 2.0.6** (every mixin target and cross-mod signature resolved by javap against the
   jars we actually run, 2026-09-08). Move any one of the four only after re-checking all four.
+- **Iris = `1.8.14-beta.1` (Sodium 0.8 build), 2026-09-09.** Iris is version-locked to Sodium:
+  every *release* Iris for 1.21.1 (newest 1.8.12) hard-requires Sodium **0.6.13**, the exact
+  version the Supplementaries ban killed. The June-2026 beta is the ONLY Iris that runs on the
+  Sodium 0.8.x we ship, and it declares no Sodium version bound at all — so a `packwiz update`
+  that ever offers a "newer" release for 1.21.1 must be checked against its Sodium requirement
+  first. Client-only, **optional (default off)**: the installer asks each person once; potato
+  PCs say no and never load it.
 
 ## `side` status
 
 `client`: Xaero's minimap + world map, Jade, Sodium, LambDynamicLights — the server never
-sees them.
+sees them. Also `client`: Iris (optional) and the `shaderpacks/` stub.
 **NOT client: JEI** — flipped to `both` 2026-09-01. JEI 19.51 no longer reads the
 vanilla-synced recipe manager: with no server-side JEI to push recipes, `JeiStarter` falls back to
 `VanillaClientRecipeLoader` (rebuilds from the *client's own jars*) and then calls
@@ -88,6 +95,20 @@ To change a side: edit `mods/<mod>.pw.toml` → `side = "both" | "client" | "ser
 then `packwiz refresh`.
 
 ## Post-freeze modlist changes
+
+- **2026-09-09 — Iris (optional, default OFF) + Complementary Reimagined r5.9 ADDED, client only.**
+  Modlist reopening #6. Shaders for the group on the same pack, opt-in per person. `mods/iris.pw.toml`
+  carries `[option] optional = true, default = false` — the packwiz installer asks once and remembers;
+  say no on a weak PC and Iris is never loaded (not "loaded but off"). `shaderpacks/complementary-reimagined
+  .pw.toml` drops the 540 KB zip for everyone (harmless without Iris). `config/iris.properties` ships
+  `enableShaders=false` + `shaderPack=ComplementaryReimagined_r5.9.zip` with **`preserve = true`** in
+  the index, so it installs once and a re-sync never flips someone's shader choice back. Why
+  Complementary: one pack with a Potato→Ultra profile ladder (same files, different budget), the
+  largest modded-block emissive list of any shader, Modrinth-hosted, modpack-friendly license.
+  ⚠ Iris is a BETA (see pins) and it is the same Sodium+outline family as the 2026-09-05 GeckoLib
+  glow crash (Iris #2866) — expect that crash to get *more* likely, not less, for people who opt in.
+  Alex's Caves has its own post-processing; some cave effects will look wrong under any shader.
+  Server side: nothing (both stubs `client`), no bounce.
 
 - **2026-09-01 — Block Pack (`bf_blockpack`) REMOVED.** Collided with ~70 vanilla recipes.
 - **2026-09-03 — Naturalist REMOVED.** 12.4% of the server thread for ambient animals

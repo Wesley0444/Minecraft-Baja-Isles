@@ -1,6 +1,11 @@
 hash-format = "sha256"
 
 [[files]]
+file = "config/iris.properties"
+hash = "65024f99b12eb7d9e0064f3528e0bd2e28dc1caae5ddf4c5c9f8ff6fc019e474"
+preserve = true
+
+[[files]]
 file = "config/irons_spellbooks-client.toml"
 hash = "a7163b19076596b4fa2af5d40c69c7acee453b5e742796b42f6ef6405f6f7cb3"
 preserve = true
@@ -325,6 +330,11 @@ metafile = true
 [[files]]
 file = "mods/integrated-villages.pw.toml"
 hash = "ea2d5878a162c002a3acb7b89332f211a150ada2186790fbcc3d56640146cb7e"
+metafile = true
+
+[[files]]
+file = "mods/iris.pw.toml"
+hash = "e7283d03a3cb6c10f6fb907602f4544ba92a74fbcfdd5428f9f5248f23dd4434"
 metafile = true
 
 [[files]]
@@ -700,4 +710,9 @@ metafile = true
 [[files]]
 file = "mods/zeta.pw.toml"
 hash = "d1baffd370868590fcb2785146c278df5781d20994022749c53c0f9b2bffc7fc"
+metafile = true
+
+[[files]]
+file = "shaderpacks/complementary-reimagined.pw.toml"
+hash = "1ea0f1604ce00b5a40b9ff4b679a5ec69dcc72bef9a75225a3698d10edd514b1"
 metafile = true
