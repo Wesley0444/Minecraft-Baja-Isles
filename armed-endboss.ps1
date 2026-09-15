@@ -83,7 +83,12 @@ $MAX_WAIT_HOURS       = 48
 
 function Log([string]$level, [string]$msg) {
     $line = '{0}  [{1}]  {2}' -f (Get-Date -f 'yyyy-MM-dd HH:mm:ss'), $level, $msg
-    Add-Content -Path $LOG -Value $line -Encoding ascii
+    # A reader holding the log open (a `tail -F`, notepad, a monitor) makes Add-Content throw
+    # "being used by another process", and under EAP=Stop that silently KILLED this script's first
+    # run 2026-09-15 12:54. Retry instead of dying; the log line is never worth the rollout.
+    for ($k = 0; $k -lt 20; $k++) {
+        try { Add-Content -Path $LOG -Value $line -Encoding ascii; break } catch { Start-Sleep -Milliseconds 250 }
+    }
     Write-Host $line
 }
 function Fail([string]$msg) {
