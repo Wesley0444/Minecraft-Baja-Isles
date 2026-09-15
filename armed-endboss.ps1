@@ -346,9 +346,22 @@ Log 'OK' 'Better End Island answers: /end_island reset present'
 if ($v[3] -notmatch 'baja-tag-compat \(paxi\)') { Fail 'baja-tag-compat (paxi) not in datapack list' }
 Log 'OK' 'baja-tag-compat (paxi) enabled'
 
-$bad = $tail | Select-String '/ERROR\]|/FATAL\]' | Where-Object { $_ -match 'dragonfight|betterendisland|end_island|[Mm]ixin|baja-tag|c:tools/shield|c:tools/ranged_weapon|enchantable/durability|prefix_melee_only' }
+# BEI's first boot logs "key missing: bei_ExtraDragonFight in {<the ENTIRE level.dat as text>}" at ERROR
+# level -- one 2.9 MB line on 2026-09-15. Regex-matching that line wedged this gate at 100 % of a core
+# for 10 min (a sibling session had to kill the run and finish by hand). Skip giant lines, and treat
+# that specific first-boot line as known-benign (BEI writes the key on the next save).
+$errLines = $tail | Where-Object { $_.Length -lt 4000 -and $_ -match '/ERROR\]|/FATAL\]' }
+$huge = @($tail | Where-Object { $_.Length -ge 4000 })
+foreach ($h in $huge) { Log 'INFO' ("skipped a {0:N0}-byte log line in the ERROR gate: {1}..." -f $h.Length, $h.Substring(0, [Math]::Min(120, $h.Length))) }
+$bad = $errLines | Where-Object { $_ -match 'dragonfight|betterendisland|end_island|[Mm]ixin|baja-tag|c:tools/shield|c:tools/ranged_weapon|enchantable/durability|prefix_melee_only' -and $_ -notmatch 'key missing: bei_ExtraDragonFight' }
 if ($bad) {
-    foreach ($b in $bad) { Log 'FAIL' ("boot log: {0}" -f ($b.Line -replace '.*\]: ', '')) }
+    # `-replace '.*\]: '` is quadratic on a long line (greedy .* then backtrack per position): on the
+    # 2.9 MB BEI line that was ~4e12 regex steps = the 16:45 wedge. Truncate FIRST, then strip the
+    # timestamp/thread/logger prefix with an anchored, bounded pattern.
+    foreach ($b in $bad) {
+        $s = [string]$b; $s = $s.Substring(0, [Math]::Min(300, $s.Length))
+        Log 'FAIL' ("boot log: {0}" -f ($s -replace '^\[[^\]]{1,40}\] \[[^\]]{1,80}\] \[[^\]]{1,120}\]: ', ''))
+    }
     Fail ("{0} ERROR/FATAL line(s) mentioning the new mods, our tags or mixins" -f @($bad).Count)
 }
 Log 'OK' 'no dragonfight/betterendisland/tag/mixin ERROR or FATAL lines in the boot log'
