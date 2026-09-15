@@ -1,0 +1,13 @@
+name = "Boss Refreshed"
+filename = "boss-refreshed-v2-1.19-1.21.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/ZbZNRA1g/versions/YItTWWdj/boss-refreshed-v2-1.19-1.21.zip"
+hash-format = "sha512"
+hash = "db53c34c445e50e4d2e9ebcc6926beb30e23e2a97bbdcabc405690de464a81a26be024ae153a40616173596084a8041a128d2194aa2d37814e49e707a7a35f27"
+
+[update]
+[update.modrinth]
+mod-id = "ZbZNRA1g"
+version = "YItTWWdj"

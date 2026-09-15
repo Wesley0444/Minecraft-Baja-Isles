@@ -1,0 +1,65 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "simplybows:vine_bow/vine_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:ice_bow/ice_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:bubble_bow/bubble_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:bee_bow/bee_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:blossom_bow/blossom_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:earth_bow/earth_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:echo_bow/echo_bow",
+      "required": false
+    },
+    {
+      "id": "simplybows:cosmic_bow/cosmic_bow",
+      "required": false
+    },
+    {
+      "id": "twilightforest:triple_bow",
+      "required": false
+    },
+    {
+      "id": "twilightforest:seeker_bow",
+      "required": false
+    },
+    {
+      "id": "twilightforest:ice_bow",
+      "required": false
+    },
+    {
+      "id": "twilightforest:ender_bow",
+      "required": false
+    },
+    {
+      "id": "magistuarmory:longbow",
+      "required": false
+    },
+    {
+      "id": "alexscaves:dreadbow",
+      "required": false
+    },
+    {
+      "id": "cataclysm:cursed_bow",
+      "required": false
+    }
+  ]
+}

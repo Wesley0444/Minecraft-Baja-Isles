@@ -39,6 +39,7 @@ $active = @(
     'apotheosis-modded-loot',
     'apotheosis-world-tiers',
     'simplybows-parity',
+    'baja-tag-compat',
     'pack-buffs',
     'pack-balance'
 )

@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 48,
+    "description": "Baja tag compat: modded melee/ranged weapons into Confluence's prefix tags; Epic Knights shields into c:tools/shield + enchantable/durability. 1.21.1."
+  }
+}

@@ -19,6 +19,11 @@ file = "config/paxi/resourcepacks/baja-splashes/pack.mcmeta"
 hash = "a6cdbe9ca06a18939469b051a672b9b4e955d880674966458f741da1f6c3f0ee"
 
 [[files]]
+file = "config/paxi/resourcepacks/boss-refreshed.pw.toml"
+hash = "1d926a2de3267f61da249a9501d28bdcea80afe8d3b6a9d9771acd4dd430470b"
+metafile = true
+
+[[files]]
 file = "config/the_trackers-client.toml"
 hash = "6e7dbe211d36f28739b6e1cc22b012e9d6198dc4db4965e56058d6707723c801"
 
@@ -210,6 +215,16 @@ metafile = true
 [[files]]
 file = "mods/embers-floating-islands.pw.toml"
 hash = "82b5da4b806a09e490ce4e03204136194f7581aeb93cecf024f80d6f926764d0"
+metafile = true
+
+[[files]]
+file = "mods/entity-model-features.pw.toml"
+hash = "6aba9d20ceaf2f4f3368734cdfc37924b6fdf19df3f6631d68402490289cfd54"
+metafile = true
+
+[[files]]
+file = "mods/entity-texture-features.pw.toml"
+hash = "d8b1aa8f9d9bcde610fafc4780d2e7614c05f6f25d74978714745ee060b5fe39"
 metafile = true
 
 [[files]]
@@ -518,6 +533,11 @@ hash = "aa83553db30adc47f86010f6443340251323a62ee3f9415a0c4332cb6d502419"
 metafile = true
 
 [[files]]
+file = "mods/savage-ender-dragon.pw.toml"
+hash = "2794f78bdb181de09b23ceb3fdc52325e7483cc1eceafe5d4326584dee390c2c"
+metafile = true
+
+[[files]]
 file = "mods/selene.pw.toml"
 hash = "25bd3df81f1db5736274c1b7db2bc622f221b2c5dfc7e855ff4ebce345aecc30"
 metafile = true
@@ -700,6 +720,11 @@ metafile = true
 [[files]]
 file = "mods/yungs-api.pw.toml"
 hash = "d0ad6ae032766815daeb9d5db6605a7fb90eecc3a066845f1b5836f006002aed"
+metafile = true
+
+[[files]]
+file = "mods/yungs-better-end-island.pw.toml"
+hash = "902c397d5dfc69b497681ba71aa5b8a8a85479b1ccf25157867e4803c16dd65b"
 metafile = true
 
 [[files]]

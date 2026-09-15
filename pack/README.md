@@ -69,11 +69,19 @@ boot, `Done (16.202s)`, 0 chunk errors):
   that ever offers a "newer" release for 1.21.1 must be checked against its Sodium requirement
   first. Client-only, **optional (default off)**: the installer asks each person once; potato
   PCs say no and never load it.
+- **EMF 3.3.5 + ETF 7.2.1 move as a SET (2026-09-15).** Same author, and ETF 7.1's changelog says
+  EMF must update alongside it; EMF 3.3.0 shipped a one-day 1.21.1 crash fixed in 3.3.1. Both
+  stubs keep their `[update]` blocks, so `packwiz update` CAN move them — only ever bump both
+  together, and only to a pair whose changelogs mention each other. Client-only, so a bad pair
+  breaks clients, not the server.
 
 ## `side` status
 
 `client`: Xaero's minimap + world map, Jade, Sodium, LambDynamicLights — the server never
-sees them. Also `client`: Iris (optional) and the `shaderpacks/` stub.
+sees them. Also `client`: Iris (optional), the `shaderpacks/` stub, Entity Model Features,
+Entity Texture Features and the Boss Refreshed stub under `config/paxi/resourcepacks/`.
+`server`: Savage Ender Dragon and YUNG's Better End Island (2026-09-15) — no registries, no
+payloads; a client without them joins fine.
 **NOT client: JEI** — flipped to `both` 2026-09-01. JEI 19.51 no longer reads the
 vanilla-synced recipe manager: with no server-side JEI to push recipes, `JeiStarter` falls back to
 `VanillaClientRecipeLoader` (rebuilds from the *client's own jars*) and then calls
@@ -96,6 +104,28 @@ then `packwiz refresh`.
 
 ## Post-freeze modlist changes
 
+- **2026-09-15 — Savage Ender Dragon + YUNG's Better End Island (server only), EMF + ETF +
+  Boss Refreshed (client only) ADDED. Modlist reopening #7 (David's batch).**
+  `mods/savage-ender-dragon.pw.toml` = CurseForge file **6828602** (`dragonfight-1.21-4.7.jar`) —
+  the *NeoForge* build; the 4.8 file David linked is Fabric-only and no NeoForge 4.8 exists.
+  Server-side (Cupboard dep already shipped); soft mixins on `EnderDragon.hurt`/crystals only, so
+  it coexists with Confluence's `aiStep` dragon mixin (both applied clean on PregenRig2). Known
+  open upstream bug #72: its HP bonus is a transient modifier, a dragon that unloads re-heals.
+  Config `config/dragonfight.json` (defaults: `dragonDifficulty` 2, `antiflightAbility` true —
+  flying >35 s below 90 % dragon HP = blindness, forced descent, 90 %-max-HP fall damage; hits
+  wings/Aether/Ars/elytra alike). `mods/yungs-better-end-island.pw.toml` = Modrinth 3.1.2, server
+  only, `required:true` mixins on `EndDragonFight`/`SpikeFeature`/`ServerLevel`. **The End was
+  regenerated for it** (`armed-endboss.ps1`): nobody had ever entered, so the vanilla-baked
+  `DIM1` region/entities/poi were parked on H: and Chunky re-baked r=1000 with BEI active —
+  pillars at radius 54, no vanilla ring at 42 (`endscan.py` proves it from the region files).
+  **Boss Refreshed** is a CEM *model* pack (dragon, wither, warden, elder guardian) and needs
+  **Entity Model Features 3.3.5 + Entity Texture Features 7.2.1** on every client, both
+  `side="client"`. Its stub lives in `config/paxi/resourcepacks/` so packwiz drops the zip where
+  Paxi force-loads it (installer-verified 2026-09-15) — nobody has to enable it by hand. Licence is
+  All Rights Reserved but CurseForge/Modrinth third-party distribution is allowed, so a by-hash
+  stub is fine; never unzip it into this repo. Server side: 2 jars + the `baja-tag-compat`
+  datapack (Confluence prefixes on Simply Swords / Simply Bows / EK bows etc., EK shields
+  enchantable). Clients without EMF/ETF can still join; they just see vanilla bosses.
 - **2026-09-09 — Iris (optional, default OFF) + Complementary Reimagined r5.9 ADDED, client only.**
   Modlist reopening #6. Shaders for the group on the same pack, opt-in per person. `mods/iris.pw.toml`
   carries `[option] optional = true, default = false` — the packwiz installer asks once and remembers;
