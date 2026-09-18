@@ -16,6 +16,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -44,6 +45,9 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  *
  * Both sides: the client needs the codec to decode the synced registry and to render the screen.
  * Config (config/bajatiers-common.toml) holds only the hit-log toggle.
+ *
+ * Since 2.1.0 the jar also carries one unrelated client fix, because it is the one both-sides jar
+ * every player already has: {@link baja.tiers.mixin.VisitorStyleGuardMixin}.
  */
 @Mod(BajaTiers.MODID)
 public class BajaTiers {
@@ -70,6 +74,8 @@ public class BajaTiers {
             TierAugmentRegistry.INSTANCE.registerCodec(kind.id, kind.codec);
         }
         NeoForge.EVENT_BUS.addListener(BajaTiers::onIncomingDamage);
+        // unrelated passenger (2.1.0): client crash guard for MineColonies visitors, see VisitorStyleGuardMixin
+        modBus.addListener((FMLLoadCompleteEvent e) -> VisitorStyleGuard.report());
         LOGGER.info("Baja Tiers loaded: mob_damage / mob_health tier augments registered; per-player scaling active.");
     }
 

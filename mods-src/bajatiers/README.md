@@ -1,6 +1,6 @@
 # bajatiers — per-player mob damage / mob health by Apotheosis World Tier
 
-**Both-sides NeoForge mod (1.21.1 / NeoForge 21.1), ~10 KB.** Since 2.0.0 the numbers are
+**Both-sides NeoForge mod (1.21.1 / NeoForge 21.1), ~12 KB.** Since 2.0.0 the numbers are
 `tier_augments` registry entries of two new types (`bajatiers:mob_damage`, `bajatiers:mob_health`)
 that Placebo syncs to clients and the World Tier detail screen lists under Monster Augments, so the
 client needs the codec. packwiz `side = "both"`, jar as a GitHub Release asset.
@@ -37,12 +37,46 @@ are no-ops — the handler looks the entry up per hit via `TierAugmentRegistry.g
 `config/bajatiers-common.toml` holds only `log_hits` (INFO line per scaled hit:
 `player (tier) takes from|deals to <mob> via <src>: a -> b (pct% -> xM)`). Leave it off.
 
+## The passenger: MineColonies visitor crash guard (2.1.0)
+Unrelated to tiers. It rides in this jar because this is the one both-sides jar every player already
+has, so shipping it costs a version bump instead of a modlist reopening.
+
+**Bug:** client crash `Rendering entity in world`, NPE `"s" is null` at `String.contains` <-
+`AbstractEntityCitizen.getTexture` line 281, entity `minecolonies:visitor`. `VisitorCitizen.aiStep()`
+(client branch, every 20 ticks) does `getEntityData().set(DATA_STYLE, colonyView.getTextureStyleId())`
+with no null check; regular citizens are covered by `EntityCitizen.onSyncedDataUpdated`, visitors are
+not. Hit Wesley 2026-09-15 (waystone into the colony) and Dan 2026-09-18 (nether portal beside the
+Tavern). Bytecode-verified on minecolonies 1.1.1368; unguarded at the head of every upstream 1.21
+branch; upstream PR ldtteam/minecolonies#11828 closed unmerged 2026-09-16.
+
+**Fix:** `@Redirect` on the single `SynchedEntityData.set` call in `VisitorCitizen.aiStep` — a null
+value is dropped, everything else passes through. The visitor keeps the style the server already
+synced. `@Pseudo` + string target (no compile dependency on MineColonies), config `required:false`,
+injector `require = 0`: **a MineColonies update that moves the call degrades to "no guard", never to
+a boot crash.** Because that failure is silent by design, `VisitorStyleGuard.report()` logs one line
+at load-complete on every launch, both sides:
+
+- `VisitorStyleGuard=APPLIED` — good.
+- `VisitorStyleGuard=NOT APPLIED` — MineColonies changed; re-check `aiStep` with javap and fix the target.
+- `VisitorStyleGuard=SKIPPED` — MineColonies not installed.
+
+When the guard actually swallows a null it WARNs `VisitorStyleGuard: dropped a null texture style for
+visitor entity ...` (first 3, then every 100th) with the thread name — each one is a crash that did
+not happen, and the thread name is evidence for the still-unknown upstream mechanism.
+
+**If you move the MineColonies pin, grep the rig boot log for `VisitorStyleGuard=` before shipping.**
+
 ## Build
 `powershell -File build.ps1` — javac against the server's own runtime jars (patched MC +
-NeoForge universal + FML + Apotheosis + Placebo), no Gradle. Output `build/bajatiers-<ver>.jar`
+NeoForge universal + FML + sponge-mixin + Apotheosis + Placebo), no Gradle. Output `build/bajatiers-<ver>.jar`
 + `.sha1`. Bump `version` in `resources/META-INF/neoforge.mods.toml` for a new build.
 
 ## History
+- 2.1.0 — 2026-09-18. Adds `VisitorStyleGuardMixin` (see "The passenger" above). No change to the
+  tier math, the codec or the datapack. Rig-verified on PregenRig2: `Mixing VisitorStyleGuardMixin
+  ... into com.minecolonies.core.entity.visitor.VisitorCitizen` in debug.log, `VisitorStyleGuard=APPLIED`
+  in latest.log, a summoned `minecolonies:visitor` ran the patched `aiStep` with zero errors, ERROR set
+  == the known baseline. Client half = the same APPLIED line in a CLIENT latest.log.
 - 2.0.0 — 2026-09-04. Both sides. Multipliers moved out of the toml into datapack `tier_augments`
   entries (new types), shown in the World Tier screen. GitHub Release `bajatiers-2.0.0`.
 - 1.2.0 — 2026-09-04. Config reworded to `mob_damage` / `mob_health` percents (same math as 1.1.0's

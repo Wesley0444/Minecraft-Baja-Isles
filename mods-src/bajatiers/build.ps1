@@ -2,8 +2,8 @@
 #  build.ps1  --  compile bajatiers against the SERVER's own NeoForge runtime
 #
 #  No Gradle, no MDK: javac against the jars the dedicated server already runs
-#  (patched Minecraft + NeoForge universal + FML + Apotheosis + Placebo), then
-#  `jar` it with META-INF/neoforge.mods.toml. Same technique as the AC magnetism
+#  (patched Minecraft + NeoForge universal + FML + sponge-mixin + Apotheosis + Placebo), then
+#  `jar` it with META-INF/neoforge.mods.toml + bajatiers.mixins.json. Same technique as the AC magnetism
 #  patch. Output: mods-src\bajatiers\build\bajatiers-<version>.jar (+ sha1 file).
 #
 #  Run from anywhere:  powershell -File "C:\Game Servers\Minecraft\mods-src\bajatiers\build.ps1"
@@ -23,6 +23,8 @@ $cp = @(
     "$srv\libraries\net\neoforged\mergetool\2.0.0\mergetool-2.0.0-api.jar",
     "$srv\libraries\net\neoforged\fancymodloader\loader\4.0.44\loader-4.0.44.jar",
     "$srv\libraries\net\neoforged\bus\8.0.5\bus-8.0.5.jar",
+    # 2.1.0: the visitor guard is a mixin. No MineColonies jar needed -- string target, no refmap (Mojang names at runtime)
+    "$srv\libraries\net\fabricmc\sponge-mixin\0.15.2+mixin.0.8.7\sponge-mixin-0.15.2+mixin.0.8.7.jar",
     "$srv\libraries\org\slf4j\slf4j-api\2.0.9\slf4j-api-2.0.9.jar",
     "$srv\libraries\com\mojang\logging\1.2.7\logging-1.2.7.jar",
     "$srv\libraries\com\mojang\datafixerupper\8.0.16\datafixerupper-8.0.16.jar",
