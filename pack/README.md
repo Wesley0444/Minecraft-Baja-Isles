@@ -104,6 +104,21 @@ then `packwiz refresh`.
 
 ## Post-freeze modlist changes
 
+- **2026-09-18 — Baja Tiers 2.0.0 → 2.1.0 (both sides). Version bump of our own mod, not a
+  reopening: no mod added or removed.** Tier math, codec and datapack unchanged. The jar now also
+  carries `VisitorStyleGuardMixin`, a client crash guard for MineColonies 1.1.1368: `VisitorCitizen
+  .aiStep()` copies the colony view's texture style into the visitor's synced data with no null
+  check, and a null there kills the rendering client in `AbstractEntityCitizen.getTexture`
+  ("Rendering entity in world", NPE `"s" is null`). Hit Wesley 2026-09-15 (waystone into the colony)
+  and Dan 2026-09-18 (nether portal beside the Tavern); upstream PR ldtteam/minecolonies#11828 was
+  closed unmerged. The mixin drops the null write. It is **non-required on purpose** (`@Pseudo`,
+  config `required:false`, `require = 0`): a MineColonies update that moves the call degrades to
+  "no guard", never to a boot crash — and every launch logs **`VisitorStyleGuard=APPLIED`** or
+  `NOT APPLIED` (client and server) so that is never silent. **Moving the MineColonies pin ⇒ grep a
+  rig boot for that line first.** Stub = `[download]` on GitHub Release `bajatiers-2.1.0`, no
+  `[update]` block. A 2.1.0 client joins a 2.0.0 server fine (no payloads, registry codec
+  unchanged), so no server bounce was needed; the server picks the jar up at its next sync. Source
+  + the full write-up: `mods-src/bajatiers/README.md` ("The passenger").
 - **2026-09-15 — Savage Ender Dragon + YUNG's Better End Island (server only), EMF + ETF +
   Boss Refreshed (client only) ADDED. Modlist reopening #7 (David's batch).**
   `mods/savage-ender-dragon.pw.toml` = CurseForge file **6828602** (`dragonfight-1.21-4.7.jar`) —
@@ -118,6 +133,10 @@ then `packwiz refresh`.
   regenerated for it** (`armed-endboss.ps1`): nobody had ever entered, so the vanilla-baked
   `DIM1` region/entities/poi were parked on H: and Chunky re-baked r=1000 with BEI active —
   pillars at radius 54, no vanilla ring at 42 (`endscan.py` proves it from the region files).
+  **Done 2026-09-15 17:01:** 16,129 End chunks in 64 s, scan `vanilla42=0 / bei54=716` (rig
+  reference 0 / 717), server back as SYSTEM in 6.2 s, all 7 tag checks green. ⚠ BEI's first boot on
+  a world that predates it logs one benign ERROR (`key missing: bei_ExtraDragonFight` + the whole
+  level.dat on a single 2.9 MB line) — it writes the key on the next save; never regex that line.
   **Boss Refreshed** is a CEM *model* pack (dragon, wither, warden, elder guardian) and needs
   **Entity Model Features 3.3.5 + Entity Texture Features 7.2.1** on every client, both
   `side="client"`. Its stub lives in `config/paxi/resourcepacks/` so packwiz drops the zip where
