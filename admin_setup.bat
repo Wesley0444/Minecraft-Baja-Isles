@@ -8,9 +8,24 @@ REM      1. Deletes any stray program-scoped "Query User" firewall rules for
 REM         java.exe / javaw.exe.
 REM      2. Adds ALLOW inbound TCP 25565 and UDP 25565 (the game port, only).
 REM      3. Adds an explicit BLOCK inbound on TCP 25575 (RCON).
-REM      4. Registers the SYSTEM boot task and the backup/presence tasks.
-REM      5. SELF-VERIFIES while still elevated and writes the result to a log.
-REM      6. Starts the server via the boot task if it is not already running.
+REM      4. Registers the SYSTEM boot task, the backup/presence tasks (offsite
+REM         archive nightly 05:15), the Wesley/S4U 'Minecraft Watchdog' (3 min
+REM         crash watchdog) + 'Minecraft Start' (non-elevated start bridge)
+REM         tasks -> watchdog.ps1, and (since 2026-09-15) the SYSTEM
+REM         'Minecraft Smart Reboot' task -> smart-reboot.ps1, which takes
+REM         Windows Update's restart gracefully from 07:01, plus the on-demand
+REM         'Minecraft Idle Probe' (your session, no window) it uses to check
+REM         nobody is at the desktop before rebooting, and (since 2026-09-27)
+REM         the SYSTEM 'Minecraft Power Watch' task -> power-watch.ps1, fired by
+REM         the power-loss event (Kernel-Power 105, AcOnline=false): it stops
+REM         the server cleanly at 20% UPS and restarts it once power is back.
+REM      5. Sets Windows Update Active Hours to 13:00-07:00, so Windows only
+REM         restarts by itself in the 07:00-13:00 quiet band (it had been
+REM         restarting at 04:29, when someone is online 80% of days).
+REM      6. SELF-VERIFIES while still elevated (incl. a smart-reboot dry run
+REM         and a live-fire of the power watch on AC, which is harmless)
+REM         and writes the result to a log.
+REM      7. Starts the server via the boot task if it is not already running.
 REM    Re-running is safe and is also the REVIVE path after a mothball.
 REM
 REM  WHY IT MUST RUN BEFORE THE FIRST BOOT  ***READ THIS***
