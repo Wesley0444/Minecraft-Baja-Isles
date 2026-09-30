@@ -24,6 +24,12 @@ WHAT / WHY (2026-09-15, David's batch):
      ships ZERO tag entries for them.  Every shield enchant in the pack targets `#c:tools/shield`
      (Apothic reflective_defenses / shield_bash, Ars Elemental mirror_shield) and Unbreaking/
      Mending need `#minecraft:enchantable/durability`, so EK shields could take no enchantment.
+  3. (2026-09-30, David) Cataclysm's Cursed Bow extends ProjectileWeaponItem, not BowItem, and
+     ships no `minecraft:enchantable/bow` entry.  Power/Punch/Flame/Infinity all gate on that tag,
+     so the enchanting table (vanilla + Apothic) offered nothing.  Caveat: its normal-arrow mode
+     fires Phantom Arrows spawned WITHOUT a weapon reference, so Power/Flame/Punch only reach its
+     special-arrow (spectral/tipped) shots; Infinity works either way.  Its Apotheosis reforge
+     category is a data map, not a tag -> pack-balance/data/apotheosis/data_maps/.
   Every entry is `required = false`: if a mod ever leaves the pack the tag still loads.
   Tags merge across datapacks (replace = false); item tags sync to clients: server-only change.
 """
@@ -39,6 +45,8 @@ SIMPLY_BOWS = [f"simplybows:{n}_bow/{n}_bow" for n in
 TF_BOWS = [f"twilightforest:{n}_bow" for n in ("triple", "seeker", "ice", "ender")]
 BOWS = SIMPLY_BOWS + TF_BOWS + ["magistuarmory:longbow", "alexscaves:dreadbow", "cataclysm:cursed_bow"]
 CROSSBOWS = ["magistuarmory:heavy_crossbow"]
+# bows that are not BowItem subclasses and ship no enchantable/bow entry of their own
+ENCHANTABLE_BOW = ["cataclysm:cursed_bow"]
 OTHER_RANGED = ["mowziesmobs:blowgun"]
 
 # ---------------------------------------------------------------- shields (hand-listed) ---
@@ -153,11 +161,13 @@ if __name__ == "__main__":
         "data/c/tags/item/tools/crossbow.json": CROSSBOWS,
         "data/c/tags/item/tools/shield.json": EK_SHIELDS,
         "data/minecraft/tags/item/enchantable/durability.json": EK_SHIELDS,
+        "data/minecraft/tags/item/enchantable/bow.json": ENCHANTABLE_BOW,
         "data/confluence/tags/item/prefix_melee_only.json": melee,
     }
     write("pack.mcmeta", {"pack": {"pack_format": FORMAT, "description":
           "Baja tag compat: modded melee/ranged weapons into Confluence's prefix tags; "
-          "Epic Knights shields into c:tools/shield + enchantable/durability. 1.21.1."}})
+          "Epic Knights shields into c:tools/shield + enchantable/durability; "
+          "Cursed Bow into enchantable/bow. 1.21.1."}})
     for rel, ids in TAGS.items():
         write(rel, {"replace": False, "values": [{"id": i, "required": False} for i in ids]})
         print(f"{rel}: {len(ids)} entries")

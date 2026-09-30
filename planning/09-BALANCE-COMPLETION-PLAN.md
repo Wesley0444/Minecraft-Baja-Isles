@@ -403,7 +403,7 @@ verify → lock removed. **Nothing is committed/pushed yet** — the push rides 
 | §1.3 Altar vanilla repairs | ✅ built — **59** vanilla-target repair recipes condition-falsed, **38** Aether-item repairs kept (gloves are `aether:` items → auto-kept by namespace rule) | `pack-balance/data/aether/recipe/*_repairing.json` |
 | §1.4 Apothic infusions | ✅ built — `echo_shard` (1→4), `xp_bottle_2` (→8), `xp_bottle_3` (→32) killed; **`xp_bottle` (→1) kept** — it's a honey-bottle conversion, not a breaker | `pack-balance/data/apothic_enchanting/recipe/infusion/` |
 | §1.5 SS loot ⚠trap | **RESOLVED by bytecode** (subagent, high confidence): `enableLootDrops=false` would kill runic tablets + uniques + ALL pity (`PityLootManager.isEligibleChestTable` gates everything). Weights-to-zero is fully safe: generics use loot-pool injection with `randomChance(w/100)`, runic/unique use direct container insertion (Lootr compat included). Staged: `standard 0.1→0.0`, `rare 0.4→0.0`. PLUS chain-shortening (Wesley approved late): `runic 0.7→1.4`, `tabletHardPity 60→30` — see §1.5 for why rate-not-count | `balance-bounce.ps1` |
-| §2 Better Combat | **DATAPACK ROUTE VERIFIED VIABLE** (subagent, jar bytecode + BC README): server syncs `weapon_attributes` to clients in the join handshake (config task `bettercombat:weapon_registry`), hitboxes AND animations; datapack beats native jar entries and fallback. NO compat mod needed → **freeze reopening #5 NOT used, no BC client smoke test needed**. ⚠ BC has NO reload listener — weapon_attributes apply at server START only, `/reload` won't do it. Cataclysm 3.33 ships 10 native files; real gap was 3 boss weapons (ravenous_fang = model-only asset, not an item). Built: `meat_shredder→hammer`, `soul_render→halberd`, `khopesh→cutlass` + polish `giant_sword→claymore`, 2× `minotaur_axe→double_axe` (TF), 2× `battleaxe→double_axe` (UG) | `pack-balance/data/{cataclysm,twilightforest,undergarden}/weapon_attributes/` |
+| §2 Better Combat | **DATAPACK ROUTE VERIFIED VIABLE** (subagent, jar bytecode + BC README): server syncs `weapon_attributes` to clients in the join handshake (config task `bettercombat:weapon_registry`), hitboxes AND animations; datapack beats native jar entries and fallback. NO compat mod needed → **freeze reopening #5 NOT used, no BC client smoke test needed**. ⚠ BC has NO reload listener — weapon_attributes apply at server START only, `/reload` won't do it. Cataclysm 3.33 ships 10 native files; real gap was 3 boss weapons (ravenous_fang = model-only asset, not an item) — **CORRECTED 2026-09-30: it was 5** (see note below the table). Built: `meat_shredder→hammer`, `soul_render→halberd`, `khopesh→cutlass` + polish `giant_sword→claymore`, 2× `minotaur_axe→double_axe` (TF), 2× `battleaxe→double_axe` (UG) | `pack-balance/data/{cataclysm,twilightforest,undergarden}/weapon_attributes/` |
 | §3.1 Cataclysm forges | ✅ built. Void Forge = recipe override — **codec verified**: `weapon_fusion` result decodes via `ItemStack` codec, components bind. Infernal Forge has NO recipe (Netherite Monstrosity boss drop) → loot-table copy + `minecraft:set_components` on the hammer pool. 16 dmg @1.4 / 15 dmg @1.3 per doc 01 §2.8 | `pack-buffs/data/cataclysm/` |
 | §3.2 Undergarden swords | ✅ built — Utherium 11 @2.0; Forgotten = **smithing** override (base is `cloggrum_sword` + forgotten template), 12 @2.1 | `pack-buffs/data/undergarden/recipe/` |
 | §3.3 ES Moonring | ✅ built — real reagents are `tenacious_petal`/`tenacious_vine`/`soul_dew` (doc 01's `moonring_ingot` was indeed a wrong guess); 16 dmg @1.8 | `pack-buffs/data/eternal_starlight/recipe/moonring_greatsword.json` |
@@ -414,6 +414,30 @@ verify → lock removed. **Nothing is committed/pushed yet** — the push rides 
 | §7 utility mods | ✅ stubs added + index refreshed. FallingTree 1.21.1.11 `side="server"` (edited from packwiz's "both"); Sodium **0.6.13** (deliberate pin — battle-tested line; 0.8.13 exists, 3 days old); LDL **4.8.10** official (4.8.11 was hours old). All three jar-scanned worldgen-clean by subagent incl. nested jars, hash-verified, zero extra dependency stubs needed. No embeddium stub in pack (conflict check clean) | `pack/mods/{fallingtree,sodium,lambdynamiclights}.pw.toml` |
 | deploy script | ✅ `pack-buffs` added to `$active` (before pack-balance, comment explains) | `datapacks/deploy-datapacks.ps1` |
 | doc 06 §1 | ✅ load-order note updated | doc 06 |
+
+
+**2026-09-30 follow-up (David's report) — three items, two fixed, one declined:**
+- **§2 gap was 5, not 3.** `the_annihilator` + `the_immolator` got no BC moveset: not in the
+  10 native files, and no fallback regex matches either name. Added both →
+  `bettercombat:sword` (one-handed, 1.0× damage, no reach change — neutral; does NOT set
+  `two_handed`, which would block the paired right-click). Mechanic worth knowing: each is
+  a normal melee weapon (8.5 @1.6, +75% / +60% crit damage); the right-click AOE (hold 2 s)
+  only fires with **one in EACH hand** — `use()` checks the other hand for the same item.
+  ⚠ BC reads weapon_attributes at server start only: restart, not `/reload`.
+- **Cursed Bow: no enchants, no reforge.** It extends `ProjectileWeaponItem`, not `BowItem`.
+  (a) Enchanting: not in `minecraft:enchantable/bow`, which Power/Punch/Flame/Infinity gate
+  on → `baja-tag-compat` now adds it (build.py `ENCHANTABLE_BOW`). ⚠ Its normal-arrow mode
+  fires Phantom Arrows spawned with no weapon reference, so Power/Flame/Punch only reach the
+  special-arrow (spectral/tipped) shots; Infinity works either way. (b) Apotheosis `bow`
+  category is `instanceof BowItem || CrossbowItem` → Cursed Bow resolved to `none`. Fixed with
+  Apotheosis's own item data map `apotheosis:loot_category_overrides` → `apotheosis:bow`
+  (present since 2025-03, so in our 8.7.0). Affixes/gems DO reach every shot incl. Phantom
+  Arrows: Apotheosis keys projectile affixes off the owner's held item, not the arrow's weapon.
+- **Sophisticated Storage pump upgrades (`pump_upgrade` / `advanced_pump_upgrade` /
+  `xp_pump_upgrade`): NOT fixed, on purpose.** Registered but unfinished upstream — pumps move
+  fluid through a Tank upgrade, and Storage 1.5.91 registers no tank item and its storage
+  wrapper never exposes a fluid handler. A recipe would craft an inert item (upstream
+  SophisticatedStorage #514 / #35). The backpack pumps are the working ones.
 
 **Observed in passing, accepted, for the record:** Cataclysm's Meat Shredder tooltip
 says its right-click "damages entities in front (i-frame ignore)" — player-side i-frame
